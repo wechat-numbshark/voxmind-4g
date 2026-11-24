@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>演示环境 · VoxMind</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../site.css">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <header class="wrap top">
+    <a class="mark" id="home" href="../">返回介绍</a>
+    <div class="langs" role="group" aria-label="Language">
+      <button type="button" data-lang="zh" aria-pressed="true">中文</button>
+      <button type="button" data-lang="en" aria-pressed="false">English</button>
+      <button type="button" data-lang="ja" aria-pressed="false">日本語</button>
+    </div>
+  </header>
+  <main class="wrap">
+    <p class="banner" role="status"><strong id="banner">演示环境</strong><span id="note">可点击。数据是合成的，可以恢复。没有连接真实设备，也不会写入飞书。</span></p>
+    <p class="device" id="device">虚构设备 · demo-voxmind-not-a-real-device · 合成</p>
+    <div class="demo-actions">
+      <button type="button" id="show" class="primary">显示示例原话</button>
+      <button type="button" id="propose" disabled>生成待确认任务</button>
+      <button type="button" id="confirm" disabled>确认这条演示任务</button>
+      <button type="button" id="reset">恢复演示数据</button>
+    </div>
+    <div class="stage">
+      <article class="card panel" id="speech" hidden>
+        <h2><span class="heading"></span><span class="badge">合成</span></h2>
+        <p></p>
+      </article>
+      <article class="card panel" id="proposal" hidden>
+        <h2><span class="heading"></span><span class="badge">合成</span></h2>
+        <p class="title"></p>
+        <p class="when"></p>
+        <p class="who"></p>
+      </article>
+      <article class="card panel" id="record" hidden>
+        <h2><span class="heading"></span><span class="badge">合成</span></h2>
+        <p class="title"></p>
+        <p class="state"></p>
+        <p class="quote"></p>
+        <p class="feishu"></p>
+      </article>
+    </div>
+  </main>
+  <script type="module" src="demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>VoxMind · 4G 语音任务终端</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <a class="skip" href="#content">Content</a>
+  <header class="wrap top">
+    <a class="mark" href="#zh">VoxMind</a>
+    <nav class="nav" aria-label="Primary">
+      <a data-demo-link href="demo/" data-i18n="nav.demo">演示</a>
+      <a href="https://github.com/wechat-numbshark/voxmind-4g" data-i18n="nav.source">源码</a>
+      <a href="https://m.tb.cn/h.jMFxNbJ?tk=qkTU6TNvVOc" data-i18n="nav.buy">闲鱼</a>
+      <a href="https://buildwithneo.cn/#contact" data-i18n="nav.contact">咨询</a>
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="zh" aria-pressed="true">中文</button>
+        <button type="button" data-lang="en" aria-pressed="false">English</button>
+        <button type="button" data-lang="ja" aria-pressed="false">日本語</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="content" class="wrap">
+    <section class="hero">
+      <div>
+        <p class="kicker" data-i18n="hero.kicker">4G 蜂窝 · 不是 4GB</p>
+        <h1 data-i18n="hero.title">说一句话，先变成一张待确认的任务。</h1>
+        <p class="lede" data-i18n="hero.lede">VoxMind 是手工制作的蜂窝语音终端。话先记在设备上，再经 4G 上传。飞书任务这类对外动作，要等人确认之后才执行。</p>
+        <div class="actions">
+          <a class="primary" href="https://m.tb.cn/h.jMFxNbJ?tk=qkTU6TNvVOc" data-i18n="hero.buy">在闲鱼看手工实物</a>
+          <a data-demo-link href="demo/" data-i18n="hero.demo">打开合成演示</a>
+          <a href="https://github.com/wechat-numbshark/voxmind-4g" data-i18n="hero.source">查看源码</a>
+        </div>
+        <p class="note" data-i18n="hero.note">已经有手工实物。闲鱼标题为「个人手工制作VoxMind｜4G语音AI飞书任务终端」。本页不核验该链接此刻是否仍可下单。</p>
+      </div>
+      <figure class="hero-figure">
+        <img src="assets/enclosure-closed.png" alt="Enclosure v1 preview" data-i18n-alt="hero.caption">
+        <figcaption data-i18n="hero.caption">仓库里的外壳 v1 预览图。</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2 data-i18n="scope.title">源码里实际写明的范围</h2>
+      <div class="cards">
+        <article>
+          <h3 data-i18n="scope.cellular.title">蜂窝上传</h3>
+          <p data-i18n="scope.cellular.body">设备侧按块录音再上传。源码里的默认块长是 5 秒。蜂窝模组在资料中写作 ML307C。</p>
+        </article>
+        <article>
+          <h3 data-i18n="scope.confirm.title">人确认之后才对外执行</h3>
+          <p data-i18n="scope.confirm.body">模型可以提出动作草稿。飞书任务这类对外写入，要等人确认。确认可以发生在设备屏幕或网页上。</p>
+        </article>
+        <article>
+          <h3 data-i18n="scope.poll.title">网页是轮询，不是实时推送</h3>
+          <p data-i18n="scope.poll.body">已发布的产品说明写明实时推送尚未实现。网页按间隔拉取列表。本页不把它写成已经上线的实时流。</p>
+        </article>
+        <article>
+          <h3 data-i18n="scope.asr.title">流式识别是可选项</h3>
+          <p data-i18n="scope.asr.body">源码里有一条可选的 WebSocket 识别路径，只在相应配置打开时使用。本页不声称某一套生产环境已经打开它。</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2 data-i18n="hardware.title">硬件</h2>
+      <p class="note" data-i18n="hardware.lead">下面是仓库里已有的预览图和实板标注照片，不是新拍的宣传片。</p>
+      <div class="gallery">
+        <figure>
+          <img src="assets/enclosure-exploded.png" alt="Exploded enclosure preview" data-i18n-alt="hardware.exploded.cap">
+          <figcaption data-i18n="hardware.exploded.cap">外壳 v1 分解预览。</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/board-front.png" alt="Annotated front of the board" data-i18n-alt="hardware.front.cap">
+          <figcaption data-i18n="hardware.front.cap">实板正面标注：主控、存储、按键、天线与接口。</figcaption>
+        </figure>
+        <figure class="wide">
+          <img src="assets/board-back.png" alt="Annotated back of the board" data-i18n-alt="hardware.back.cap">
+          <figcaption data-i18n="hardware.back.cap">实板反面标注：USB-C、4G 模组与 Nano-SIM 座。</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="flow">
+      <h2 data-i18n="flow.title">数据怎么走</h2>
+      <img src="assets/dataflow.svg" alt="Data flow from the 4G device through chunk upload, the cloud API, optional ASR, and a confirmed action">
+      <p class="note" data-i18n="flow.note">图中的文字保持仓库原图。识别服务由配置决定；可选的 WebSocket 路径不代表生产配置已经打开。</p>
+    </section>
+
+    <section class="license panel">
+      <h2 data-i18n="license.title">许可</h2>
+      <ul>
+        <li data-i18n="license.personal">只允许自然人把原创材料用于自己的兴趣和非商业用途。</li>
+        <li data-i18n="license.commercial">商业使用要另行向作者购买书面授权。</li>
+        <li data-i18n="license.osi">这不是 Open Source Initiative 定义下的开源许可。中文许可与译文不一致时，以中文为准。</li>
+      </ul>
+      <p><a href="https://github.com/wechat-numbshark/voxmind-4g/blob/main/LICENSE.md" data-i18n="license.read">阅读 LICENSE.md</a></p>
+    </section>
+
+    <section class="plaud">
+      <h2 data-i18n="plaud.title">和市售产品的关系</h2>
+      <p class="note" data-i18n="plaud.lead">这些是公开规格上的区分，不是本机测试报告，也不是优劣排名。</p>
+      <ul>
+        <li data-i18n="plaud.notepro">Plaud Note Pro 是卡片硬件。已查阅的官方规格写的是蓝牙和 Wi-Fi，经手机同步。那些页面没有把蜂窝写成该机规格。</li>
+        <li data-i18n="plaud.plan">Plaud Pro Plan 是软件订阅，不是另一款名叫 Plaud Pro 的硬件。</li>
+        <li data-i18n="plaud.one">Plaud One 是另一款硬件。官方写明充电盒带 eSIM 4G LTE。不能把「有 4G」写成相对整个 Plaud 产品线的独特优点。</li>
+        <li data-i18n="plaud.none">本页不写全面优于上述任何一款，也不借用对方的认证或准确率。</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2 data-i18n="name.title">同名说明</h2>
+      <p data-i18n="name.body">本页是这台 4G 蜂窝硬件和飞书任务终端。它不是同名的学术论文项目。</p>
+    </section>
+
+    <section>
+      <h2 data-i18n="contact.title">咨询</h2>
+      <p data-i18n="contact.body">没有公开的微信或 WhatsApp。留言使用已有的联系入口。</p>
+      <p><a href="https://buildwithneo.cn/#contact" data-i18n="contact.link">前往联系入口</a></p>
+    </section>
+  </main>
+
+  <footer class="wrap">VoxMind · <a href="https://github.com/wechat-numbshark/voxmind-4g">github.com/wechat-numbshark/voxmind-4g</a></footer>
+  <script type="module" src="site.js"></script>
+</body>
+</html>

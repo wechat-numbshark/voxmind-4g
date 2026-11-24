@@ -1,0 +1,36 @@
+# CONFIG_VOXMIND_BRINGUP_MODE is not set
+CONFIG_VOXMIND_CLOUD_LAB_MODE=y
+
+# 任务看门狗默认只记警告不复位（ESP_TASK_WDT_PANIC 没开）——等于卡死了也
+# 只是打个日志，设备照样悬在那不动。8小时/断电50次的验收要求"卡死必须
+# 自己恢复"，所以必须让它真的触发复位，而不是看着日志傻等。
+CONFIG_ESP_TASK_WDT_PANIC=y
+
+# 看门狗要守的是"录音卡死"：main 任务(录音循环)已显式挂狗，CPU0 空闲任务也在
+# 监控。CPU1 专门跑 4G/上传/卡片同步，TLS 握手(S3 的 ECC 没硬件加速)会合法地
+# 连续占用几秒 CPU——为这个复位整机、打断录音，得不偿失。
+# CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1 is not set
+
+# 录音循环跑在 main 任务上，Opus 编码也在这个任务里做。esp_audio_codec
+# README 明确写了编码器需要约 40KB 栈。实测 20260918：栈只有 8KB 时第一帧
+# esp_opus_enc_process() 就会溢出，踩坏相邻的 newlib stdout 锁，崩溃现场却
+# 出现在下一个 printf 里（看起来像 vfprintf/__retarget_lock 的问题），极具
+# 误导性。
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=40960
+
+# 多个国内 NTP 源轮询，单一源对不上时不至于整机永远传不上去。
+CONFIG_LWIP_SNTP_MAX_SERVERS=3
+
+# 运行时诊断：每个任务的 CPU 占用。耐力测试时用来发现"谁把某个核霸占了"。
+CONFIG_FREERTOS_USE_TRACE_FACILITY=y
+CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS=y
+# 软关机离线指令词：ESP-SR 中文 MultiNet7（模型放 model 分区）
+CONFIG_SR_MN_CN_MULTINET7_QUANT=y
+
+# 远程升级：新固件第一次启动是"待确认"状态，必须自己联网后调
+# esp_ota_mark_app_valid_cancel_rollback()，否则下次启动 bootloader 自动退回上一版。
+# 不开这个，刷进一版连不上 4G 的固件就等于把设备寄回来重刷。
+CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE=y
+
+# 串口 screenshot 命令用：把屏幕真实渲染结果拍下来回传，调界面不用对着实物猜
+CONFIG_LV_USE_SNAPSHOT=y

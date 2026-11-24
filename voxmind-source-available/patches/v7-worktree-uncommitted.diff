@@ -1,0 +1,307 @@
+diff --git a/cloud/src/ai/diarize.ts b/cloud/src/ai/diarize.ts
+index 3b840283..b01b4cf6 100644
+--- a/cloud/src/ai/diarize.ts
++++ b/cloud/src/ai/diarize.ts
+@@ -20,6 +20,7 @@ export interface SpeakerLine { speaker: string; text: string; startMs: number; e
+ 
+ interface DashSentence { text?: unknown; begin_time?: unknown; end_time?: unknown; speaker_id?: unknown }
+ 
++
+ export class DiarizeService {
+   constructor(private readonly deps: {
+     repository: Repository; pricing: PricingService;
+diff --git a/firmware/components/app_cloud/CMakeLists.txt b/firmware/components/app_cloud/CMakeLists.txt
+index 129b6d49..aa67f5ff 100644
+--- a/firmware/components/app_cloud/CMakeLists.txt
++++ b/firmware/components/app_cloud/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-idf_component_register(SRCS "app_cloud.c" "ota.c" "runtime_diagnostics.c"
++idf_component_register(SRCS "app_cloud.c" "ota.c" "runtime_diagnostics.c" "cellular_profile.c" "cellular_settings.c"
+                        INCLUDE_DIRS "include"
+                        REQUIRES board drv_audio drv_storage drv_feedback drv_display drv_power drv_modem drv_input
+                                 codec_opus ui esp_event esp_netif esp_http_client fatfs
+diff --git a/firmware/components/app_cloud/Kconfig.projbuild b/firmware/components/app_cloud/Kconfig.projbuild
+index 203cfc14..0845ed30 100644
+--- a/firmware/components/app_cloud/Kconfig.projbuild
++++ b/firmware/components/app_cloud/Kconfig.projbuild
+@@ -9,15 +9,20 @@ config VOXMIND_BRINGUP_MODE
+ 
+ config VOXMIND_CLOUD_LAB_MODE
+     bool "Continuous recording + 4G (ML307C PPP) cloud lab"
++    select LWIP_PPP_SUPPORT
++    select LWIP_PPP_PAP_SUPPORT
++    select LWIP_PPP_CHAP_SUPPORT
+ 
+ endchoice
+ 
+ config VOXMIND_APN
+-    string "Cellular APN"
++    string "Fallback APN for unreadable or unknown Chinese SIM"
+     default "cmnet"
+     help
+-        ML307C-GC 是中国移动卡专用模组，标准数据卡默认 APN 是 cmnet。
+-        如果用的是物联网卡，改成运营商分配的那个 APN。
++        正常按 SIM 的归属运营商选择 APN，也可通过串口 cellular 命令保存
++        指定运营商或自定义 APN/认证参数。此值仅作为无法读取 IMSI 或
++        未识别中国 SIM 时的兼容兜底；未知境外卡要求先配置，避免误用 cmnet。
++        英国 APN 适配不代表模组的硬件频段已经过英国实网验证。
+ 
+ config VOXMIND_API_BASE_URL
+     string "VoxMind API base URL"
+diff --git a/firmware/components/app_cloud/app_cloud.c b/firmware/components/app_cloud/app_cloud.c
+index ee8c3812..63b44121 100644
+--- a/firmware/components/app_cloud/app_cloud.c
++++ b/firmware/components/app_cloud/app_cloud.c
+@@ -59,6 +59,8 @@
+ #include "runtime_protocol.h"
+ #include "command_runtime.h"
+ #include "runtime_diagnostics.h"
++#include "cellular_profile.h"
++#include "cellular_settings.h"
+ 
+ #define NET_READY_BIT BIT0
+ #define MODEM_FAST_BAUD 460800
+@@ -82,6 +84,9 @@ static bool s_tried_fast_uart;
+ static bool fast_uart_allowed(void);
+ static void save_fast_uart_allowed(bool ok);
+ static esp_modem_dce_t *s_dce;
++/* PPP authentication can retain credential pointers; keep the boot profile alive.
++ * Console writes only NVS and takes effect on the next user-controlled restart. */
++static cellular_profile_t s_cellular_boot_profile;
+ static char s_current_session[37];
+ static char s_device_key[129];
+ static bool s_display_ready;
+@@ -748,60 +753,33 @@ static void ppp_status_event(void *arg, esp_event_base_t base, int32_t id, void
+     ESP_LOGI(TAG, "PPP 状态变化 event=%" PRId32, id);
+ }
+ 
+-/* 按 SIM 卡的 IMSI 前缀自动识别运营商、选对应默认 APN，不用用户手动配置。
+- * 中国 MCC=460，紧跟的 2 位 MNC 决定运营商（三大运营商 PLMN 分配表，2026-09-18
+- * 核实）：
+- *   移动 46000/02/04/07/08/13 → cmnet
+- *   联通 46001/06/09/10       → 3gnet
+- *   电信 46003/05/11/12       → ctnet
+- * 查不到 IMSI 或前缀不认识时，退回 Kconfig 里配的默认值（不阻塞拨号）。*/
+-static const char *detect_apn(char *resp, size_t resp_len)
+-{
+-    /* 实测 20260918：模组刚开机完成（哪怕 AT 探测已经拿到过 OK）时，UART
+-     * 波特率自适应/内部服务栈有时还没完全稳定，AT+CIMI 会收到乱码而不是
+-     * 超时或 ERROR——一次失败不代表真的读不到 IMSI，重试几次再认命。*/
+-    esp_err_t cimi_err = ESP_FAIL;
+-    for (int i = 0; i < 4; ++i) {
+-        cimi_err = modem_at("AT+CIMI", "OK", resp, resp_len, 3000);
+-        if (cimi_err == ESP_OK) break;
+-        vTaskDelay(pdMS_TO_TICKS(800));
+-    }
+-    if (cimi_err != ESP_OK) {
+-        ESP_LOGW(TAG, "读取 IMSI 失败，APN 用默认值 %s", CONFIG_VOXMIND_APN);
+-        return CONFIG_VOXMIND_APN;
+-    }
+-    /* AT+CIMI 直接回传数字串(无 "+CIMI:" 前缀)，中间可能夹着 \r\n 和 "OK"；
+-     * 找第一段连续 ≥5 位数字，前 5 位就是 MCC+MNC。*/
+-    char mccmnc[6] = {0};
+-    for (const char *p = resp; *p; ++p) {
+-        if (!isdigit((unsigned char)*p)) continue;
+-        size_t n = 0;
+-        while (p[n] && isdigit((unsigned char)p[n]) && n < 5) ++n;
+-        if (n == 5) { memcpy(mccmnc, p, 5); break; }
+-        p += n;
+-        if (!*p) break;
+-    }
+-    if (!mccmnc[0]) {
+-        ESP_LOGW(TAG, "IMSI 格式没解析出来，APN 用默认值 %s: %.60s", CONFIG_VOXMIND_APN, resp);
+-        return CONFIG_VOXMIND_APN;
+-    }
+-    static const struct { const char *mccmnc; const char *apn; const char *carrier; } table[] = {
+-        {"46000", "cmnet", "中国移动"}, {"46002", "cmnet", "中国移动"},
+-        {"46004", "cmnet", "中国移动"}, {"46007", "cmnet", "中国移动"},
+-        {"46008", "cmnet", "中国移动"}, {"46013", "cmnet", "中国移动"},
+-        {"46001", "3gnet", "中国联通"}, {"46006", "3gnet", "中国联通"},
+-        {"46009", "3gnet", "中国联通"}, {"46010", "3gnet", "中国联通"},
+-        {"46003", "ctnet", "中国电信"}, {"46005", "ctnet", "中国电信"},
+-        {"46011", "ctnet", "中国电信"}, {"46012", "ctnet", "中国电信"},
+-    };
+-    for (size_t i = 0; i < sizeof(table) / sizeof(table[0]); ++i) {
+-        if (strncmp(mccmnc, table[i].mccmnc, 5) == 0) {
+-            ESP_LOGI(TAG, "IMSI前缀=%s → %s，APN=%s", mccmnc, table[i].carrier, table[i].apn);
+-            return table[i].apn;
++/* Use the SIM's home IMSI, never the visited network (COPS) when roaming.
++ * An explicit NVS profile takes priority over all automatic guesses. */
++static esp_err_t detect_cellular_profile(char *resp, size_t resp_len)
++{
++    cellular_profile_t saved;
++    ESP_RETURN_ON_ERROR(cellular_settings_load(&saved), TAG, "读取蜂窝配置失败；用 cellular auto 修复");
++    char plmn[6] = {0};
++    if (!strcmp(saved.id, "auto")) {
++        for (int i = 0; i < 4; ++i) {
++            resp[0] = '\0';
++            if (modem_at("AT+CIMI", "OK", resp, resp_len, 3000) == ESP_OK &&
++                cellular_imsi_plmn(resp, plmn)) break;
++            vTaskDelay(pdMS_TO_TICKS(800));
+         }
+     }
+-    ESP_LOGW(TAG, "IMSI前缀=%s 不在已知运营商表里，APN 用默认值 %s", mccmnc, CONFIG_VOXMIND_APN);
+-    return CONFIG_VOXMIND_APN;
++    bool uk_default = false;
++    if (!cellular_profile_resolve(&saved, plmn[0] ? plmn : NULL, CONFIG_VOXMIND_APN,
++                                  &s_cellular_boot_profile, &uk_default)) {
++        ESP_LOGE(TAG, "境外 SIM 尚无匹配配置；先用 cellular list / cellular profile 选择实际卡品牌，再手动重启");
++        return ESP_ERR_NOT_SUPPORTED;
++    }
++    ESP_LOGI(TAG, "蜂窝配置=%s，APN=%s，认证=%s%s", s_cellular_boot_profile.id,
++             s_cellular_boot_profile.apn, cellular_auth_name(s_cellular_boot_profile.auth),
++             plmn[0] ? "（SIM 归属网络已识别；不输出 IMSI）" : "");
++    if (uk_default)
++        ESP_LOGW(TAG, "英国自动配置仅是归属网络默认值；PAYG、giffgaff、SMARTY、Lebara 等须按实际品牌/套餐选择配置");
++    return ESP_OK;
+ }
+ 
+ /* ML307C-GC 不在 esp_modem 命名支持的模组列表里（官方只列了 SIM800/BG96/SIM7600），
+@@ -856,7 +834,7 @@ static esp_err_t network_init(void)
+     }
+     vTaskDelay(pdMS_TO_TICKS(1500)); /* 开机刚完成，给 UART/AT 服务栈一点稳定时间 */
+ 
+-    char resp[160];
++    char resp[160] = {0};
+     modem_at("ATE0", "OK", NULL, 0, 1000); /* 关模组回显，免得干扰后面的匹配 */
+     esp_err_t cpin_err = ESP_FAIL;
+     for (int i = 0; i < 3; ++i) {
+@@ -867,20 +845,25 @@ static esp_err_t network_init(void)
+     if (cpin_err != ESP_OK)
+         ESP_LOGW(TAG, "SIM 状态异常，继续尝试拨号: %.100s", resp);
+ 
+-    const char *apn = detect_apn(resp, sizeof(resp));
+-    char apn_cmd[64];
++    ESP_RETURN_ON_ERROR(detect_cellular_profile(resp, sizeof(resp)), TAG, "cellular profile");
++    const char *apn = s_cellular_boot_profile.apn;
++    char apn_cmd[CELLULAR_APN_MAX + 32];
+     snprintf(apn_cmd, sizeof(apn_cmd), "AT+CGDCONT=1,\"IP\",\"%s\"", apn);
+     if (modem_at(apn_cmd, "OK", NULL, 0, 3000) != ESP_OK)
+         ESP_LOGW(TAG, "设置 APN=%s 失败，继续尝试拨号", apn);
+     bool registered = false;
+     for (int i = 0; i < 15 && !registered; ++i) {
+-        if (modem_at("AT+CGREG?", "+CGREG: 0,1", resp, sizeof(resp), 2000) == ESP_OK ||
+-            modem_at("AT+CGREG?", "+CGREG: 0,5", resp, sizeof(resp), 2000) == ESP_OK) {
+-            registered = true; break;
++        resp[0] = '\0';
++        bool eps_supported = modem_at("AT+CEREG?", "OK", resp, sizeof(resp), 2000) == ESP_OK;
++        registered = eps_supported && cellular_registered(resp, "+CEREG:");
++        if (!eps_supported) {
++            resp[0] = '\0';
++            registered = modem_at("AT+CGREG?", "OK", resp, sizeof(resp), 2000) == ESP_OK &&
++                         cellular_registered(resp, "+CGREG:");
+         }
+-        vTaskDelay(pdMS_TO_TICKS(2000));
++        if (!registered) vTaskDelay(pdMS_TO_TICKS(2000));
+     }
+-    if (!registered) ESP_LOGW(TAG, "30 秒内未确认注网成功，仍尝试拨号（可能天线/SIM 有问题）");
++    if (!registered) ESP_LOGW(TAG, "尚未确认 LTE 注网，仍尝试拨号；检查频段/天线/SIM 激活/漫游权限及 APN");
+ 
+     /* 打开模组休眠（DTR 这时还是低，模组醒着；联网+对时后才放高让它睡）*/
+     modem_at("AT&D0", "OK", NULL, 0, 1000);
+@@ -891,6 +874,14 @@ static esp_err_t network_init(void)
+     esp_netif_config_t ppp_cfg = ESP_NETIF_DEFAULT_PPP();
+     s_ppp_netif = esp_netif_new(&ppp_cfg);
+     if (!s_ppp_netif) return ESP_ERR_NO_MEM;
++    _Static_assert((int)CELLULAR_AUTH_PAP == (int)NETIF_PPP_AUTHTYPE_PAP &&
++                   (int)CELLULAR_AUTH_CHAP == (int)NETIF_PPP_AUTHTYPE_CHAP, "PPP auth mask mismatch");
++    if (s_cellular_boot_profile.auth != CELLULAR_AUTH_NONE) {
++        ESP_RETURN_ON_ERROR(esp_netif_ppp_set_auth(s_ppp_netif,
++                            (esp_netif_auth_type_t)s_cellular_boot_profile.auth,
++                            s_cellular_boot_profile.username, s_cellular_boot_profile.password),
++                            TAG, "PPP 认证配置失败");
++    }
+ 
+     esp_modem_dte_config_t dte_config = ESP_MODEM_DTE_DEFAULT_CONFIG();
+     dte_config.uart_config.baud_rate = modem_uart_baud();        /* 和上面提速后的一致 */
+@@ -910,10 +901,10 @@ static esp_err_t network_init(void)
+     ESP_RETURN_ON_ERROR(esp_modem_set_mode(s_dce, ESP_MODEM_MODE_DATA), TAG, "ppp dial");
+     ESP_LOGI(TAG, "PPP 拨号命令已下发，等待 IP_EVENT_PPP_GOT_IP");
+ 
+-    /* 上传要等对时成功(TLS 证书校验依赖正确时间)，对时失败=整机永远传不上去。
+-     * 实测 20260918 有一次开机单独用 pool.ntp.org 始终没对上；换成国内多个源。*/
++    /* Keep the existing domestic time sources, plus a global pool for travel.
++     * TLS uploads must still wait for valid time. */
+     esp_sntp_config_t sntp = ESP_NETIF_SNTP_DEFAULT_CONFIG_MULTIPLE(3,
+-        ESP_SNTP_SERVER_LIST("ntp.aliyun.com", "ntp.tencent.com", "cn.pool.ntp.org"));
++        ESP_SNTP_SERVER_LIST("ntp.aliyun.com", "ntp.tencent.com", "pool.ntp.org"));
+     sntp.sync_cb = time_synced;
+     return esp_netif_sntp_init(&sntp);
+ }
+@@ -1740,6 +1731,7 @@ static void console_task(void *arg)
+         if (!fgets(line, sizeof(line), stdin)) { vTaskDelay(pdMS_TO_TICKS(200)); continue; }
+         line[strcspn(line, "\r\n")] = '\0';
+         if (strcmp(line, "shutdown") == 0) shutdown_device("串口命令");
++        else if (cellular_settings_command(line)) { /* Applied on next manual restart. */ }
+         else if (strcmp(line, "screenshot") == 0) {
+             /* 每行一段 base64，前缀 SHOT: 方便主机端从日志里挑出来 */
+             printf("SHOT:BEGIN 240 320\n");
+@@ -1872,7 +1864,7 @@ static void console_task(void *arg)
+             }
+         }
+         /* 不回显原文：这一行可能就是一把打错格式的密钥 */
+-        else if (line[0]) ESP_LOGW(TAG, "未知命令（支持：shutdown、screenshot、pause、page a|b、setup<TAB>密钥）");
++        else if (line[0]) ESP_LOGW(TAG, "未知命令（支持：shutdown、screenshot、pause、page a|b、cellular list|show|auto、cellular profile <名称>、setup<TAB>密钥）");
+     }
+ }
+ 
+@@ -2629,14 +2621,16 @@ static void load_device_config(void)
+     nvs_close(nvs);
+ }
+ 
+-/* 4G 不需要配 SSID/密码——只要 SIM 插好、天线接好，APN 走 Kconfig 的默认值
+- * (cmnet)。串口配置现在只剩一件事：设备密钥。*/
++/* Device key and cellular profiles can be configured before first upload.
++ * Saving a cellular profile never interrupts recording or restarts the device. */
+ static void provision_task(void *arg)
+ {
+     char line[320];
+     ESP_LOGW(TAG, "等待串口配置。输入：setup<TAB>设备密钥");
+     for (;;) {
+         if (!fgets(line, sizeof(line), stdin)) { vTaskDelay(pdMS_TO_TICKS(200)); continue; }
++        line[strcspn(line, "\r\n")] = '\0';
++        if (cellular_settings_command(line)) continue;
+         char *save = NULL;
+         char *command = strtok_r(line, "\t\r\n", &save);
+         char *key = strtok_r(NULL, "\t\r\n", &save);
+diff --git a/firmware/tools/test-host.sh b/firmware/tools/test-host.sh
+index 8ca95490..0bc11c07 100644
+--- a/firmware/tools/test-host.sh
++++ b/firmware/tools/test-host.sh
+@@ -2,10 +2,28 @@
+ set -eu
+ firmware_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+ test_dir=$(mktemp -d "${TMPDIR:-/tmp}/voxmind-host-tests.XXXXXX")
+-trap 'rm -f "$test_dir/ui-test" "$test_dir/protocol-test"; rmdir "$test_dir"' EXIT HUP INT TERM
++trap 'rm -f "$test_dir/ui-test" "$test_dir/protocol-test" "$test_dir/cellular-test" "$test_dir/cellular-settings-test" "$test_dir/cjson.o"; rmdir "$test_dir"' EXIT HUP INT TERM
+ cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined \
+   "$firmware_dir/components/ui/ui_logic.c" "$firmware_dir/components/ui/tests/ui_logic_test.c" -o "$test_dir/ui-test"
+ "$test_dir/ui-test"
+ cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined \
+   "$firmware_dir/components/app_cloud/tests/runtime_protocol_test.c" -o "$test_dir/protocol-test"
+ "$test_dir/protocol-test"
++cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined \
++  -I "$firmware_dir/components/app_cloud/include" \
++  "$firmware_dir/components/app_cloud/cellular_profile.c" \
++  "$firmware_dir/components/app_cloud/tests/cellular_profile_test.c" -o "$test_dir/cellular-test"
++"$test_dir/cellular-test"
++cjson_dir="$firmware_dir/managed_components/espressif__cjson/cJSON"
++# Apple's SDK deprecates sprintf used by the upstream cJSON library. Suppress
++# that warning only for third-party code; keep -Werror for the settings adapter.
++cc -std=c11 -Wall -Wextra -Werror -Wno-deprecated-declarations -fsanitize=address,undefined \
++  -I "$cjson_dir" -c "$cjson_dir/cJSON.c" -o "$test_dir/cjson.o"
++cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined \
++  -I "$firmware_dir/components/app_cloud/tests/host" \
++  -I "$firmware_dir/components/app_cloud/include" -I "$cjson_dir" \
++  "$firmware_dir/components/app_cloud/cellular_profile.c" \
++  "$firmware_dir/components/app_cloud/cellular_settings.c" \
++  "$firmware_dir/components/app_cloud/tests/cellular_settings_test.c" \
++  "$test_dir/cjson.o" -o "$test_dir/cellular-settings-test"
++"$test_dir/cellular-settings-test"
+diff --git a/firmware/version.txt b/firmware/version.txt
+index 8955a017..e5fd9f83 100644
+--- a/firmware/version.txt
++++ b/firmware/version.txt
+@@ -1 +1 @@
+-1.0.26
++1.0.27-uk.1

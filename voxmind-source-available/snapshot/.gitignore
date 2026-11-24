@@ -1,0 +1,90 @@
+# ── 可再生的中间产物，不入库 ─────────────────────────────
+# 72 个改板过程中的 SQLite 快照备份（共 416MB）。
+# git 本身就是版本历史；真要回滚用 git，不用这些。
+VoxMind_交接包_20260824/*.eprj2
+
+# 外部工具（60MB，可重新下载）
+.easyeda/tools/*.jar
+
+# 截图与 DSN 中间件（可重新导出）
+.easyeda/artifacts/
+
+# 布线过程中的板面 dump / DRC 快照 / 日志 / 生成的 shell（都可再生）
+.easyeda/*.json
+.easyeda/*.txt
+!.easyeda/s0-VoxMind_EVT_V1.json
+.easyeda/an/*.json
+!.easyeda/an/ml307c_level_fix_connections.json
+.easyeda/an/*.log
+.easyeda/an/*.sh
+!.easyeda/an/fetch_mfg_v9.sh
+.easyeda/an/*.bak
+.easyeda/an/*.bak2
+.easyeda/an/__pycache__/
+.easyeda/fr/
+
+.DS_Store
+
+# 布线过程中生成的一次性脚本
+/undo_v3.sh
+/do_undo.sh
+
+# 云端
+cloud/node_modules/
+cloud/dist/
+cloud/.env
+cloud/data/
+deploy/.env
+
+# 固件构建产物
+firmware/build/
+firmware/sdkconfig
+firmware/sdkconfig.old
+firmware/managed_components/
+
+# 本地备份与临时输出（工具链迭代产生，不入库）
+.easyeda/an/*.bak_*
+.easyeda/an/*.out
+
+# 换型过程中的回退存档（每个 19MB，共 216MB）。留在磁盘上供回退，不入库。
+# 索引见 .easyeda/checkpoints/README.md
+.easyeda/checkpoints/*.eprj2
+
+# 本地资料下载与一次性检查文件
+/tmp/
+
+# 外壳参数化 CAD 的本地 Python 运行环境（可按 README 重建）
+.venv-cad/
+
+# 外壳设计所引用的微雪官方原始 STEP/ZIP（可由 README 链接重新下载）
+结构设计_v1_20260830/参考模型/
+结构设计_v1_20260830/预览/display_*.svg
+
+# ESP-IDF 编译产物（每次 build 都会重新生成，体积大且是二进制）
+firmware/build-cloud-current/
+firmware/releases/build/
+
+# 营销短片渲染工程（视频/*，含 node_modules 与逐帧图片，总计约 800MB+，不入库）
+视频/
+
+# --- source-available staging extras (do not publish secrets or build artifacts) ---
+.env
+.env.*
+!.env.example
+**/secrets.yaml
+!**/*.example.yaml
+cloud/data/
+cloud/dist/
+cloud/node_modules/
+deploy/.env
+firmware/build/
+firmware/build-*/
+firmware/sdkconfig
+firmware/sdkconfig.old
+firmware/managed_components/
+firmware/releases/**/*.bin
+firmware/releases/build/
+.venv-cad/
+node_modules/
+*.pyc
+.DS_Store

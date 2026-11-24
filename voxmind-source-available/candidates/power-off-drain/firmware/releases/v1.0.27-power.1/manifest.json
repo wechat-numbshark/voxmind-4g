@@ -1,0 +1,23 @@
+{
+  "version": "1.0.27-power.1",
+  "project": "voxmind",
+  "target": "ESP32-S3 / EVT PCB1 cloud",
+  "idfVersion": "v5.5.1",
+  "sourceCommit": "4ecf2da2",
+  "binaryPath": "firmware/build-power/voxmind.bin",
+  "byteLength": 4052240,
+  "sha256": "5c1ad0fdccfc14087e018c7fd54dcce6c7dae544046abd19ae493ab3872f9ab0",
+  "releaseId": null,
+  "deviceId": "demo-voxmind-not-a-real-device",
+  "deviceEvidence": {
+    "firmware": "1.0.27-power.1",
+    "otaState": "done",
+    "progressPct": 100,
+    "firstNewVersionHeartbeatAt": "2026-11-07T03:52:22.035Z",
+    "previousBootResetReason": 1,
+    "power": { "mv": 4144, "usb": null, "crate": 44.3, "offDrain": { "diedWhileOff": true }, "gaugeReset": true, "modemSwitch": false },
+    "error": null
+  },
+  "rolloutAfterPilot": "none",
+  "usbBootConsoleCaptured": false
+}

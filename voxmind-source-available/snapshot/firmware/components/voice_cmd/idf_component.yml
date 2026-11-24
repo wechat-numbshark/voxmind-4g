@@ -1,0 +1,6 @@
+## 软关机时离线听「小沃，开机」：乐鑫 ESP-SR 的 MultiNet 指令词识别。
+## 指令词按拼音在运行时配置，改唤醒词不用重新训练模型。
+dependencies:
+  idf: '>=5.0'
+  espressif/esp-sr:
+    version: "^2.1.0"

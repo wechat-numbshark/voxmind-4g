@@ -1,0 +1,5 @@
+cadquery==2.5.2
+trimesh==4.8.1
+networkx>=3.2
+matplotlib==3.9.4
+pillow>=10

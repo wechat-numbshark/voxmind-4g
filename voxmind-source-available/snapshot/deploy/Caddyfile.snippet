@@ -1,0 +1,14 @@
+# 将 example-caddy 连接到 voxmind-net 后加入现有 Caddyfile。
+# 首次测试使用 EXAMPLE-DEMO-HOST.invalid；有正式域名后只需替换站点名。
+EXAMPLE-DEMO-HOST.invalid {
+    encode zstd gzip
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "no-referrer"
+        Permissions-Policy "camera=(), geolocation=(), microphone=()"
+        Content-Security-Policy "default-src 'self'; connect-src 'self'; img-src 'self' data:; media-src 'self' blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+    }
+    reverse_proxy voxmind-api:8080
+}

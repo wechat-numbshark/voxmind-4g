@@ -1,0 +1,2234 @@
+[
+  {
+    "path": "README.md",
+    "size": 3871
+  },
+  {
+    "path": ".gitignore",
+    "size": 1926
+  },
+  {
+    "path": ".gitattributes",
+    "size": 66
+  },
+  {
+    "path": "cloud/Dockerfile",
+    "size": 1426
+  },
+  {
+    "path": "cloud/README.md",
+    "size": 2688
+  },
+  {
+    "path": "cloud/.dockerignore",
+    "size": 76
+  },
+  {
+    "path": "cloud/.gitignore",
+    "size": 70
+  },
+  {
+    "path": "cloud/package-lock.json",
+    "size": 208464
+  },
+  {
+    "path": "cloud/package.json",
+    "size": 1315
+  },
+  {
+    "path": "cloud/tsconfig.json",
+    "size": 416
+  },
+  {
+    "path": "cloud/.env.example",
+    "size": 833
+  },
+  {
+    "path": "cloud/vite.config.ts",
+    "size": 679
+  },
+  {
+    "path": "cloud/vitest.config.ts",
+    "size": 230
+  },
+  {
+    "path": "cloud/eslint.config.mjs",
+    "size": 851
+  },
+  {
+    "path": "cloud/tools/README_飞书配置.md",
+    "size": 3189
+  },
+  {
+    "path": "cloud/tools/lark_push_doc.mjs",
+    "size": 3557
+  },
+  {
+    "path": "cloud/test/app.test.ts",
+    "size": 13757
+  },
+  {
+    "path": "cloud/test/recordings.test.ts",
+    "size": 5702
+  },
+  {
+    "path": "cloud/test/led.test.ts",
+    "size": 2662
+  },
+  {
+    "path": "cloud/test/themes.test.ts",
+    "size": 5733
+  },
+  {
+    "path": "cloud/test/settings-tool.test.ts",
+    "size": 5433
+  },
+  {
+    "path": "cloud/test/power-command.test.ts",
+    "size": 3415
+  },
+  {
+    "path": "cloud/test/diarize.test.ts",
+    "size": 6191
+  },
+  {
+    "path": "cloud/test/device-diagnostics.test.ts",
+    "size": 2340
+  },
+  {
+    "path": "cloud/test/empty-chunk.test.ts",
+    "size": 1444
+  },
+  {
+    "path": "cloud/test/feishu-openapi.test.ts",
+    "size": 2666
+  },
+  {
+    "path": "cloud/test/action-dedup.test.ts",
+    "size": 2193
+  },
+  {
+    "path": "cloud/test/identity.test.ts",
+    "size": 8262
+  },
+  {
+    "path": "cloud/test/http-actions.test.ts",
+    "size": 2960
+  },
+  {
+    "path": "cloud/test/daily.test.ts",
+    "size": 6560
+  },
+  {
+    "path": "cloud/test/denoise.test.ts",
+    "size": 1489
+  },
+  {
+    "path": "cloud/test/device-feed.test.ts",
+    "size": 12865
+  },
+  {
+    "path": "cloud/test/search.test.ts",
+    "size": 6909
+  },
+  {
+    "path": "cloud/test/execution-reliability.test.ts",
+    "size": 5269
+  },
+  {
+    "path": "cloud/test/share.test.ts",
+    "size": 4493
+  },
+  {
+    "path": "cloud/test/feishu-user.test.ts",
+    "size": 13287
+  },
+  {
+    "path": "cloud/test/gain.test.ts",
+    "size": 1032
+  },
+  {
+    "path": "cloud/test/suggest.test.ts",
+    "size": 6955
+  },
+  {
+    "path": "cloud/test/privacy.test.ts",
+    "size": 6612
+  },
+  {
+    "path": "cloud/test/intent-time.test.ts",
+    "size": 3836
+  },
+  {
+    "path": "cloud/test/release-postgres-check.mjs",
+    "size": 5104
+  },
+  {
+    "path": "cloud/test/postgres.test.ts",
+    "size": 2301
+  },
+  {
+    "path": "cloud/test/reminders.test.ts",
+    "size": 8394
+  },
+  {
+    "path": "cloud/test/clear.test.ts",
+    "size": 2308
+  },
+  {
+    "path": "cloud/test/ota.test.ts",
+    "size": 14390
+  },
+  {
+    "path": "cloud/test/device-feed-budget.test.ts",
+    "size": 969
+  },
+  {
+    "path": "cloud/test/transcription-latency.test.ts",
+    "size": 8415
+  },
+  {
+    "path": "cloud/test/expense.test.ts",
+    "size": 10742
+  },
+  {
+    "path": "cloud/test/asr.test.ts",
+    "size": 14168
+  },
+  {
+    "path": "cloud/test/favorites.test.ts",
+    "size": 8806
+  },
+  {
+    "path": "cloud/test/ai.test.ts",
+    "size": 28355
+  },
+  {
+    "path": "cloud/test/docx.test.ts",
+    "size": 2339
+  },
+  {
+    "path": "cloud/test/automations.test.ts",
+    "size": 7949
+  },
+  {
+    "path": "cloud/test/intent-provider.test.ts",
+    "size": 3101
+  },
+  {
+    "path": "cloud/test/fixtures/speech-zh-16k.pcm",
+    "size": 115300
+  },
+  {
+    "path": "cloud/web/PRODUCT.md",
+    "size": 6172
+  },
+  {
+    "path": "cloud/web/index.html",
+    "size": 1944
+  },
+  {
+    "path": "cloud/web/tsconfig.json",
+    "size": 472
+  },
+  {
+    "path": "cloud/web/DESIGN.md",
+    "size": 21900
+  },
+  {
+    "path": "cloud/web/public/icon-192.png",
+    "size": 917
+  },
+  {
+    "path": "cloud/web/public/icon.svg",
+    "size": 343
+  },
+  {
+    "path": "cloud/web/public/manifest.webmanifest",
+    "size": 728
+  },
+  {
+    "path": "cloud/web/public/sw.js",
+    "size": 1601
+  },
+  {
+    "path": "cloud/web/public/icon-512.png",
+    "size": 3256
+  },
+  {
+    "path": "cloud/web/public/assets/voice-flow.png",
+    "size": 2067226
+  },
+  {
+    "path": "cloud/web/.impeccable/direction.json",
+    "size": 4267
+  },
+  {
+    "path": "cloud/web/.impeccable/design.json",
+    "size": 40290
+  },
+  {
+    "path": "cloud/web/.impeccable/questions/5e699855.state.json",
+    "size": 82
+  },
+  {
+    "path": "cloud/web/.impeccable/questions/5e699855.log",
+    "size": 41
+  },
+  {
+    "path": "cloud/web/src/main.tsx",
+    "size": 6001
+  },
+  {
+    "path": "cloud/web/src/theme.css",
+    "size": 31771
+  },
+  {
+    "path": "cloud/web/src/router.ts",
+    "size": 895
+  },
+  {
+    "path": "cloud/web/src/api.ts",
+    "size": 3771
+  },
+  {
+    "path": "cloud/web/src/format.ts",
+    "size": 4567
+  },
+  {
+    "path": "cloud/web/src/ui/Shell.tsx",
+    "size": 6182
+  },
+  {
+    "path": "cloud/web/src/ui/Suggestions.tsx",
+    "size": 3016
+  },
+  {
+    "path": "cloud/web/src/ui/Markdown.tsx",
+    "size": 1835
+  },
+  {
+    "path": "cloud/web/src/ui/Topics.tsx",
+    "size": 18851
+  },
+  {
+    "path": "cloud/web/src/ui/MindMap.tsx",
+    "size": 5203
+  },
+  {
+    "path": "cloud/web/src/ui/CopyForAi.tsx",
+    "size": 4577
+  },
+  {
+    "path": "cloud/web/src/ui/Wave.tsx",
+    "size": 9823
+  },
+  {
+    "path": "cloud/web/src/ui/Favorites.tsx",
+    "size": 6239
+  },
+  {
+    "path": "cloud/web/src/ui/Strip.tsx",
+    "size": 13401
+  },
+  {
+    "path": "cloud/web/src/ui/kit.tsx",
+    "size": 10445
+  },
+  {
+    "path": "cloud/web/src/pages/Login.tsx",
+    "size": 2442
+  },
+  {
+    "path": "cloud/web/src/pages/app/Settings.tsx",
+    "size": 39813
+  },
+  {
+    "path": "cloud/web/src/pages/app/Me.tsx",
+    "size": 14406
+  },
+  {
+    "path": "cloud/web/src/pages/app/Today.tsx",
+    "size": 15289
+  },
+  {
+    "path": "cloud/web/src/pages/app/Search.tsx",
+    "size": 7767
+  },
+  {
+    "path": "cloud/web/src/pages/app/Recordings.tsx",
+    "size": 35858
+  },
+  {
+    "path": "cloud/web/src/pages/app/Tasks.tsx",
+    "size": 11440
+  },
+  {
+    "path": "cloud/web/src/pages/app/Automations.tsx",
+    "size": 14257
+  },
+  {
+    "path": "cloud/web/src/pages/app/Chat.tsx",
+    "size": 8924
+  },
+  {
+    "path": "cloud/web/src/pages/app/ThemePicker.tsx",
+    "size": 6171
+  },
+  {
+    "path": "cloud/web/src/pages/admin/Connectors.tsx",
+    "size": 7736
+  },
+  {
+    "path": "cloud/web/src/pages/admin/Audit.tsx",
+    "size": 3826
+  },
+  {
+    "path": "cloud/web/src/pages/admin/Devices.tsx",
+    "size": 20094
+  },
+  {
+    "path": "cloud/web/src/pages/admin/Costs.tsx",
+    "size": 15111
+  },
+  {
+    "path": "cloud/web/src/pages/admin/Overview.tsx",
+    "size": 6309
+  },
+  {
+    "path": "cloud/web/src/pages/admin/Users.tsx",
+    "size": 8936
+  },
+  {
+    "path": "cloud/web/src/pages/admin/Executions.tsx",
+    "size": 3019
+  },
+  {
+    "path": "cloud/models/LICENSE-silero-vad.txt",
+    "size": 1075
+  },
+  {
+    "path": "cloud/models/silero_vad.onnx",
+    "size": 2327524
+  },
+  {
+    "path": "cloud/scripts/dev-preview.ts",
+    "size": 8940
+  },
+  {
+    "path": "cloud/src/device-feed.ts",
+    "size": 1269
+  },
+  {
+    "path": "cloud/src/app.ts",
+    "size": 117739
+  },
+  {
+    "path": "cloud/src/pipeline.ts",
+    "size": 2630
+  },
+  {
+    "path": "cloud/src/device-glyphs.ts",
+    "size": 21185
+  },
+  {
+    "path": "cloud/src/types.ts",
+    "size": 8679
+  },
+  {
+    "path": "cloud/src/index.ts",
+    "size": 15998
+  },
+  {
+    "path": "cloud/src/domain.ts",
+    "size": 20928
+  },
+  {
+    "path": "cloud/src/config.ts",
+    "size": 5741
+  },
+  {
+    "path": "cloud/src/themes.ts",
+    "size": 5509
+  },
+  {
+    "path": "cloud/src/connectors/mock.ts",
+    "size": 340
+  },
+  {
+    "path": "cloud/src/connectors/http-actions.ts",
+    "size": 3290
+  },
+  {
+    "path": "cloud/src/connectors/router.ts",
+    "size": 1282
+  },
+  {
+    "path": "cloud/src/connectors/eva.ts",
+    "size": 2397
+  },
+  {
+    "path": "cloud/src/connectors/feishu-user.ts",
+    "size": 20369
+  },
+  {
+    "path": "cloud/src/connectors/types.ts",
+    "size": 637
+  },
+  {
+    "path": "cloud/src/connectors/feishu-openapi.ts",
+    "size": 3524
+  },
+  {
+    "path": "cloud/src/connectors/automation.ts",
+    "size": 3732
+  },
+  {
+    "path": "cloud/src/identity/types.ts",
+    "size": 5008
+  },
+  {
+    "path": "cloud/src/security/password.ts",
+    "size": 1482
+  },
+  {
+    "path": "cloud/src/security/secrets.ts",
+    "size": 1079
+  },
+  {
+    "path": "cloud/src/security/cookie.ts",
+    "size": 1357
+  },
+  {
+    "path": "cloud/src/security/clip-token.ts",
+    "size": 1967
+  },
+  {
+    "path": "cloud/src/security/auth.ts",
+    "size": 3199
+  },
+  {
+    "path": "cloud/src/speech/text.ts",
+    "size": 3740
+  },
+  {
+    "path": "cloud/src/storage/file-store.ts",
+    "size": 1629
+  },
+  {
+    "path": "cloud/src/storage/object-store.ts",
+    "size": 320
+  },
+  {
+    "path": "cloud/src/search/embeddings.ts",
+    "size": 3330
+  },
+  {
+    "path": "cloud/src/push/feishu.ts",
+    "size": 2864
+  },
+  {
+    "path": "cloud/src/push/mqtt.ts",
+    "size": 2592
+  },
+  {
+    "path": "cloud/src/audio/denoise.ts",
+    "size": 3751
+  },
+  {
+    "path": "cloud/src/audio/vad.ts",
+    "size": 4396
+  },
+  {
+    "path": "cloud/src/audio/wav.ts",
+    "size": 960
+  },
+  {
+    "path": "cloud/src/audio/clear.ts",
+    "size": 6917
+  },
+  {
+    "path": "cloud/src/audio/gain.ts",
+    "size": 1869
+  },
+  {
+    "path": "cloud/src/intent/prompt.ts",
+    "size": 3293
+  },
+  {
+    "path": "cloud/src/intent/classify.ts",
+    "size": 3553
+  },
+  {
+    "path": "cloud/src/intent/provider.ts",
+    "size": 14345
+  },
+  {
+    "path": "cloud/src/intent/time.ts",
+    "size": 5256
+  },
+  {
+    "path": "cloud/src/asr/index.ts",
+    "size": 16501
+  },
+  {
+    "path": "cloud/src/ai/outputs.ts",
+    "size": 13144
+  },
+  {
+    "path": "cloud/src/ai/daily.ts",
+    "size": 10272
+  },
+  {
+    "path": "cloud/src/ai/topics.ts",
+    "size": 13913
+  },
+  {
+    "path": "cloud/src/ai/chat.ts",
+    "size": 27064
+  },
+  {
+    "path": "cloud/src/ai/diarize.ts",
+    "size": 6906
+  },
+  {
+    "path": "cloud/src/ai/llm.ts",
+    "size": 3347
+  },
+  {
+    "path": "cloud/src/ai/suggest.ts",
+    "size": 8125
+  },
+  {
+    "path": "cloud/src/queue/pending.ts",
+    "size": 3454
+  },
+  {
+    "path": "cloud/src/ota/image.ts",
+    "size": 1997
+  },
+  {
+    "path": "cloud/src/ota/types.ts",
+    "size": 1650
+  },
+  {
+    "path": "cloud/src/export/docx.ts",
+    "size": 7869
+  },
+  {
+    "path": "cloud/src/services/ota.ts",
+    "size": 9876
+  },
+  {
+    "path": "cloud/src/services/identity.ts",
+    "size": 10547
+  },
+  {
+    "path": "cloud/src/services/settings-tool.ts",
+    "size": 16270
+  },
+  {
+    "path": "cloud/src/services/settings.ts",
+    "size": 974
+  },
+  {
+    "path": "cloud/src/services/feishu-onboarding.ts",
+    "size": 11573
+  },
+  {
+    "path": "cloud/src/services/pricing.ts",
+    "size": 2977
+  },
+  {
+    "path": "cloud/src/services/automations.ts",
+    "size": 11277
+  },
+  {
+    "path": "cloud/src/services/reminders.ts",
+    "size": 5407
+  },
+  {
+    "path": "cloud/src/services/actions.ts",
+    "size": 9541
+  },
+  {
+    "path": "cloud/src/services/execution.ts",
+    "size": 4415
+  },
+  {
+    "path": "cloud/src/services/transcription.ts",
+    "size": 24719
+  },
+  {
+    "path": "cloud/src/store/repository.ts",
+    "size": 20997
+  },
+  {
+    "path": "cloud/src/store/postgres.ts",
+    "size": 104968
+  },
+  {
+    "path": "cloud/src/store/memory.ts",
+    "size": 46955
+  },
+  {
+    "path": "deploy/Caddyfile.snippet",
+    "size": 736
+  },
+  {
+    "path": "deploy/README.md",
+    "size": 935
+  },
+  {
+    "path": "deploy/backup.sh",
+    "size": 2547
+  },
+  {
+    "path": "deploy/deploy-cloud.sh",
+    "size": 3138
+  },
+  {
+    "path": "deploy/.env.example",
+    "size": 905
+  },
+  {
+    "path": "deploy/compose.yml",
+    "size": 5527
+  },
+  {
+    "path": "deploy/systemd/voxmind-backup.timer",
+    "size": 162
+  },
+  {
+    "path": "deploy/systemd/voxmind-backup.service",
+    "size": 164
+  },
+  {
+    "path": "deploy/local-asr/server.py",
+    "size": 1641
+  },
+  {
+    "path": "deploy/local-asr/Dockerfile",
+    "size": 737
+  },
+  {
+    "path": "firmware/CMakeLists.txt",
+    "size": 104
+  },
+  {
+    "path": "firmware/sdkconfig.bringup.defaults",
+    "size": 73
+  },
+  {
+    "path": "firmware/README.md",
+    "size": 2007
+  },
+  {
+    "path": "firmware/partitions.csv",
+    "size": 731
+  },
+  {
+    "path": "firmware/sdkconfig.cloud.defaults",
+    "size": 2042
+  },
+  {
+    "path": "firmware/version.txt",
+    "size": 12
+  },
+  {
+    "path": "firmware/sdkconfig.defaults",
+    "size": 2617
+  },
+  {
+    "path": "firmware/dependencies.lock",
+    "size": 5178
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_cloud_lab_20260913/README.md",
+    "size": 2207
+  },
+  {
+    "path": "firmware/releases/v1.0.26/README.md",
+    "size": 1728
+  },
+  {
+    "path": "firmware/releases/v1.0.26/manifest.json",
+    "size": 710
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_bringup_20260913/README.md",
+    "size": 1255
+  },
+  {
+    "path": "firmware/releases/1.0.27-uk.1/英国SIM适配说明.md",
+    "size": 6951
+  },
+  {
+    "path": "firmware/releases/1.0.27-uk.1/host-tests.txt",
+    "size": 412
+  },
+  {
+    "path": "firmware/releases/1.0.27-uk.1/image-info.txt",
+    "size": 751
+  },
+  {
+    "path": "firmware/releases/1.0.27-uk.1/README.md",
+    "size": 1505
+  },
+  {
+    "path": "firmware/releases/1.0.27-uk.1/manifest.json",
+    "size": 1586
+  },
+  {
+    "path": "firmware/releases/1.0.27-uk.1/SHA256SUMS",
+    "size": 78
+  },
+  {
+    "path": "firmware/releases/v1.0.25/README.md",
+    "size": 650
+  },
+  {
+    "path": "firmware/releases/v1.0.25/manifest.json",
+    "size": 1742
+  },
+  {
+    "path": "firmware/releases/v1.0.24/README.md",
+    "size": 1821
+  },
+  {
+    "path": "firmware/releases/v1.0.24/manifest.json",
+    "size": 2099
+  },
+  {
+    "path": "firmware/tools/gen_board_h.py",
+    "size": 8986
+  },
+  {
+    "path": "firmware/tools/test-host.sh",
+    "size": 1877
+  },
+  {
+    "path": "firmware/tools/screenshot.py",
+    "size": 1467
+  },
+  {
+    "path": "firmware/tools/build-release.sh",
+    "size": 900
+  },
+  {
+    "path": "firmware/components/ui/CMakeLists.txt",
+    "size": 237
+  },
+  {
+    "path": "firmware/components/ui/ui_logic.h",
+    "size": 804
+  },
+  {
+    "path": "firmware/components/ui/idf_component.yml",
+    "size": 111
+  },
+  {
+    "path": "firmware/components/ui/ui_logic.c",
+    "size": 1526
+  },
+  {
+    "path": "firmware/components/ui/ui.c",
+    "size": 92625
+  },
+  {
+    "path": "firmware/components/ui/DESIGN.md",
+    "size": 5317
+  },
+  {
+    "path": "firmware/components/ui/include/ui.h",
+    "size": 9664
+  },
+  {
+    "path": "firmware/components/ui/tests/ui_logic_test.c",
+    "size": 2138
+  },
+  {
+    "path": "firmware/components/ui/tests/host/CMakeLists.txt",
+    "size": 1279
+  },
+  {
+    "path": "firmware/components/ui/tests/host/host.h",
+    "size": 1716
+  },
+  {
+    "path": "firmware/components/ui/tests/host/ui_check.c",
+    "size": 5696
+  },
+  {
+    "path": "firmware/components/ui/fonts/gen_fonts.sh",
+    "size": 1515
+  },
+  {
+    "path": "firmware/components/ui/fonts/font_num_44.c",
+    "size": 21778
+  },
+  {
+    "path": "firmware/components/ui/fonts/font_cn_24.c",
+    "size": 9343983
+  },
+  {
+    "path": "firmware/components/ui/fonts/LICENSE-OFL.txt",
+    "size": 4301
+  },
+  {
+    "path": "firmware/components/ui/fonts/font_cn_16.c",
+    "size": 5436198
+  },
+  {
+    "path": "firmware/components/board/CMakeLists.txt",
+    "size": 47
+  },
+  {
+    "path": "firmware/components/board/include/board.h",
+    "size": 5914
+  },
+  {
+    "path": "firmware/components/drv_power/CMakeLists.txt",
+    "size": 96
+  },
+  {
+    "path": "firmware/components/drv_power/drv_power.c",
+    "size": 2427
+  },
+  {
+    "path": "firmware/components/drv_power/include/drv_power.h",
+    "size": 1066
+  },
+  {
+    "path": "firmware/components/voice_cmd/CMakeLists.txt",
+    "size": 128
+  },
+  {
+    "path": "firmware/components/voice_cmd/idf_component.yml",
+    "size": 247
+  },
+  {
+    "path": "firmware/components/voice_cmd/voice_cmd.c",
+    "size": 2335
+  },
+  {
+    "path": "firmware/components/voice_cmd/include/voice_cmd.h",
+    "size": 852
+  },
+  {
+    "path": "firmware/components/drv_display/CMakeLists.txt",
+    "size": 178
+  },
+  {
+    "path": "firmware/components/drv_display/drv_display.c",
+    "size": 15807
+  },
+  {
+    "path": "firmware/components/drv_display/include/drv_display.h",
+    "size": 1516
+  },
+  {
+    "path": "firmware/components/drv_input/CMakeLists.txt",
+    "size": 98
+  },
+  {
+    "path": "firmware/components/drv_input/drv_input.c",
+    "size": 3572
+  },
+  {
+    "path": "firmware/components/drv_input/include/drv_input.h",
+    "size": 1007
+  },
+  {
+    "path": "firmware/components/app_cloud/cellular_profile.c",
+    "size": 7652
+  },
+  {
+    "path": "firmware/components/app_cloud/CMakeLists.txt",
+    "size": 486
+  },
+  {
+    "path": "firmware/components/app_cloud/idf_component.yml",
+    "size": 402
+  },
+  {
+    "path": "firmware/components/app_cloud/ota.c",
+    "size": 7455
+  },
+  {
+    "path": "firmware/components/app_cloud/cellular_settings.c",
+    "size": 4012
+  },
+  {
+    "path": "firmware/components/app_cloud/runtime_diagnostics.c",
+    "size": 3329
+  },
+  {
+    "path": "firmware/components/app_cloud/app_cloud.c",
+    "size": 163944
+  },
+  {
+    "path": "firmware/components/app_cloud/Kconfig.projbuild",
+    "size": 2200
+  },
+  {
+    "path": "firmware/components/app_cloud/include/diagnostic_record.h",
+    "size": 1086
+  },
+  {
+    "path": "firmware/components/app_cloud/include/app_cloud.h",
+    "size": 40
+  },
+  {
+    "path": "firmware/components/app_cloud/include/cellular_profile.h",
+    "size": 1603
+  },
+  {
+    "path": "firmware/components/app_cloud/include/runtime_protocol.h",
+    "size": 1671
+  },
+  {
+    "path": "firmware/components/app_cloud/include/runtime_diagnostics.h",
+    "size": 807
+  },
+  {
+    "path": "firmware/components/app_cloud/include/cellular_settings.h",
+    "size": 261
+  },
+  {
+    "path": "firmware/components/app_cloud/include/ota.h",
+    "size": 1400
+  },
+  {
+    "path": "firmware/components/app_cloud/include/command_runtime.h",
+    "size": 899
+  },
+  {
+    "path": "firmware/components/app_cloud/tests/cellular_profile_test.c",
+    "size": 5330
+  },
+  {
+    "path": "firmware/components/app_cloud/tests/cellular_settings_test.c",
+    "size": 3850
+  },
+  {
+    "path": "firmware/components/app_cloud/tests/runtime_protocol_test.c",
+    "size": 2847
+  },
+  {
+    "path": "firmware/components/app_cloud/tests/host/nvs.h",
+    "size": 467
+  },
+  {
+    "path": "firmware/components/app_cloud/tests/host/esp_log.h",
+    "size": 268
+  },
+  {
+    "path": "firmware/components/app_cloud/tests/host/esp_err.h",
+    "size": 151
+  },
+  {
+    "path": "firmware/components/drv_feedback/CMakeLists.txt",
+    "size": 106
+  },
+  {
+    "path": "firmware/components/drv_feedback/drv_feedback.c",
+    "size": 6181
+  },
+  {
+    "path": "firmware/components/drv_feedback/include/drv_feedback.h",
+    "size": 1599
+  },
+  {
+    "path": "firmware/components/drv_modem/CMakeLists.txt",
+    "size": 98
+  },
+  {
+    "path": "firmware/components/drv_modem/drv_modem.c",
+    "size": 13941
+  },
+  {
+    "path": "firmware/components/drv_modem/include/drv_modem.h",
+    "size": 2626
+  },
+  {
+    "path": "firmware/components/drv_audio/CMakeLists.txt",
+    "size": 96
+  },
+  {
+    "path": "firmware/components/drv_audio/drv_audio.c",
+    "size": 1772
+  },
+  {
+    "path": "firmware/components/drv_audio/include/drv_audio.h",
+    "size": 1291
+  },
+  {
+    "path": "firmware/components/drv_storage/CMakeLists.txt",
+    "size": 133
+  },
+  {
+    "path": "firmware/components/drv_storage/drv_storage.c",
+    "size": 2390
+  },
+  {
+    "path": "firmware/components/drv_storage/include/drv_storage.h",
+    "size": 775
+  },
+  {
+    "path": "firmware/components/codec_opus/CMakeLists.txt",
+    "size": 138
+  },
+  {
+    "path": "firmware/components/codec_opus/idf_component.yml",
+    "size": 305
+  },
+  {
+    "path": "firmware/components/codec_opus/codec_opus.c",
+    "size": 10838
+  },
+  {
+    "path": "firmware/components/codec_opus/include/codec_opus.h",
+    "size": 1224
+  },
+  {
+    "path": "firmware/main/CMakeLists.txt",
+    "size": 267
+  },
+  {
+    "path": "firmware/main/bringup.c",
+    "size": 6718
+  },
+  {
+    "path": "firmware/main/main.c",
+    "size": 4108
+  },
+  {
+    "path": "docs/31_VoxMind_v9英国SIM适配_20261103.md",
+    "size": 6951
+  },
+  {
+    "path": "docs/22_明天实板首测_从上电到云端闭环.md",
+    "size": 3567
+  },
+  {
+    "path": "docs/21_实现与上线计划.md",
+    "size": 15231
+  },
+  {
+    "path": "docs/28_VoxMind屏幕与链路审计_20261010.md",
+    "size": 13255
+  },
+  {
+    "path": "docs/25_开放接口.md",
+    "size": 5436
+  },
+  {
+    "path": "docs/24_产品与性能优化提案_20260920.md",
+    "size": 14836
+  },
+  {
+    "path": "docs/29_VoxMind_1.0.24深度检查与优化_20261010.md",
+    "size": 6726
+  },
+  {
+    "path": "docs/12_云端架构.md",
+    "size": 6359
+  },
+  {
+    "path": "docs/10_硬件接线真值表.md",
+    "size": 10292
+  },
+  {
+    "path": "docs/20_VoxMind_开放平台产品与技术架构_v1.md",
+    "size": 19977
+  },
+  {
+    "path": "docs/13_首板Bringup清单.md",
+    "size": 6872
+  },
+  {
+    "path": "docs/27_VoxMind低成本物联网开关与农场扩展_20261004.md",
+    "size": 31587
+  },
+  {
+    "path": "docs/23_实板屏幕排查_20260914.md",
+    "size": 2198
+  },
+  {
+    "path": "docs/26_结构轻量化与拓竹A1采购建议_20260927.md",
+    "size": 9787
+  },
+  {
+    "path": "docs/30_VoxMind_1.0.25稳定性与指令延迟修复_20261011.md",
+    "size": 6990
+  },
+  {
+    "path": "docs/design/device-screen-final.png",
+    "size": 416562
+  },
+  {
+    "path": "docs/design/device-screen-options.html",
+    "size": 36752
+  },
+  {
+    "path": "交付/首板上机手册_v8.html",
+    "size": 29367
+  },
+  {
+    "path": "交付/VoxMind_打样到开发_全流程指导.md",
+    "size": 20015
+  },
+  {
+    "path": "交付/VoxMind_v9_到货采购装配与开发完全指南_20260830.md",
+    "size": 18955
+  },
+  {
+    "path": "交付/实板标注/VoxMind_v9_正面主要元件标注.png",
+    "size": 1667189
+  },
+  {
+    "path": "交付/实板标注/VoxMind_v9_反面主要元件标注.png",
+    "size": 1582718
+  },
+  {
+    "path": "交付/实板标注/VoxMind_v9_正面主要元件标注_v2.png",
+    "size": 1678800
+  },
+  {
+    "path": "iot-switch/README.md",
+    "size": 1238
+  },
+  {
+    "path": "iot-switch/esphome/vox-switch-4.yaml",
+    "size": 2333
+  },
+  {
+    "path": "iot-switch/esphome/vox-switch-1.yaml",
+    "size": 1452
+  },
+  {
+    "path": "iot-switch/esphome/secrets.example.yaml",
+    "size": 260
+  },
+  {
+    "path": "制造文件_20260826/VoxMind_EVT_V1_BOM.xlsx",
+    "size": 10427
+  },
+  {
+    "path": "制造文件_20260826/VoxMind_EVT_V1_AltiumDesigner.zip",
+    "size": 815230
+  },
+  {
+    "path": "制造文件_20260826/VoxMind_EVT_V1_PickAndPlace.xlsx",
+    "size": 16863
+  },
+  {
+    "path": "制造文件_20260826/VoxMind_EVT_V1_PCB.pdf",
+    "size": 1565984
+  },
+  {
+    "path": "制造文件_20260826/VoxMind_EVT_V1_Gerber.zip",
+    "size": 365089
+  },
+  {
+    "path": "制造文件_v4_20260826/VoxMind_EVT_V1_v4_PickAndPlace.xlsx",
+    "size": 16886
+  },
+  {
+    "path": "制造文件_v4_20260826/VoxMind_EVT_V1_v4_BOM.xlsx",
+    "size": 10433
+  },
+  {
+    "path": "制造文件_v4_20260826/VoxMind_EVT_V1_v4_AltiumDesigner.zip",
+    "size": 870151
+  },
+  {
+    "path": "制造文件_v4_20260826/VoxMind_EVT_V1_v4_Gerber.zip",
+    "size": 388003
+  },
+  {
+    "path": "制造文件_v4_20260826/飞线说明.md",
+    "size": 4197
+  },
+  {
+    "path": "制造文件_v4_20260826/VoxMind_EVT_V1_v4_PCB.pdf",
+    "size": 1734474
+  },
+  {
+    "path": "制造文件_v5_20260826/VoxMind_EVT_V1_v5_Gerber.zip",
+    "size": 387740
+  },
+  {
+    "path": "制造文件_v5_20260826/VoxMind_EVT_V1_v5_BOM.xlsx",
+    "size": 10427
+  },
+  {
+    "path": "制造文件_v5_20260826/VoxMind_EVT_V1_v5_AltiumDesigner.zip",
+    "size": 868405
+  },
+  {
+    "path": "制造文件_v5_20260826/VoxMind_EVT_V1_v5_PickAndPlace.zip",
+    "size": 16880
+  },
+  {
+    "path": "制造文件_v5_20260826/飞线说明_v5.md",
+    "size": 5396
+  },
+  {
+    "path": "制造文件_v5_20260826/VoxMind_EVT_V1_v5_PCB.pdf",
+    "size": 1742536
+  },
+  {
+    "path": "制造文件_v6_20260827/飞线说明_v6.md",
+    "size": 5606
+  },
+  {
+    "path": "制造文件_v6_20260827/VoxMind_EVT_V1_v6_AltiumDesigner.zip",
+    "size": 868340
+  },
+  {
+    "path": "制造文件_v6_20260827/VoxMind_EVT_V1_v6_PickAndPlace.zip",
+    "size": 16881
+  },
+  {
+    "path": "制造文件_v6_20260827/VoxMind_EVT_V1_v6_BOM.xlsx",
+    "size": 10428
+  },
+  {
+    "path": "制造文件_v6_20260827/VoxMind_EVT_V1_v6_PCB.pdf",
+    "size": 1742296
+  },
+  {
+    "path": "制造文件_v6_20260827/VoxMind_EVT_V1_v6_Gerber.zip",
+    "size": 387683
+  },
+  {
+    "path": "制造文件_v7_20260828/VoxMind_EVT_V1_v7_PickAndPlace.zip",
+    "size": 16864
+  },
+  {
+    "path": "制造文件_v7_20260828/VoxMind_EVT_V1_v7_Gerber.zip",
+    "size": 428397
+  },
+  {
+    "path": "制造文件_v7_20260828/VoxMind_EVT_V1_v7_PCB.pdf",
+    "size": 1729498
+  },
+  {
+    "path": "制造文件_v7_20260828/VoxMind_EVT_V1_v7_BOM.xlsx",
+    "size": 10406
+  },
+  {
+    "path": "制造文件_v7_20260828/VoxMind_EVT_V1_v7_AltiumDesigner.zip",
+    "size": 950790
+  },
+  {
+    "path": "制造文件_v7_20260828/README_v7.md",
+    "size": 2896
+  },
+  {
+    "path": "制造文件_v8_20260829/VoxMind_EVT_V1_v8_PickAndPlace.zip",
+    "size": 15832
+  },
+  {
+    "path": "制造文件_v8_20260829/VoxMind_EVT_V1_v8_Gerber.zip",
+    "size": 428477
+  },
+  {
+    "path": "制造文件_v8_20260829/VoxMind_EVT_V1_v8_BOM.xlsx",
+    "size": 10487
+  },
+  {
+    "path": "制造文件_v8_20260829/README_v8.md",
+    "size": 5419
+  },
+  {
+    "path": "制造文件_v9_20260830/VoxMind_EVT_V1_v9_PickAndPlace.zip",
+    "size": 16338
+  },
+  {
+    "path": "制造文件_v9_20260830/VoxMind_EVT_V1_v9_BOM.xlsx",
+    "size": 10584
+  },
+  {
+    "path": "制造文件_v9_20260830/README_v9.md",
+    "size": 1644
+  },
+  {
+    "path": "制造文件_v9_20260830/VoxMind_EVT_V1_v9_Gerber.zip",
+    "size": 454939
+  },
+  {
+    "path": "结构设计_v1_20260830/mesh_validation.json",
+    "size": 6327
+  },
+  {
+    "path": "结构设计_v1_20260830/render_preview.py",
+    "size": 3356
+  },
+  {
+    "path": "结构设计_v1_20260830/voxmind_enclosure.py",
+    "size": 19160
+  },
+  {
+    "path": "结构设计_v1_20260830/verify_enclosure.py",
+    "size": 5825
+  },
+  {
+    "path": "结构设计_v1_20260830/requirements-cad.txt",
+    "size": 74
+  },
+  {
+    "path": "结构设计_v1_20260830/README_外壳下单与装配.md",
+    "size": 10031
+  },
+  {
+    "path": "结构设计_v1_20260830/打印件BOM.csv",
+    "size": 866
+  },
+  {
+    "path": "结构设计_v1_20260830/VoxMind_外壳打印件_v1.2_请解压逐件上传.zip",
+    "size": 413274
+  },
+  {
+    "path": "结构设计_v1_20260830/VoxMind_外壳打印件_v1.1_请解压逐件上传.zip",
+    "size": 421894
+  },
+  {
+    "path": "结构设计_v1_20260830/VoxMind_外壳打印件_v1_请解压逐件上传.zip",
+    "size": 422953
+  },
+  {
+    "path": "结构设计_v1_20260830/销售前结构验证清单.md",
+    "size": 3985
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_bumper_TPU95A.step",
+    "size": 92473
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_display_gasket_TPU.step",
+    "size": 61639
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_enclosure_exploded.step",
+    "size": 1439601
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_battery_503450_mockup.step",
+    "size": 32062
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_top_PA12.step",
+    "size": 633816
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_bottom_PA12.step",
+    "size": 632992
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/Waveshare_2inch_display_rigid_mockup.step",
+    "size": 62947
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_button_BACK_PA12.step",
+    "size": 27666
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_enclosure_complete_assembly.step",
+    "size": 1597259
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_button_REC_PA12.step",
+    "size": 17909
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_PCB_mechanical_mockup.step",
+    "size": 107331
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_lightpipe_clear_resin.step",
+    "size": 14747
+  },
+  {
+    "path": "结构设计_v1_20260830/STEP/VoxMind_button_OK_PA12.step",
+    "size": 13620
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/VoxMind_button_BACK_PA12.stl",
+    "size": 94684
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/VoxMind_button_REC_PA12.stl",
+    "size": 94684
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/VoxMind_top_PA12.stl",
+    "size": 575884
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/VoxMind_display_gasket_TPU.stl",
+    "size": 65684
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/VoxMind_lightpipe_clear_resin.stl",
+    "size": 94684
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/Waveshare_2inch_display_rigid_mockup.stl",
+    "size": 65484
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/VoxMind_button_OK_PA12.stl",
+    "size": 94684
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/VoxMind_bumper_TPU95A.stl",
+    "size": 67684
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/VoxMind_bottom_PA12.stl",
+    "size": 711184
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/VoxMind_battery_503450_mockup.stl",
+    "size": 32684
+  },
+  {
+    "path": "结构设计_v1_20260830/STL/VoxMind_PCB_mechanical_mockup.stl",
+    "size": 68284
+  },
+  {
+    "path": "结构设计_v1_20260830/预览/VoxMind_enclosure_closed.png",
+    "size": 90867
+  },
+  {
+    "path": "结构设计_v1_20260830/预览/VoxMind_enclosure_exploded.png",
+    "size": 167314
+  },
+  {
+    "path": "结构设计_v1_20260830/预览/display_top.svg",
+    "size": 945526
+  },
+  {
+    "path": "结构设计_v1_20260830/预览/display_bottom.svg",
+    "size": 15057
+  },
+  {
+    "path": "结构设计_v1_20260830/预览/display_front.svg",
+    "size": 216194
+  },
+  {
+    "path": "结构设计_v1_20260830/预览/display_side.svg",
+    "size": 90705
+  },
+  {
+    "path": "结构设计_v2_20260928/build.py",
+    "size": 13396
+  },
+  {
+    "path": "结构设计_v2_20260928/make_six_part_plate.py",
+    "size": 3890
+  },
+  {
+    "path": "结构设计_v2_20260928/调整核对_20260929.md",
+    "size": 1507
+  },
+  {
+    "path": "结构设计_v2_20260928/make_printed_fasteners.py",
+    "size": 5561
+  },
+  {
+    "path": "结构设计_v2_20260928/make_full_trial.py",
+    "size": 2924
+  },
+  {
+    "path": "结构设计_v2_20260928/validation.json",
+    "size": 3560
+  },
+  {
+    "path": "结构设计_v2_20260928/prepare_review.py",
+    "size": 2684
+  },
+  {
+    "path": "结构设计_v2_20260928/VoxMind_V2_A1_REVIEW_NOT_PRINTED.3mf",
+    "size": 153199
+  },
+  {
+    "path": "结构设计_v2_20260928/make_button_phone_case_plate.py",
+    "size": 5874
+  },
+  {
+    "path": "结构设计_v2_20260928/README_先审阅再打印.md",
+    "size": 4373
+  },
+  {
+    "path": "结构设计_v2_20260928/make_fit_test.py",
+    "size": 2492
+  },
+  {
+    "path": "结构设计_v2_20260928/make_internal_button_trial.py",
+    "size": 3118
+  },
+  {
+    "path": "结构设计_v2_20260928/make_final_buttons_13.py",
+    "size": 2578
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_BACK_stem_16.step",
+    "size": 29076
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/02_front_screen_frame.step",
+    "size": 273036
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_OK_stem_16.step",
+    "size": 14763
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_REC_stem_16.step",
+    "size": 19271
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_REC_stem_15.step",
+    "size": 19271
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_BACK_stem_12.step",
+    "size": 33781
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_OK_stem_13.step",
+    "size": 19444
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_OK_stem_12.step",
+    "size": 19443
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_BACK_stem_13.step",
+    "size": 33782
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/REVIEW_assembly.step",
+    "size": 812107
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/VoxMind_printed_fastener_19mm.step",
+    "size": 214875
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_REC_stem_13.step",
+    "size": 23967
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_OK_stem_15.step",
+    "size": 14763
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/01_rear_fit_prototype.step",
+    "size": 310080
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/VoxMind_button_inside_loaded_stem_8p6_FLAT_BOTTOM.step",
+    "size": 16821
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/00_screen_fit_coupon.step",
+    "size": 92468
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/VoxMind_button_inside_loaded_stem_8p6.step",
+    "size": 19440
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_BACK_stem_15.step",
+    "size": 29076
+  },
+  {
+    "path": "结构设计_v2_20260928/STEP/key_REC_stem_12.step",
+    "size": 23966
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/01_rear_fit_prototype.stl",
+    "size": 201084
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_BACK_stem_12.stl",
+    "size": 84684
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_BACK_stem_13.stl",
+    "size": 84684
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/02_front_screen_frame.stl",
+    "size": 292084
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_OK_stem_12.stl",
+    "size": 83884
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_OK_stem_13.stl",
+    "size": 83884
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_BACK_stem_15.stl",
+    "size": 51084
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_OK_stem_16.stl",
+    "size": 50284
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/VoxMind_printed_fastener_19mm.stl",
+    "size": 1784084
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/VoxMind_button_inside_loaded_stem_8p6.stl",
+    "size": 83884
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_BACK_stem_16.stl",
+    "size": 51084
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_OK_stem_15.stl",
+    "size": 50284
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/VoxMind_button_inside_loaded_stem_8p6_FLAT_BOTTOM.stl",
+    "size": 67084
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_REC_stem_13.stl",
+    "size": 100684
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_REC_stem_12.stl",
+    "size": 100684
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/00_screen_fit_coupon.stl",
+    "size": 52884
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_REC_stem_16.stl",
+    "size": 67084
+  },
+  {
+    "path": "结构设计_v2_20260928/STL/key_REC_stem_15.stl",
+    "size": 67084
+  },
+  {
+    "path": "结构设计_v2_20260928/preview/assembly.png",
+    "size": 197504
+  },
+  {
+    "path": "结构设计_v2_20260928/preview/support_strategy_v3.png",
+    "size": 69855
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/plate_2.gcode",
+    "size": 378527
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/buttons_FINAL_13mm_result.json",
+    "size": 3412
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/承托台位置核对_俯视图.png",
+    "size": 90424
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/旧版_禁止打印_三按钮_SOURCE_VoxMind_V2_fit_test.3mf",
+    "size": 34576
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v4_SlideFit_CASE_STAND_ONLY_PLA_A1_REVIEW.3mf",
+    "size": 2586992
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_2x_BUTTON_13mm_4x_FASTENER_19mm_SOURCE.3mf",
+    "size": 1032433
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/不要打印旧版.txt",
+    "size": 548
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/internal_button_trial_validation.json",
+    "size": 792
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_FLAT_button_OnePlus_v3_case_stand_PLA_SOURCE.3mf",
+    "size": 1001394
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/printed_fastener_validation.json",
+    "size": 647
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_3_FLAT_buttons_OnePlus_v4_slidefit_PLA_SOURCE.3mf",
+    "size": 1015914
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v4_slidefit_case_and_stand_ONLY_PLA_SOURCE.3mf",
+    "size": 977738
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_FLAT_Button_OnePlus_v3_UNCHANGED_CASE_2mmCoreStand_PLA_A1_REVIEW.3mf",
+    "size": 2683592
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v6_OPEN_RAIL_CASE_AND_STAND_PLA_A1_REVIEW.3mf",
+    "size": 2731349
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/button_phone_case_plate_validation.json",
+    "size": 1458
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_3_FLAT_buttons_OnePlus_v3_Neo_and_sides_corrected_PLA_SOURCE.3mf",
+    "size": 1022893
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/旧版_禁止打印_错误前后支撑_VoxMind_V2_full_trial_OFFICIAL_A1_20260929.3mf",
+    "size": 1579870
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_buttons_12_13_ANTIWOBBLE_SOURCE.3mf",
+    "size": 29403
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/plate_1.gcode",
+    "size": 5332666
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v5_OPEN_RAIL_CASE_AND_STAND_PLA_A1_REVIEW.3mf",
+    "size": 2715231
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/打印说明_先试装后整壳.md",
+    "size": 2178
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_3Buttons_OnePlusCase_Stand_v4_SlideFit_PLA_A1_REVIEW.3mf",
+    "size": 2841763
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/旧版_禁止打印_错误后壳支撑_VoxMind_V2_rear_PCB_fit_OFFICIAL_A1_20260929.3mf",
+    "size": 341725
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/process_v3_backdown.json",
+    "size": 6716
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/buttons_12_13_result.json",
+    "size": 2914
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v5_open_rail_case_and_stand_ONLY_PLA_SOURCE.3mf",
+    "size": 973587
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_buttons_15_16_SOURCE.3mf",
+    "size": 21010
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_4x_PRINTED_FASTENER_19mm_OFFICIAL_A1_20260929.3mf",
+    "size": 2274999
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/旧版_不要打印_支架入口封闭_3Buttons_NeoAndSidesCorrected.3mf",
+    "size": 2842876
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_buttons_FINAL_13mm_WIDEBODY_SOURCE.3mf",
+    "size": 60042
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/rail_fit_coupon_plate_validation.json",
+    "size": 1029
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_front_rear_buttons_15_16_OFFICIAL_A1_20260929.3mf",
+    "size": 1026769
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/旧版_不要打印_Neo方向未修正_3Buttons_OnePlusCase_Stand_PLA_A1.3mf",
+    "size": 2841058
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_InsideButton_OnePlusCase_Stand_PLA_A1_READY.3mf",
+    "size": 1048081
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/printed_fasteners_plate_1.gcode",
+    "size": 1080244
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/three_buttons_phone_case_plate_validation.json",
+    "size": 2331
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v6_rail_fit_COUPON_and_stand_PLA_SOURCE.3mf",
+    "size": 19897
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_3_FLAT_buttons_OnePlus_v3_Neo_corrected_PLA_SOURCE.3mf",
+    "size": 1023075
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/旧版_禁止打印_自定义GCODE_VoxMind_V2_fit_test_v2_sliced.3mf",
+    "size": 191533
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/旧版_不要打印_左右开孔反了_3Buttons_NeoCorrected.3mf",
+    "size": 2843994
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/旧版_禁止打印_三按钮_VoxMind_V2_buttons15_OFFICIAL_A1_20260929.3mf",
+    "size": 204576
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/旧版_不要打印_Neo方向未修正_3Buttons_SOURCE.3mf",
+    "size": 1022984
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/six_part_plate_validation.json",
+    "size": 2389
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/旧版_禁止打印_自定义GCODE_VoxMind_V2_full_trial_v2_sliced.3mf",
+    "size": 241498
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v5_RAIL_FIT_COUPON_AND_STAND_PLA_A1_REVIEW.3mf",
+    "size": 459084
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/buttons_12_13_plate_1.gcode",
+    "size": 684525
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_buttons_12_13_ANTIWOBBLE_OFFICIAL_A1_20260929.3mf",
+    "size": 171875
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v6_先读我.md",
+    "size": 1705
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_FLAT_Button_OnePlus_v3_2mmStand_PLA_A1_READY_CORRECT.3mf",
+    "size": 1030784
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_FLAT_button_OnePlus_v3_case_2mm_core_stand_PLA_SOURCE.3mf",
+    "size": 997611
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/flatten_presets.py",
+    "size": 2591
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_FLAT_Button_OnePlus_v3_2mmStand_PLA_A1_READY.3mf",
+    "size": 1047548
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_button_OnePlus_case_stand_PLA_SOURCE.3mf",
+    "size": 1015592
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v6_RAIL_FIT_COUPON_AND_STAND_PLA_A1_REVIEW.3mf",
+    "size": 459077
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/filament_flat.json",
+    "size": 6580
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/machine_flat.json",
+    "size": 28326
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_4x_PRINTED_FASTENER_19mm_SOURCE.3mf",
+    "size": 2665308
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/printed_fasteners_result.json",
+    "size": 3803
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/case_and_stand_only_plate_validation.json",
+    "size": 1025
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/buttons_FINAL_13mm_plate_1.gcode",
+    "size": 895311
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_FLAT_Button_OnePlus_v3_2mmStand_PLA_A1_READY_SLICED.3mf",
+    "size": 2818903
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/12_13mm防摆按键_试装说明.md",
+    "size": 1373
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v6_open_rail_case_and_stand_ONLY_PLA_SOURCE.3mf",
+    "size": 972288
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/OnePlus_Ace2Pro_v5_rail_fit_COUPON_and_stand_PLA_SOURCE.3mf",
+    "size": 19895
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_front_rear_buttons_15_16_SOURCE.3mf",
+    "size": 141848
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_buttons_FINAL_13mm_WIDEBODY_OFFICIAL_A1_20260929.3mf",
+    "size": 47909
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_buttons_15_16_OFFICIAL_A1_20260929.3mf",
+    "size": 146835
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/VoxMind_V2_rear_only_OFFICIAL_A1_20260929.3mf",
+    "size": 346628
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/process_flat.json",
+    "size": 6707
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/pla_v3_backdown_slice_2mm_b/plate_1.gcode",
+    "size": 6164197
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/slidefit_review/plate_1_1.png",
+    "size": 11405
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/pla_v3_backdown_slice_2mm_buildplate/plate_1.gcode",
+    "size": 6077123
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/side_opening_review_right/bambu_final_screen.png",
+    "size": 698848
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/side_opening_review_right/bambu_final_screen2.png",
+    "size": 695934
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/side_opening_review_right/current_screen.png",
+    "size": 571686
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/side_opening_review_right/plate_1_3.png",
+    "size": 2399
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/plate_1.gcode",
+    "size": 5688312
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/切片验证.json",
+    "size": 1326
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/buttons15/plate_1.gcode",
+    "size": 873366
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/full_current/plate_1.gcode",
+    "size": 3579006
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/full_current/cli.log",
+    "size": 525
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/rear_only/plate_1.gcode",
+    "size": 1648507
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/rear/plate_1.gcode",
+    "size": 1623663
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/buttons_15_16/plate_1.gcode",
+    "size": 661451
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/six_part_slice/plate_1.gcode",
+    "size": 1547495
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/neo_orientation_review/bambu_current_screen.png",
+    "size": 661414
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/neo_orientation_review/physical_back_upright.png",
+    "size": 18060
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/neo_orientation_review/plate_1_1.png",
+    "size": 11406
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/neo_orientation_review/neo_detail.png",
+    "size": 42024
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/pla_three_part_slice/plate_1.gcode",
+    "size": 1776043
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/side_opening_review_left/plate_1_2.png",
+    "size": 2426
+  },
+  {
+    "path": "装配指导/VoxMind_外壳装配指导_修正版.png",
+    "size": 2420549
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_06_KiCad说明与导入嘉立创.md",
+    "size": 7989
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_PCB_v3_布线收尾_20260825.md",
+    "size": 11137
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_PCB_现状与后续_20260825.md",
+    "size": 8947
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_设计基线.md",
+    "size": 6774
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_02_硬件方案V2_带屏蜂窝版.md",
+    "size": 17905
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_嘉立创EDA_进行中.eprj2",
+    "size": 679936
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_PCB_v3_改板记录_20260825.md",
+    "size": 5401
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_原理图连接表.md",
+    "size": 6558
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_03_嘉立创EDA落地指导.md",
+    "size": 10420
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_交接说明书_HANDOFF.md",
+    "size": 10713
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_00_需求总览与开发路线.md",
+    "size": 11552
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_04_固件与驱动架构.md",
+    "size": 12058
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_07_外壳制造与产品认证.md",
+    "size": 8526
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_核心BOM.csv",
+    "size": 1715
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_05_云端与飞书协同.md",
+    "size": 9995
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_01_产品原型与场景设计.md",
+    "size": 11481
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_00b_产品需求_v3_20260825.md",
+    "size": 11831
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_pre_full_design_20260824_1705.eprj2",
+    "size": 679936
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_PCB_布线进展_20260825.md",
+    "size": 14620
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_KiCad/VoxMind_schematic.pdf",
+    "size": 40554
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_KiCad/VoxMind.kicad_sch",
+    "size": 9263
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_KiCad/VoxMind.kicad_pro",
+    "size": 1380
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_KiCad/VoxMind_erc.rpt",
+    "size": 357
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_KiCad/VoxMind.kicad_sym",
+    "size": 14352
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_KiCad/VoxMind.kicad_prl",
+    "size": 2294
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_KiCad/sym-lib-table",
+    "size": 151
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_KiCad/VoxMind.kicad_pcb",
+    "size": 2052
+  },
+  {
+    "path": "VoxMind_EVT_V1_当前设计.eprj2",
+    "size": 33923072
+  },
+  {
+    "path": "交接文件_20260826.md",
+    "size": 28040
+  },
+  {
+    "path": "交接文件_20260827.md",
+    "size": 36750
+  },
+  {
+    "path": "交接文件_20260829.md",
+    "size": 17667
+  },
+  {
+    "path": "交接文件_20261002.md",
+    "size": 19976
+  },
+  {
+    "path": "VoxMind_自动广告视频方案与宣传规划_20261004.md",
+    "size": 8362
+  }
+]

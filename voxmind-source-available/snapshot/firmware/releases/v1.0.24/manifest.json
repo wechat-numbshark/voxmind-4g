@@ -1,0 +1,50 @@
+{
+  "version": "1.0.24",
+  "project": "voxmind",
+  "target": "ESP32-S3 / EVT PCB1 cloud",
+  "idfVersion": "v5.5.1",
+  "builtAtLocal": "2026-10-10T12:03:06+08:00",
+  "firmwareSourceCommit": "2443ddf7b248a09eebe73e76d111c76400736763",
+  "cloudSourceCommit": "c8ec202f9f64d511899d4e21e98bd61ac5d7910f",
+  "integrationBaselineCommit": "49c34f87",
+  "binaryPath": "firmware/releases/build/1.0.24/voxmind.bin",
+  "byteLength": 4036976,
+  "sha256": "a0cafa828f5b084dd8e7c844688c3a1a26057be3260ef689eb5b34b17f0088ba",
+  "releaseId": null,
+  "uploadedAt": "2026-10-10T08:38:09.949Z",
+  "rollout": "devices",
+  "deviceIds": ["demo-voxmind-not-a-real-device"],
+  "verification": {
+    "cloudTypecheck": "passed",
+    "cloudProductionBuild": "passed",
+    "cloudTestsPassed": 211,
+    "cloudTestsSkipped": 1,
+    "isolatedPostgresCheck": "passed: empty migration, 24-way atomic claim, unknown outcome, expiry, stale execution recovery",
+    "firmwareSanitizers": "passed: ASan and UBSan logic/protocol suites",
+    "realLvglHostCheck": "passed: bounds, papercut, paused receipts, stale swipe, rejected callback, long reminder",
+    "esptoolImageValidation": "passed",
+    "productionReady": true,
+    "productionContainerHealthy": true,
+    "deployedSourceHashesMatch": true,
+    "legacyFeed": {"status": 200, "bytes": 1531, "receipts": 4, "timeline": 8},
+    "protocol2Feed": {"status": 200, "bytes": 1351, "receipts": 4, "timeline": 8},
+    "physicalVisualInspection": "pending user photo or UART screenshot",
+    "physicalControlTest": "not triggered during this release"
+  },
+  "deviceEvidence": {
+    "firmware": "1.0.24",
+    "otaState": "done",
+    "otaProgressPct": 100,
+    "otaError": null,
+    "otaReleaseId": null,
+    "lastSeenAt": "2026-10-10T08:48:10.728Z",
+    "otaUpdatedAt": "2026-10-10T08:48:10.730Z",
+    "batteryPct": 87,
+    "chargingReported": true
+  },
+  "rollback": {
+    "bootloaderRollbackEnabled": true,
+    "serverBackupDirectory": "/opt/voxmind/backups/release-1.0.24",
+    "previousApiImage": "voxmind-api:pre-1.0.24"
+  }
+}

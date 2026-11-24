@@ -1,0 +1,8 @@
+## IDF Component Manager Manifest File
+##
+## Espressif 官方预编译 Opus 编码器（源码不开放，二进制按 target 分发，
+## License 只允许配合 Espressif 自家芯片使用——ESP32-S3 满足条件）。
+dependencies:
+  idf: '>=4.4'
+  espressif/esp_audio_codec:
+    version: "^2.4.1"

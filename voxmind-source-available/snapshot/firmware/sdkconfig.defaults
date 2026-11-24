@@ -1,0 +1,46 @@
+# ── 芯片与模组 ────────────────────────────────────────────
+CONFIG_IDF_TARGET="esp32s3"
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_FATFS_LFN_HEAP=y
+CONFIG_FATFS_MAX_LFN=255
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# ── PSRAM：N16R8 是八线(octal)，选错模式会开不起来 ──────────
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y
+CONFIG_SPIRAM_SPEED_80M=y
+CONFIG_SPIRAM_USE_MALLOC=y
+# Opus 编码和音频缓冲都放 PSRAM，内部 RAM 留给协议栈
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=4096
+
+# ── 功耗：待机要进深睡眠，目标 ~10µA ────────────────────────
+CONFIG_PM_ENABLE=y
+CONFIG_FREERTOS_USE_TICKLESS_IDLE=y
+CONFIG_ESP_SLEEP_POWER_DOWN_FLASH=y
+
+# ── 原生 USB（GPIO19/20），用于免拆机拷录音 + 串口日志 ───────
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+
+# ── 日志 ────────────────────────────────────────────────
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
+# PSRAM 里的画面缓冲要让 SPI DMA 直接读，地址必须按 cache 行(64B)对齐；
+# 不对齐时驱动每发一块都要临时借内部 RAM 中转，内存紧时会丢块（spi transmit color failed）
+CONFIG_LV_DRAW_BUF_ALIGN=64
+
+# 之前一直跑在 IDF 默认的 160MHz——不是刻意省电，是没改过。界面整屏合成是纯软件渲染，
+# 直接按主频缩放。录音、上传实测都不受影响。
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+
+# ★ 下面这几项都试过，实测有 4G 负载时会把界面搞冻住或出空白横条，已全部退回，别再打开：
+#   CONFIG_LV_DEF_REFR_PERIOD=16          刷新更频繁，和传屏抢得更凶
+#   CONFIG_ESP32S3_INSTRUCTION_CACHE_32KB 单帧 59→45ms，但要从内部 RAM 割 16KB
+#   CONFIG_ESP32S3_DATA_CACHE_LINE_64B    改了 PSRAM 访问粒度
+#   CONFIG_MBEDTLS_DYNAMIC_BUFFER         为补上面那 16KB 才开的，一起退
+
+# 2026-10-04：串口提到 460800 后日志一串 pppos_input_tcpip failed（tcpip 收件箱 32 格满了丢包）。
+# 收件箱只存指针，加到 64 几乎不占内存，加了以后不再报。
+# TCP 窗口试过 4→8 个包：OTA 还是 7KB/s（瓶颈是 4G 到首尔服务器这段跨境链路，不在设备），
+# 反而升级时内部 RAM 最低掉到 11.7KB，所以窗口保持默认。
+CONFIG_LWIP_TCPIP_RECVMBOX_SIZE=64

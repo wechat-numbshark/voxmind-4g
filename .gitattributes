@@ -1,0 +1,10 @@
+*.eprj2 binary
+*.onnx binary
+*.pcm binary
+*.pdf binary
+*.xlsx binary
+*.zip binary
+*.png binary
+*.step binary
+*.stl binary
+*.svg binary

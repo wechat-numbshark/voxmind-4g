@@ -1,0 +1,9 @@
+层级,零件,文件,数量/台,材料,工艺,首件要求
+必选,上壳,STL/VoxMind_top_PA12.stl,1,PA12S或PA12,MJF或SLS,染黑并试装屏幕/按键/声学网
+必选,底壳,STL/VoxMind_bottom_PA12.stl,1,PA12S或PA12,MJF或SLS,染黑并试装PCB/电池/螺钉
+必选,OK按键,STL/VoxMind_button_OK_PA12.stl,1,PA12,MJF或SLS,自由回弹
+必选,BACK按键,STL/VoxMind_button_BACK_PA12.stl,1,PA12,MJF或SLS,自由回弹且触觉缺口清楚
+必选,REC按键,STL/VoxMind_button_REC_PA12.stl,1,PA12,MJF或SLS,自由回弹且中心凹点清楚
+必选,导光柱,STL/VoxMind_lightpipe_clear_resin.stl,1,透明树脂,SLA,端面平整并保留LED间隙
+可选,防摔圈,STL/VoxMind_bumper_TPU95A.stl,1,TPU 95A,FDM,确认松紧及接口无遮挡
+模板,屏幕垫框,STEP/VoxMind_display_gasket_TPU.step,1,模切VHB+黑PET,模切,不要直接以打印软胶替代0.5mm胶框

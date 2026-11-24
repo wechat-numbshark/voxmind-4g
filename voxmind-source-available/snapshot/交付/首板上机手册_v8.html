@@ -1,0 +1,466 @@
+<title>VoxMind 首板上机手册</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+
+<style>
+:root{
+  --paper:#FBFAF8;
+  --surface:#FFFFFF;
+  --sunk:#F1F2EE;
+  --ink:#161A17;
+  --ink-2:#4A524C;
+  --ink-3:#7C857E;
+  --rule:#DDE0DA;
+  --rule-2:#C9CEC6;
+  --accent:#1F6E4A;
+  --accent-soft:#E4EFE8;
+  --warn:#9A5B14;
+  --warn-soft:#F7EDDF;
+  --danger:#A32E27;
+  --danger-soft:#F8E7E5;
+  --shadow:0 1px 2px rgba(22,26,23,.05),0 8px 24px -12px rgba(22,26,23,.14);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1211;
+    --surface:#151A18;
+    --sunk:#1B211E;
+    --ink:#E8EDE9;
+    --ink-2:#A8B2AB;
+    --ink-3:#78827B;
+    --rule:#262E29;
+    --rule-2:#333D37;
+    --accent:#5FBF8E;
+    --accent-soft:#152A21;
+    --warn:#D99B4E;
+    --warn-soft:#2A2015;
+    --danger:#E0736A;
+    --danger-soft:#2B1817;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1211;
+  --surface:#151A18;
+  --sunk:#1B211E;
+  --ink:#E8EDE9;
+  --ink-2:#A8B2AB;
+  --ink-3:#78827B;
+  --rule:#262E29;
+  --rule-2:#333D37;
+  --accent:#5FBF8E;
+  --accent-soft:#152A21;
+  --warn:#D99B4E;
+  --warn-soft:#2A2015;
+  --danger:#E0736A;
+  --danger-soft:#2B1817;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans","Noto Sans SC",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:16px;line-height:1.72;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:60rem;margin:0 auto;padding:0 1.5rem 6rem}
+code,.mono,td.n,th.n{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- masthead ---------- */
+.mast{padding:4rem 0 2rem;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 1rem
+}
+h1{
+  font-size:clamp(2.1rem,5.5vw,3.1rem);line-height:1.1;margin:0 0 1rem;
+  font-weight:700;letter-spacing:-.02em;text-wrap:balance
+}
+.lede{font-size:1.12rem;color:var(--ink-2);max-width:44rem;margin:0}
+.mast-meta{
+  display:flex;flex-wrap:wrap;gap:.5rem 1.75rem;margin-top:1.75rem;
+  font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--ink-3)
+}
+.mast-meta b{color:var(--ink-2);font-weight:500}
+
+/* ---------- banner ---------- */
+.banner{
+  margin:2.5rem 0 0;padding:1.25rem 1.5rem;border-radius:3px;
+  background:var(--accent-soft);border-left:3px solid var(--accent);
+}
+.banner h2{margin:0 0 .4rem;font-size:1.05rem;font-weight:600;color:var(--ink)}
+.banner p{margin:0;color:var(--ink-2);font-size:.95rem}
+
+/* ---------- sections ---------- */
+section{margin-top:4.5rem}
+.sec-head{display:flex;align-items:baseline;gap:1rem;border-bottom:1px solid var(--rule-2);padding-bottom:.6rem;margin-bottom:2rem}
+.sec-num{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;color:var(--accent);letter-spacing:.1em}
+h2.sec{font-size:1.55rem;font-weight:600;margin:0;letter-spacing:-.01em}
+h3{font-size:1.12rem;font-weight:600;margin:2.5rem 0 .75rem;letter-spacing:-.005em}
+p{margin:0 0 1rem;max-width:44rem}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+
+/* ---------- steps ---------- */
+.step{
+  display:grid;grid-template-columns:2.6rem 1fr;gap:0 1.25rem;
+  padding:1.5rem 0;border-top:1px solid var(--rule)
+}
+.step:first-of-type{border-top:none;padding-top:.5rem}
+.step-n{
+  font-family:"IBM Plex Mono",monospace;font-size:1.35rem;font-weight:600;
+  color:var(--accent);line-height:1.3
+}
+.step-b h3{margin:0 0 .5rem;font-size:1.15rem}
+.step-b p:last-child{margin-bottom:0}
+.step.crit .step-n{color:var(--danger)}
+
+/* ---------- callouts ---------- */
+.note{
+  margin:1.25rem 0;padding:.9rem 1.1rem;border-radius:3px;font-size:.94rem;
+  background:var(--sunk);border-left:3px solid var(--rule-2)
+}
+.note.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.note.stop{background:var(--danger-soft);border-left-color:var(--danger)}
+.note p{margin:0 0 .5rem}
+.note p:last-child{margin:0}
+.note-lab{
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:600;display:block;margin-bottom:.35rem
+}
+.note.warn .note-lab{color:var(--warn)}
+.note.stop .note-lab{color:var(--danger)}
+.note:not(.warn):not(.stop) .note-lab{color:var(--ink-3)}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;margin:1.25rem 0;border:1px solid var(--rule);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:34rem}
+th,td{padding:.65rem .85rem;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{
+  background:var(--sunk);font-family:"IBM Plex Mono",monospace;font-size:.72rem;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:600;white-space:nowrap
+}
+tbody tr:last-child td{border-bottom:none}
+td.n{white-space:nowrap;color:var(--ink-2)}
+td b{font-weight:600}
+.tag{
+  display:inline-block;padding:.1rem .45rem;border-radius:2px;font-size:.72rem;
+  font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing:.03em;white-space:nowrap
+}
+.tag.must{background:var(--danger-soft);color:var(--danger)}
+.tag.rec{background:var(--accent-soft);color:var(--accent)}
+.tag.opt{background:var(--sunk);color:var(--ink-3)}
+.tag.gone{background:var(--sunk);color:var(--ink-3);text-decoration:line-through}
+
+/* ---------- checklist ---------- */
+.check{list-style:none;padding:0;margin:1rem 0}
+.check li{
+  display:flex;gap:.75rem;align-items:flex-start;padding:.55rem 0;
+  border-bottom:1px dashed var(--rule)
+}
+.check li:last-child{border-bottom:none}
+.check input{
+  appearance:none;width:1.05rem;height:1.05rem;margin:.3rem 0 0;flex:0 0 auto;
+  border:1.5px solid var(--rule-2);border-radius:2px;background:var(--surface);cursor:pointer;
+  transition:background .12s,border-color .12s
+}
+.check input:checked{background:var(--accent);border-color:var(--accent)}
+.check input:checked+span{color:var(--ink-3);text-decoration:line-through}
+.check span{font-size:.94rem}
+
+/* ---------- code ---------- */
+pre{
+  background:var(--sunk);border:1px solid var(--rule);border-radius:3px;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:.85rem;line-height:1.65;margin:1.25rem 0
+}
+pre code{font-family:"IBM Plex Mono",monospace}
+p code,li code,td code{
+  background:var(--sunk);padding:.08em .35em;border-radius:2px;font-size:.88em;
+  border:1px solid var(--rule)
+}
+
+/* ---------- pitfalls ---------- */
+.pit{border:1px solid var(--rule);border-radius:3px;background:var(--surface);padding:1.25rem 1.4rem;margin:1rem 0;box-shadow:var(--shadow)}
+.pit-h{display:flex;gap:.7rem;align-items:baseline;margin-bottom:.6rem}
+.pit-n{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--warn);font-size:.9rem}
+.pit-h h3{margin:0;font-size:1.05rem}
+.pit p:last-child{margin-bottom:0}
+
+/* ---------- order list ---------- */
+ol.seq{counter-reset:s;list-style:none;padding:0;margin:1.25rem 0}
+ol.seq li{
+  counter-increment:s;position:relative;padding:.5rem 0 .5rem 2.4rem;
+  border-bottom:1px solid var(--rule);font-size:.95rem
+}
+ol.seq li:last-child{border-bottom:none}
+ol.seq li::before{
+  content:counter(s);position:absolute;left:0;top:.5rem;
+  font-family:"IBM Plex Mono",monospace;font-size:.85rem;font-weight:600;color:var(--accent)
+}
+ul.plain{margin:1rem 0;padding-left:1.2rem}
+ul.plain li{margin-bottom:.4rem;font-size:.95rem}
+
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--rule);color:var(--ink-3);font-size:.85rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:640px){
+  .step{grid-template-columns:1.9rem 1fr;gap:0 .85rem}
+  .step-n{font-size:1.1rem}
+  .mast{padding-top:2.5rem}
+}
+</style>
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">VoxMind EVT_V1 · 板号 v8</p>
+  <h1>首板上机手册</h1>
+  <p class="lede">这一版换掉了 7 个缺货器件，其中 4 个 PCB 零改动。<strong>更要紧的是：上一版手册里「坑 ①」写反了，而且那个错误已经进了固件宏和驱动代码。</strong>本页已更正，请重新对一遍。</p>
+  <div class="mast-meta">
+    <span>2026-08-29 更新</span>
+    <span>100 × 55 mm · 4 层 · 正面 93 件 / 背面 11 件</span>
+    <span>DRC 2 条（均为既定项）</span>
+  </div>
+</header>
+
+<div class="banner">
+  <strong>先看这两条，其余都可以慢慢读。</strong>
+  <ul class="plain">
+    <li><strong>固件里的 4G 串口引脚以前是反的。</strong>如果你在 2026-08-29 之前拉过仓库，<span class="mono">board.h</span> 里的 <span class="mono">PIN_MODEM_TX/RX</span> 是错的，照它编译 4G 完全不通且没有任何报错。重新拉一次。</li>
+    <li><strong>上机第一件事是量模组的 IO 电平</strong>（第 1 章第 4 步，五分钟）。原因见坑 ⑤ —— 板上 MCU↔模组的串口是直连、没有电平转换的。</li>
+  </ul>
+</div>
+
+<div class="sec-head"><span class="sec-num">0</span><h2 class="sec">这一版换了什么，对你意味着什么</h2></div>
+
+<p>7 个器件在下单时缺货或停产，全部换成了嘉立创当前有货的型号。其中 <strong>U3 / C32 / J5 / J4 四个是 PCB 零改动</strong>（焊盘一个都没动），J7 转了 180°，J8 和 U9 有实质变化。</p>
+
+<div class="tw">
+<table>
+<thead><tr><th class="n">位号</th><th class="n">换成</th><th class="n">对固件/调试的影响</th></tr></thead>
+<tbody>
+<tr><td class="n"><span class="mono">U3</span></td><td class="n">中国移动 <strong>ML307C-GC</strong><br><span class="mono">C48982540</span></td><td class="n"><strong>要改 AT 指令层。</strong>3GPP 标准子集（<span class="mono">ATE0 / AT+CPIN? / AT+CSQ / AT+CEREG?</span>）两家通用；但 <strong>TCP/HTTP 那一层是厂商私有的</strong>，Air780E 那套在 ML307 上不成立，必须照 ML307 的 AT 手册重写 <span class="mono">drv_modem</span> 的联网部分。引脚定义不用动。</td></tr>
+<tr><td class="n"><span class="mono">U9</span></td><td class="n">MK <strong>MKDV4GIL-AST</strong><br><span class="mono">C26159626</span> 4Gb 工业级宽温</td><td class="n">仍是 SD 协议走 SPI 模式，<strong>驱动不用改</strong>。但见下方坑 ⑥ —— <strong>这是第一块存储真能工作的板子</strong>。</td></tr>
+<tr><td class="n"><span class="mono">J8</span></td><td class="n"><span class="mono">GH1.25-6PLTPZ</span><br><span class="mono">C2829264</span></td><td class="n"><strong>1 脚换到了连接器的另一端。</strong>每个物理焊盘的网络和以前完全一样，排线插上去电气一致，但按丝印数脚会数反。</td></tr>
+<tr><td class="n"><span class="mono">J7</span></td><td class="n">原厂 Hirose <span class="mono">U.FL-R-SMT(10)</span></td><td class="n">还是 U.FL/IPEX-1 接口，天线不用换。</td></tr>
+<tr><td class="n"><span class="mono">J5 J4 C32</span></td><td class="n">同型号 / 同封装的有货条目</td><td class="n">无影响。屏幕排线、Nano SIM 卡、电容都照旧。</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="note stop">
+<span class="note-lab">顺带修掉的一个致命隐患</span>
+旧 U9 用的封装相对 <strong>MK / 创世纪 / 天微三家厂商的封装互为镜像</strong>：按它贴片，<span class="mono">SD_CS</span> 会落到芯片的 <span class="mono">VCC</span> 脚上。<strong>那颗存储芯片本来就不可能工作。</strong>如果你之前调存储调不通，原因在这里，不是固件的问题。
+</div>
+
+<div class="sec-head"><span class="sec-num">1</span><h2 class="sec">拿到板子后做什么</h2></div>
+
+<div class="step crit">
+  <div class="step-n">0</div>
+  <div class="step-b">
+    <h3>通电前：目视 + 万用表</h3>
+    <p>先别插任何东西。用万用表通断档量这三对，<strong>响了就说明短路，不要通电</strong>：</p>
+    <div class="tw"><table>
+    <thead><tr><th class="n">量哪两点</th><th class="n">正常</th></tr></thead>
+    <tbody>
+    <tr><td class="n"><span class="mono">VBUS</span> ↔ <span class="mono">GND</span>（USB-C 口）</td><td class="n">不通</td></tr>
+    <tr><td class="n"><span class="mono">+3V3</span> ↔ <span class="mono">GND</span></td><td class="n">不通（可能有几百 Ω 的容性读数，正常）</td></tr>
+    <tr><td class="n"><span class="mono">VBAT</span> ↔ <span class="mono">GND</span>（J1 电池座）</td><td class="n">不通</td></tr>
+    </tbody></table></div>
+    <p>再目视：U3（背面那颗大模组）四周有没有连锡，J2 USB-C 的 4 个插板脚有没有虚焊。</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-n">1</div>
+  <div class="step-b">
+    <h3>电源链：只插 USB-C，不装电池</h3>
+    <p>插 USB-C，用直流电压档依次量：</p>
+    <div class="tw"><table>
+    <thead><tr><th class="n">测点</th><th class="n">应该是</th><th class="n">不对的话</th></tr></thead>
+    <tbody>
+    <tr><td class="n"><span class="mono">VBUS</span></td><td class="n">5.0 V</td><td class="n">线材或 J2 焊接</td></tr>
+    <tr><td class="n"><span class="mono">+3V3</span></td><td class="n">3.3 V ±5%</td><td class="n">U4 LDO 或其输入</td></tr>
+    <tr><td class="n"><span class="mono">+1V8</span></td><td class="n">1.8 V ±5%</td><td class="n">U6 LDO（只给两颗麦供电）</td></tr>
+    </tbody></table></div>
+    <div class="note warn"><span class="note-lab">没电池时 4G 起不来是正常的</span>4G 模组开机瞬间电流可达 2 A，USB 常常带不动。这一步只验证电源链，不要在这时候纠结模组。</div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-n">2</div>
+  <div class="step-b">
+    <h3>装电池</h3>
+    <p>J1 是 PH2.0 两脚座。<strong>务必确认电池是两线的</strong>（红黑），三线电池（带 NTC）插上去会把温感线接到没有对应功能的脚上。极性按丝印。</p>
+    <p>插上后量 <span class="mono">VSYS</span> 应在 3.7–4.2 V 之间；插 USB 时充电 IC（U1 BQ24074）应开始充电。</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-n">3</div>
+  <div class="step-b">
+    <h3>插屏幕</h3>
+    <p>J5 是 15P GH1.25 <strong>立贴</strong>座，带锁扣。排线插到底、听到咔哒声再合扣。<strong>断电插拔。</strong></p>
+    <div class="note"><span class="note-lab">J5 这次没变</span>换的是同一个 JST 型号的另一个供货条目，封装焊盘一个都没动，你选的屏幕和排线照旧。</div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-n">4</div>
+  <div class="step-b">
+    <h3>先量模组 IO 电平，再烧固件</h3>
+    <p>这是这一版新增的一步，<strong>五分钟，能省掉一整天</strong>。理由见下方坑 ⑤。</p>
+    <p>给模组上电（按开机序列，或先烧最小固件把 GPIO17 拉高 1.5 秒），然后量 <strong>C36 的正极</strong>（就是 U3 脚 24 的 <span class="mono">VDD_EXT</span>）：</p>
+    <div class="tw"><table>
+    <thead><tr><th class="n">读数</th><th class="n">含义</th></tr></thead>
+    <tbody>
+    <tr><td class="n"><strong>3.3 V 左右</strong></td><td class="n">✓ 正常，串口可以直连，继续往下走</td></tr>
+    <tr><td class="n"><strong>1.8 V 左右</strong></td><td class="n">✗ 停。模组 IO 是 1.8V，而板上 MCU↔模组的串口是<strong>直连、没有电平转换</strong>。先联系我，别硬调固件</td></tr>
+    <tr><td class="n">0 V</td><td class="n">模组没上电，回到坑 ② 的查法</td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-n">5</div>
+  <div class="step-b">
+    <h3>烧录自检固件</h3>
+    <p>USB-C 直连电脑（ESP32-S3 原生 USB，不需要串口芯片）。先跑 <span class="mono">main/bringup.c</span>，它逐项点亮外设并打 log。</p>
+    <div class="note"><span class="note-lab">进不了下载模式</span>按住 BOOT（SW4）再上电。板上 <span class="mono">GPIO0_BOOT</span> 同时引到了 J8，也可以从那里拉低。</div>
+  </div>
+</div>
+
+<div class="sec-head"><span class="sec-num">2</span><h2 class="sec">要买的东西</h2></div>
+
+<p>和上一版<strong>完全一样</strong>，换件没有改变任何接口。</p>
+
+<div class="tw">
+<table>
+<thead><tr><th class="n">东西</th><th class="n">规格</th><th class="n">价位</th><th class="n">要点</th></tr></thead>
+<tbody>
+<tr><td class="n">屏幕模块<span class="tag must">必买</span></td><td class="n">2 inch SPI + 触摸，<strong>15P GH1.25</strong> 带锁扣排线</td><td class="n">~60 元</td><td class="n">板上 J5 就是按它配的，排线要在包装里</td></tr>
+<tr><td class="n">锂电池<span class="tag must">必买</span></td><td class="n">3.7V，<strong>两线</strong>，PH2.0 插头，≥1000mAh</td><td class="n">~20 元</td><td class="n"><strong>别买三线</strong>；容量别太小，4G 开机要 2A</td></tr>
+<tr><td class="n">SIM 卡<span class="tag must">必买</span></td><td class="n">物联网卡，掰成 <strong>Nano</strong> 尺寸</td><td class="n">~10 元/月</td><td class="n">别买贴片卡 MFF2。J4 是 Nano 座</td></tr>
+<tr><td class="n">天线<span class="tag must">必买</span></td><td class="n">4G 吸盘或 FPC，<strong>IPEX / U.FL</strong> 接口</td><td class="n">~15 元</td><td class="n">不是 SMA。J7 是 U.FL 座</td></tr>
+<tr><td class="n">万用表<span class="tag must">必买</span></td><td class="n">要有<strong>通断档</strong>和直流电压档</td><td class="n">~50 元</td><td class="n">第 0、1、4 步全靠它</td></tr>
+<tr><td class="n">杜邦线 / 排针<span class="tag opt">建议</span></td><td class="n">1.25mm 转 2.54mm 或直接焊细线</td><td class="n">~10 元</td><td class="n">接 J8 调试串口用，<strong>注意 1 脚换边了</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="note"><span class="note-lab">不用买焊接工具</span>全板 SMT 贴装，包括唯一的插件件 J1 电池座（下单时勾了插件贴装）。到手即可通电。</div>
+
+<div class="sec-head"><span class="sec-num">3</span><h2 class="sec">六个会烧掉一整天的硬件坑</h2></div>
+
+<p>这些的共同点是：出问题时<strong>没有任何报错</strong>，就是不工作。前四条在新板上逐条复验过，第 ① 条<strong>本次更正</strong>，⑤⑥ 是这一版新增的。</p>
+
+<div class="pit">
+  <div class="pit-h"><span class="pit-n">①</span><h3>4G 串口方向 —— 以前写反了，已更正</h3></div>
+  <div class="note stop"><span class="note-lab">这条以前是错的</span>旧版手册和 <span class="mono">board.h</span> 都说「<span class="mono">MODEM_RXD</span> 是模组视角命名，对 ESP32 而言是 TX」。<strong>这是反的</strong>，而且错误一路进了 <span class="mono">gen_board_h.py</span> 和 <span class="mono">drv_modem.c</span>。已全部改正。</div>
+  <p>实测依据（在活的原理图上直接读模组符号的脚名，两家模组一致）：</p>
+  <div class="tw"><table>
+  <thead><tr><th class="n">模组脚</th><th class="n">ML307C-GC</th><th class="n">Air780E</th><th class="n">方向</th></tr></thead>
+  <tbody>
+  <tr><td class="n">脚 17</td><td class="n"><span class="mono">UART0_RXD</span></td><td class="n"><span class="mono">MAIN_RXD</span></td><td class="n">模组<strong>收</strong></td></tr>
+  <tr><td class="n">脚 18</td><td class="n"><span class="mono">UART0_TXD</span></td><td class="n"><span class="mono">MAIN_TXD</span></td><td class="n">模组<strong>发</strong></td></tr>
+  </tbody></table></div>
+  <p>接线是 <span class="mono">MODEM_TXD = GPIO16 ↔ U3脚17</span>、<span class="mono">MODEM_RXD = GPIO15 ↔ U3脚18</span>。模组在脚 18 上发，所以：</p>
+  <pre><code>GPIO15（网名 MODEM_RXD） &lt;── U3脚18（模组发）  ⇒  GPIO15 是 ESP32 的 RX
+GPIO16（网名 MODEM_TXD） ──&gt; U3脚17（模组收）  ⇒  GPIO16 是 ESP32 的 TX</code></pre>
+  <p>网名是 <strong>MCU 视角</strong>命名的，不是模组视角。<span class="mono">board.h</span> 现在是 <span class="mono">PIN_MODEM_RX=15 / PIN_MODEM_TX=16</span>，照它写即可。</p>
+</div>
+
+<div class="pit">
+  <div class="pit-h"><span class="pit-n">②</span><h3>PWRKEY 经 Q2 反相 —— 拉高才是开机</h3></div>
+  <p>已在新板复验：<span class="mono">GPIO17 → R26 → Q2(MMBT3904) 基极</span>（R27 下拉），<span class="mono">Q2 集电极 = MODEM_PWRKEY_N → U3 脚7</span>。模组的 PWRKEY 低有效，中间隔了个 NPN，所以 <strong>GPIO17 拉高才触发开机</strong>。</p>
+  <p>开机序列 = GPIO17 置 1，保持 1500 ms，再置 0。写成拉低的话现象是「完全没反应」。</p>
+  <div class="note warn"><span class="note-lab">查的顺序</span>① 量 GPIO17，置 1 时应为 3.3V → ② 量 Q2 集电极，GPIO17 高时应接近 0V → ③ 量 U3 的 42/43 脚有没有电 → ④ <strong>插电池再试</strong>（开机峰值 2A，这条经常是真凶）</div>
+</div>
+
+<div class="pit">
+  <div class="pit-h"><span class="pit-n">③</span><h3>MODEM_RESET_N 没接到 GPIO</h3></div>
+  <p>已在新板复验：<span class="mono">MODEM_RESET_N</span> 网络上只有 <span class="mono">C37_1</span> 和 <span class="mono">U3_15</span>，<strong>没有任何 GPIO 驱动</strong>。模组死机时软件复位不了，只能 PWRKEY 长按 ≥12 秒。EVT 阶段可接受，DVT 改板补一根线。</p>
+</div>
+
+<div class="pit">
+  <div class="pit-h"><span class="pit-n">④</span><h3>IO45 / IO46 是 strapping 脚，现在空着</h3></div>
+  <p>已在新板复验：两个脚都悬空（各自网络上只有 U2 一个器件）。悬空是<strong>正确且安全</strong>的。</p>
+  <ul class="plain">
+    <li><span class="mono">GPIO45</span> = VDD_SPI 选压脚。<strong>上电瞬间被拉高 → flash 供电变 1.8V → 直接启动失败。</strong>如果量到高电平，先查漏电或搭锡，别怀疑固件。</li>
+    <li><span class="mono">GPIO46</span> = ROM 日志开关。拉高不致命，但会让调试变瞎。</li>
+  </ul>
+</div>
+
+<div class="pit">
+  <div class="pit-h"><span class="pit-n">⑤</span><h3>模组 IO 电平 —— 这一版新增，务必先量</h3></div>
+  <p>两个模组的脚 100 定义不同：</p>
+  <div class="tw"><table>
+  <thead><tr><th class="n">模组</th><th class="n">脚 100 叫什么</th><th class="n">板上接法</th></tr></thead>
+  <tbody>
+  <tr><td class="n">Air780E（旧）</td><td class="n"><span class="mono">1O_SEL</span>（IO 电平选择）</td><td class="n">接地</td></tr>
+  <tr><td class="n">ML307C-GC（新）</td><td class="n"><span class="mono">RSV</span>（43 个同名保留脚之一）</td><td class="n">按旧设计保持接地</td></tr>
+  </tbody></table></div>
+  <p>关键在于：<strong>板上 MCU 和模组的串口是直连的，没有电平转换</strong>（板上那个 1.8V 域和 U7/U8 电平转换器是<strong>麦克风专用</strong>的，模组不在里面）。所以模组的 UART 必须是 3.3V。旧设计把 <span class="mono">IO_SEL</span> 接地，很可能正是为了选 3.3V。</p>
+  <p>ML307C 把这个脚标为保留，其实际行为无法从现有资料确定。两个选择里，<strong>接地是风险较小的那个</strong>：若 ML307C 真是保留脚则毫无影响；若它也是 IO_SEL，接地就得到本板需要的 3.3V。悬空则默认值未知，可能是 1.8V —— 串口会直接死掉。板子已按接地出图。</p>
+  <p><strong>但这仍是推断，不是确证。所以第 1 章第 4 步要先量 <span class="mono">VDD_EXT</span>（C36 正极）</strong>：3.3V 就继续，1.8V 就停下来找我。</p>
+</div>
+
+<div class="pit">
+  <div class="pit-h"><span class="pit-n">⑥</span><h3>J8 的 1 脚换到了另一端</h3></div>
+  <p>新连接器的脚号顺序和旧的相反。处理办法是把原理图接线整体反过来，<strong>这样每个物理焊盘的网络和换件前完全一致</strong>（偏差 6.9 mil），走线一根没动。</p>
+  <p>对你的影响只有一条：<strong>按丝印数脚会数反。</strong>新的脚序（从连接器一端数）：</p>
+  <div class="tw"><table>
+  <thead><tr><th class="n">脚</th><th class="n">网络</th><th class="n">用途</th></tr></thead>
+  <tbody>
+  <tr><td class="n">1</td><td class="n"><span class="mono">GPIO0_BOOT</span></td><td class="n">拉低进下载模式</td></tr>
+  <tr><td class="n">2</td><td class="n"><span class="mono">EN</span></td><td class="n">复位</td></tr>
+  <tr><td class="n">3</td><td class="n"><span class="mono">UART0_RXD</span></td><td class="n">调试串口（板子收）</td></tr>
+  <tr><td class="n">4</td><td class="n"><span class="mono">UART0_TXD</span></td><td class="n">调试串口（板子发）</td></tr>
+  <tr><td class="n">5</td><td class="n"><span class="mono">GND</span></td><td class="n"></td></tr>
+  <tr><td class="n">6</td><td class="n"><span class="mono">+3V3</span></td><td class="n">别从这里给板子供电</td></tr>
+  </tbody></table></div>
+</div>
+
+<div class="sec-head"><span class="sec-num">4</span><h2 class="sec">软件：从哪开始</h2></div>
+
+<p>逐模块点亮，每步都能独立验证。<strong>不要一次写完再调</strong> —— 出问题时你会不知道是哪一层的锅。</p>
+
+<div class="tw">
+<table>
+<thead><tr><th class="n">顺序</th><th class="n">做什么</th><th class="n">这一版要注意</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td class="n">电源 + 电量计（MAX17048）</td><td class="n">I2C，和触摸屏共用总线</td></tr>
+<tr><td class="n">2</td><td class="n">按键 → 有 log</td><td class="n">三个键都是按下接地，要开内部上拉</td></tr>
+<tr><td class="n">3</td><td class="n">状态灯 + 马达</td><td class="n">用户能感知，调起来爽</td></tr>
+<tr><td class="n">4</td><td class="n"><strong>4G 模组</strong></td><td class="n"><strong>提前到这里。</strong>先按坑 ⑤ 量电平，再用坑 ①② 的正确引脚跑通 <span class="mono">ATE0 / AT+CPIN? / AT+CSQ</span>。<strong>联网那层的 AT 指令要照 ML307 手册重写</strong></td></tr>
+<tr><td class="n">5</td><td class="n">存储（NAND）</td><td class="n">SD 协议走 SPI 模式，驱动照旧。<strong>这是第一块存储真能工作的板子</strong></td></tr>
+<tr><td class="n">6</td><td class="n">麦克风录音 → 存进 NAND</td><td class="n">双麦共用一根 DATA，靠 L/R 脚分声道（MIC1=左，MIC2=右）</td></tr>
+<tr><td class="n">7</td><td class="n">Opus 编码</td><td class="n">115 MB/小时 → 7.2 MB/小时</td></tr>
+<tr><td class="n">8</td><td class="n">屏幕（LVGL）</td><td class="n">大头，放在录音链路之后</td></tr>
+<tr><td class="n">9</td><td class="n">上传 + 收卡片 + 按键确认</td><td class="n">闭环打通</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="note warn"><span class="note-lab">为什么把 4G 提前</span>换了模组厂商，AT 指令层是这一版最大的未知数。早点撞上，比等到第 8 步再发现要好。</div>
+
+<div class="sec-head"><span class="sec-num">5</span><h2 class="sec">板子已知的限制</h2></div>
+
+<div class="tw">
+<table>
+<thead><tr><th class="n">限制</th><th class="n">影响</th><th class="n">怎么办</th></tr></thead>
+<tbody>
+<tr><td class="n"><span class="mono">MODEM_RESET_N</span> 没接 GPIO</td><td class="n">模组死机只能长按 PWRKEY 12 秒</td><td class="n">EVT 可接受，DVT 补线</td></tr>
+<tr><td class="n"><span class="mono">MICROSD_N5</span> 开路<span class="tag gone">新增</span></td><td class="n">SD DAT1 的上拉没接上。SPI 模式下 DAT1 本来就闲置，<strong>按 SD 规范允许悬空</strong></td><td class="n">不用管。DAT2 那一路（<span class="mono">MICROSD_N6</span>）的上拉是通的</td></tr>
+<tr><td class="n">C38 / C39 不贴装<span class="tag gone">新增</span></td><td class="n">LTE 天线的 π 型匹配网络预留位（1.0pF 并联电容），默认不焊</td><td class="n">天线实测信号弱、驻波比不对时再补（<span class="mono">C1550</span>）</td></tr>
+<tr><td class="n">7 对走线间距 4.19–4.54 mil</td><td class="n">板规是 4 mil，嘉立创免费档是 5/5 mil</td><td class="n">已做过取舍：收紧到 5 mil 会导致 <span class="mono">LCD_BL_PWM</span> 布不通</td></tr>
+</tbody>
+</table>
+</div>
+
+<footer>
+VoxMind EVT_V1 · 板号 v8 · 2026-08-29<br>
+引脚数据全部来自已布通 PCB 的网表实读（<span class="mono">easyeda pcb dump</span>）与活原理图的器件符号，不是从文档抄的。<br>
+完整接线真值表见仓库 <span class="mono">docs/10_硬件接线真值表.md</span>，固件宏见 <span class="mono">firmware/components/board/include/board.h</span>。
+</footer>
+
+</div>

@@ -1,0 +1,68 @@
+menu "VoxMind firmware"
+
+choice VOXMIND_FIRMWARE_MODE
+    prompt "Firmware mode"
+    default VOXMIND_BRINGUP_MODE
+
+config VOXMIND_BRINGUP_MODE
+    bool "EVT first-board self-test"
+
+config VOXMIND_CLOUD_LAB_MODE
+    bool "Continuous recording + 4G (ML307C PPP) cloud lab"
+    select LWIP_PPP_SUPPORT
+    select LWIP_PPP_PAP_SUPPORT
+    select LWIP_PPP_CHAP_SUPPORT
+
+endchoice
+
+config VOXMIND_APN
+    string "Fallback APN for unreadable or unknown Chinese SIM"
+    default "cmnet"
+    help
+        正常按 SIM 的归属运营商选择 APN，也可通过串口 cellular 命令保存
+        指定运营商或自定义 APN/认证参数。此值仅作为无法读取 IMSI 或
+        未识别中国 SIM 时的兼容兜底；未知境外卡要求先配置，避免误用 cmnet。
+        英国 APN 适配不代表模组的硬件频段已经过英国实网验证。
+
+config VOXMIND_API_BASE_URL
+    string "VoxMind API base URL"
+    default "https://EXAMPLE-DEMO-HOST.invalid"
+
+config VOXMIND_DEVICE_API_KEY
+    string "VoxMind device API key"
+    default ""
+
+config VOXMIND_DEVICE_ID
+    string "Device ID"
+    default "demo-voxmind-not-a-real-device"
+
+config VOXMIND_CHUNK_SECONDS
+    int "Audio chunk duration in seconds"
+    range 1 30
+    default 5
+
+config VOXMIND_PURGE_LEGACY_PCM
+    bool "One-shot: delete legacy uncompressed .pcm chunks at boot"
+    default n
+    help
+        仅用于一次性清理 bring-up 调试期间老固件录下的裸 PCM(.pcm)。
+        删除不可恢复：只在明确确认这些录音不需要时临时打开编一次，
+        清理完立即关掉重新烧录。正式固件必须保持关闭。
+
+config VOXMIND_OPUS_BITRATE
+    int "Opus encoder bitrate (bps)"
+    range 6000 64000
+    default 24000
+    help
+        16kHz 单声道语音场景，24kbps 是清晰度和 71 小时存储目标之间的
+        平衡点。压得更狠（比如 16000）能再多录，但明显能听出闷。
+
+config VOXMIND_OPUS_COMPLEXITY
+    int "Opus encoder complexity (0-10)"
+    range 0 10
+    default 5
+    help
+        越高越占 CPU，跟录音/联网任务抢时间片。5 是留了余量的折中值，
+        真机跑稳后可以再往上调实测效果。
+
+endmenu

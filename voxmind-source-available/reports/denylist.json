@@ -1,0 +1,546 @@
+[
+  {
+    "path": "cloud/.env",
+    "reason": "never-file:.env"
+  },
+  {
+    "path": "firmware/sdkconfig",
+    "reason": "never-file:sdkconfig"
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_cloud_lab_20260913/partition-table.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_cloud_lab_20260913/voxmind.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_cloud_lab_20260913/bootloader.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_cloud_lab_20260913/ota_data_initial.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_waveshare_20260914/voxmind.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_waveshare_20260914/voxmind-direct-bl.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_bringup_20260913/partition-table.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_bringup_20260913/voxmind.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_bringup_20260913/bootloader.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "firmware/releases/VoxMind_EVT_V1_PCB1_bringup_20260913/ota_data_initial.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "firmware/releases/1.0.27-uk.1/voxmind.bin",
+    "reason": "binary-artifact:.bin"
+  },
+  {
+    "path": "交付/VoxMind_v9_订单状态与付款核对_20260830.md",
+    "reason": "payment-or-order-doc"
+  },
+  {
+    "path": "结构设计_v2_20260928/.DS_Store",
+    "reason": "never-file:.DS_Store"
+  },
+  {
+    "path": "结构设计_v2_20260928/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/pla_v3_backdown_slice_2mm_b/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/slidefit_review/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/pla_v3_backdown_slice_2mm_buildplate/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/side_opening_review_right/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/buttons15/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/full_current/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/rear_only/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/rear/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/official_20260929/buttons_15_16/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/six_part_slice/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/pla_v3_backdown_slice_2mm/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/neo_orientation_review/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/pla_three_part_slice/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "结构设计_v2_20260928/a1_print/side_opening_review_left/result.json",
+    "reason": "never-file:result.json"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_inner2_route_20260825_0017.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v7_FINAL_before_resource_redesign_20260829_1119.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S11_FULLY_ROUTED_2238.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_U2row_1145.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v8_before_U3_swap_1136.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_gnd_stitch_20260825_0124.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_ckpt6_autoroute_110_20260824_2356.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_P5_silk_realign_20260824_2128.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v4_moved_20260826_1211.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_J5_1343.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v3_before_import_1523.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_ckpt2_placement_done_20260824_2317.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_batchF_1032.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_gui_autoroute_20260825_0035.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_moveR14_0952.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_motor_gate_beautify_20260824_2006.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_sd_clearance_move_20260824_2125.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_region_1202.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S10_ZERO_FLYWIRE_2231.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v5_GOOD_before_J5_20260826_2148.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_P7_critical_20260824_2132.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S7_before_native_2128.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_maze_v3_20260825_0412.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_netlist_resync_20260824_1955.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_optimized_safe_copper_20260824_1923.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_schematic_destagger_20260824_1953.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_after_native_autoroute_20260824_2135.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v3_before_allroute_1645.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_pour_rebuild_20260824_2156.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_display_pcb_sync_20260824_2000.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_BEFORE_REPLACE_20260828_1550.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_display_pin_fix_20260824_1959.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_bottom_silk_cleanup_20260824_2144.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v3_before_buckmove_1608.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_maze_route_20260825_0204.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S1_PCB_IMPORTED_1619.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_route_short_20260824_2151.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S9_DRC9_2138.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_ckpt8_20260825_0014.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S3b_18routed_1833.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v3_before_u9route_1559.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_ckpt4_before_outer_gnd_20260824_2338.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_native_autoroute_v2_20260824_2352.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_P7_clearance_cleanup_20260824_2141.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_multilayer_short_20260824_2153.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S14_DRC1_VERIFIED_2302.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S3a_clean_clearance_1650.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_ripR14feed_0956.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_batchA_0929.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v3_START_20260825_1514.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v4_before_apply_20260826_1323.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S8_6of10_2133.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S1a_J2_done_1611.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_batchE_1020.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S2a_J5_placed_1626.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_ripB_0930.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_ripreroute11_20260825_0006.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v4_START_DRC0_20260826_1202.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_tidy_20260826_233550.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_after_top_only_autoroute_20260824_2202.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_P2_relayout_20260824_2118.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_ckpt7_drc102_20260825_0009.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S13_ROUTED_SAVED_2254.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v3_before_usbc_1712.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S2c_clean_J5moved_1632.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_ckpt5_ready_for_autoroute_20260824_2340.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S4_SIMN4_ROUTED_2017.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_greedy_route_20260824_1937.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_pre_autoroute_20260824_1810.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S12_DRC1_2239.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_maze_v4_20260825_0419.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S15_before_netlist_fix_2324.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S2b_autoplaced_dirty_1629.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S16_before_TP_cleanup_2326.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_pinch_1009.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v3_before_plane_1716.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v6_J5_15P_FAILED_20260826_2258.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_S1_stackup_20260824_2259.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S1_SCH_DONE_1615.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_safe_short_routes_20260824_2146.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_ripU3_1057.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_pre_drc_surgery_20260824_1905.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_clean_copper_baseline_20260824_1921.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_fresh_route_20260824_1927.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_top_only_autoroute_20260824_2159.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v6_sch_J5_15P_20260826_2157.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_internal_connector_move_20260824_2122.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v3_DRC22_1733.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_ripU4U1_1359.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_batchG_1056.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_unblock_20260825_0024.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v5_before_flywire_fix_20260826_2030.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_ckpt1_edgepads_fixed_20260824_2308.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_after_tidy_20260827_092606.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_silk_cleanup_20260824_2006.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_schematic_cleanup_20260824_1952.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_bottom_mirror_test_20260824_2148.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_S2_replace_20260824_2315.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_ckpt3_clearance_zero_20260824_2332.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_before_j5_copper_cleanup_20260824_2002.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S2_PLACEMENT_DONE_1635.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_v6_4LAYER_GOOD_20260827_2144.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_S1b_J2J4_done_1613.eprj2",
+    "reason": "handoff-large-binary"
+  },
+  {
+    "path": "VoxMind_交接包_20260824/VoxMind_EVT_V1_autoroute5_imported_20260824_1858.eprj2",
+    "reason": "handoff-large-binary"
+  }
+]

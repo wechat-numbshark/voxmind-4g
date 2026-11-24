@@ -1,0 +1,21 @@
+{
+  "name": "VoxMind",
+  "short_name": "VoxMind",
+  "description": "随身录音、听懂了替你办事",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#E9EDEC",
+  "theme_color": "#E9EDEC",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "今天", "url": "/app" },
+    { "name": "录音", "url": "/app/recordings" },
+    { "name": "聊天", "url": "/app/chat" }
+  ]
+}

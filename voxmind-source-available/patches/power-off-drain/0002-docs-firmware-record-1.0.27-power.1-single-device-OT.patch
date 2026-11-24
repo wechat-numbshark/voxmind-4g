@@ -1,0 +1,64 @@
+From 567a08734a437d37786c0d9a18e607fb77cfd2ab Mon Sep 17 00:00:00 2001
+From: Neo <noreply@example.invalid>
+Date: Sat, 7 Nov 2026 11:54:14 +0800
+Subject: [PATCH 2/2] docs(firmware): record 1.0.27-power.1 single-device OTA
+ result
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ firmware/releases/v1.0.27-power.1/README.md   | 12 ++++++++++
+ .../releases/v1.0.27-power.1/manifest.json    | 23 +++++++++++++++++++
+ 2 files changed, 35 insertions(+)
+ create mode 100644 firmware/releases/v1.0.27-power.1/README.md
+ create mode 100644 firmware/releases/v1.0.27-power.1/manifest.json
+
+diff --git a/firmware/releases/v1.0.27-power.1/README.md b/firmware/releases/v1.0.27-power.1/README.md
+new file mode 100644
+index 00000000..720347da
+--- /dev/null
++++ b/firmware/releases/v1.0.27-power.1/README.md
+@@ -0,0 +1,12 @@
++# VoxMind firmware 1.0.27-power.1 — 电源修复，单机 OTA
++
++源码提交 `4ecf2da2`（分支 `fix/power-off-drain`），改动见 `docs/32`。
++
++部署记录：云端先部署 `4ecf2da2`。固件做过单机试推，服务器上的 release 记录号不在本源码集里。本树里的设备名是 `demo-voxmind-not-a-real-device`。
++2026-11-07 11:52（北京时间）设备用新版本心跳成功，otaState=done，随后把推送改回 `none`。
++
++升级前那次开机（1.0.26，11:41）复位原因为 1（上电），说明 11-03 关机后电池又被放空了一次。新版本第一次上报
++`gaugeReset: true`、`offDrain.diedWhileOff: true`，和这一点吻合；当时插着充电器（4144 mV，CRATE +44%/h）。
++`modemSwitch: false`：还没做改线 A。
++
++这次没有抓到 USB 串口开机日志，新版本是靠心跳和开机诊断确认的。
+diff --git a/firmware/releases/v1.0.27-power.1/manifest.json b/firmware/releases/v1.0.27-power.1/manifest.json
+new file mode 100644
+index 00000000..74ee9eb5
+--- /dev/null
++++ b/firmware/releases/v1.0.27-power.1/manifest.json
+@@ -0,0 +1,23 @@
++{
++  "version": "1.0.27-power.1",
++  "project": "voxmind",
++  "target": "ESP32-S3 / EVT PCB1 cloud",
++  "idfVersion": "v5.5.1",
++  "sourceCommit": "4ecf2da2",
++  "binaryPath": "firmware/build-power/voxmind.bin",
++  "byteLength": 4052240,
++  "sha256": "5c1ad0fdccfc14087e018c7fd54dcce6c7dae544046abd19ae493ab3872f9ab0",
++  "releaseId": null,
++  "deviceId": "demo-voxmind-not-a-real-device",
++  "deviceEvidence": {
++    "firmware": "1.0.27-power.1",
++    "otaState": "done",
++    "progressPct": 100,
++    "firstNewVersionHeartbeatAt": "2026-11-07T03:52:22.035Z",
++    "previousBootResetReason": 1,
++    "power": { "mv": 4144, "usb": null, "crate": 44.3, "offDrain": { "diedWhileOff": true }, "gaugeReset": true, "modemSwitch": false },
++    "error": null
++  },
++  "rolloutAfterPilot": "none",
++  "usbBootConsoleCaptured": false
++}
+-- 
+2.54.0 (Apple Git-157)
+

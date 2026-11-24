@@ -1,0 +1,12 @@
+# ESP32-S3-WROOM-1-N16R8 : 16MB flash
+# 双 OTA 分区 —— 设备装在用户身上，必须能远程升级且升级失败可回滚
+# Name,      Type, SubType,  Offset,   Size,     Flags
+nvs,         data, nvs,      0x9000,   0x6000,
+otadata,     data, ota,      0xf000,   0x2000,
+phy_init,    data, phy,      0x11000,  0x1000,
+ota_0,       app,  ota_0,    0x20000,  0x500000,
+ota_1,       app,  ota_1,    0x520000, 0x500000,
+# 录音落在外挂 SPI NAND(U9)，不占内部 flash；这里只留本地配置和待确认队列
+storage,     data, spiffs,   0xA20000, 0x100000,
+# 软关机时离线听「小沃，开机」用的 ESP-SR 中文指令词模型（mn7_cn，约 2.6MB）
+model,       data, spiffs,   0xB20000, 0x300000,

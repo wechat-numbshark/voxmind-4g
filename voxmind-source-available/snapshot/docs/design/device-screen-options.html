@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>设备屏幕方案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* 设备屏幕方案对比。每块屏幕都是 240×320 真实像素尺寸，整体放大 1.5 倍看。
+ * 只用 LVGL 能便宜画出来的东西：纯色块、圆角、1px 线、三种字号（16 Medium / 24 Bold / 44 Medium 数字）。
+ * 不用渐变、阴影、模糊——那些在这块屏上就是 CPU。颜色取自网页控制台 DESIGN.md。*/
+:root{
+  --console:#E9EDEC; --console-deep:#DDE3E1; --paper:#FFFFFF; --paper-2:#F6F8F7;
+  --rule:#D5DCDA; --rule-strong:#B3BFBC; --ink:#12202A; --ink-2:#445561; --ink-3:#61717C;
+  --act:#0A6E64; --act-tint:#E1F1EE; --rec:#D92D3A;
+  --ext:#E9A21B; --ext-tint:#FFF3D6; --ext-ink:#5E4200;
+  --own:#2766AE; --own-tint:#E4EFFB; --own-ink:#133F6E;
+  --recd:#1E7A4B; --recd-tint:#E0F3E8;
+  --phy:#E0604A; --warn:#B26A00; --bad:#C4262F; --done:#9AA8A5;
+  --page:#F3F5F4; --page-ink:#12202A; --page-ink-2:#445561; --card:#FFFFFF; --line:#D5DCDA;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --page:#141A1E; --page-ink:#E8EEEC; --page-ink-2:#9AAAB2; --card:#1C2429; --line:#2C373D; }
+}
+:root[data-theme="dark"]{ --page:#141A1E; --page-ink:#E8EEEC; --page-ink-2:#9AAAB2; --card:#1C2429; --line:#2C373D; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--page);color:var(--page-ink);font-family:"Noto Sans SC","PingFang SC",sans-serif;font-weight:500;
+  padding:32px 16px 64px;line-height:1.6}
+.wrap{max-width:1320px;margin:0 auto}
+header.top h1{font-size:26px;font-weight:700;letter-spacing:-.01em}
+header.top p{color:var(--page-ink-2);max-width:70ch;margin-top:6px;font-size:15px}
+.notes{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.notes span{font-size:13px;border:1px solid var(--line);background:var(--card);padding:3px 10px;border-radius:999px;color:var(--page-ink-2)}
+section.opt{margin-top:44px;border-top:2px solid var(--line);padding-top:22px}
+.opt-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.opt-head .letter{font-size:34px;font-weight:700;line-height:1;color:var(--act)}
+.opt-head h2{font-size:22px;font-weight:700}
+.opt-head .tag{font-size:12px;border:1px solid var(--line);padding:1px 8px;border-radius:999px;color:var(--page-ink-2)}
+.opt p.why{color:var(--page-ink-2);max-width:78ch;margin-top:6px;font-size:15px}
+.opt ul.pc{margin:8px 0 0 18px;color:var(--page-ink-2);font-size:14px;max-width:80ch}
+.row{display:flex;gap:26px;flex-wrap:wrap;margin-top:18px}
+figure{display:flex;flex-direction:column;gap:8px}
+figcaption{font-size:13px;color:var(--page-ink-2);text-align:center}
+.scale{width:360px;height:480px}
+@media (max-width:520px){ .scale{width:240px;height:320px} .scale .scr{transform:none} }
+
+/* ───── 设备屏幕本体 ───── */
+.scr{width:240px;height:320px;transform:scale(1.5);transform-origin:0 0;position:relative;overflow:hidden;
+  background:var(--console);color:var(--ink);font-family:"Noto Sans SC",sans-serif;font-weight:500;font-size:16px;line-height:1.25;
+  border-radius:4px;outline:10px solid #0E1215;outline-offset:0}
+.b{font-weight:700}
+.f16{font-size:16px}.f24{font-size:24px;font-weight:700;line-height:1.2}.f44{font-size:44px;line-height:1;letter-spacing:-.02em}
+.muted{color:var(--ink-2)}.faint{color:var(--ink-3)}
+.abs{position:absolute}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--rec);display:inline-block}
+.lvl{display:flex;align-items:center;gap:3px;height:18px}
+.lvl i{display:block;width:3px;border-radius:2px;background:var(--act)}
+.bat{display:inline-flex;align-items:center;gap:2px}
+.bat .shell{width:22px;height:12px;border:2px solid var(--ink);border-radius:3px;padding:1px;display:flex}
+.bat .shell i{display:block;height:100%;background:var(--ink);border-radius:1px}
+.bat .nub{width:2px;height:5px;background:var(--ink);border-radius:0 1px 1px 0}
+.bat.low .shell{border-color:var(--bad)} .bat.low .shell i{background:var(--bad)} .bat.low .nub{background:var(--bad)}
+.bat.chg .shell{border-color:var(--recd)} .bat.chg .shell i{background:var(--recd)} .bat.chg .nub{background:var(--recd)}
+.bolt{width:9px;height:14px;display:inline-block}
+.strip{position:absolute;left:8px;right:8px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;display:flex;overflow:hidden}
+.strip .slot{width:6px;flex:none}
+.strip .body{padding:7px 10px 8px 10px;flex:1;min-width:0}
+.strip .meta{display:flex;justify-content:space-between;font-size:16px}
+.strip .title{font-size:16px;font-weight:700;color:var(--ink);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{font-size:16px;padding:0 6px;border-radius:4px}
+.btn{position:absolute;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700}
+.btn.go{background:var(--act);color:#fff}
+.btn.no{background:var(--paper);border:2px solid var(--rule-strong);color:var(--ink-2)}
+.hair{position:absolute;left:0;right:0;height:1px;background:var(--rule)}
+.swipe{opacity:.55}
+.ghost{position:absolute;font-size:16px;color:var(--ink-3)}
+.mark{width:34px;height:34px;border-radius:50%;border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;gap:4px}
+.mark i{display:block;width:3px;height:12px;background:var(--ink);border-radius:2px}
+.mark i:nth-child(2){height:16px}
+.progress{position:absolute;height:6px;border-radius:3px;background:var(--rule)}
+.progress i{display:block;height:100%;border-radius:3px;background:var(--act)}
+</style>
+</head>
+<body>
+<!-- 设备屏幕方案对比页。四个结构都在同一套网页控制台「进程单」配色里，只比较结构。
+     每个方案 5 个状态：待机 / 待确认 / 回执划走 / 充电与低电 / 开关机。内容是示例，非真实数据。 -->
+<div class="wrap">
+<header class="top">
+  <h1>设备屏幕：四个结构，选一个</h1>
+  <p>每块屏都是 240×320 的真实像素尺寸（放大 1.5 倍看），配色直接用网页控制台的：灰底、白纸条、卡槽颜色表示风险等级（黄＝对外、蓝＝个人、绿＝只记录）。
+     只用这块屏便宜画得出的东西——纯色、圆角、1px 线、三个字号，不用渐变和阴影，所以 CPU 会比现在低得多。屏上内容都是示例。</p>
+  <div class="notes"><span>字号只有 16 / 24 粗 / 44 数字三档</span><span>录音红点和电平在每个状态都看得见</span><span>回执左右划走</span><span>充电是软件推断，约 1 分钟内反映</span></div>
+</header>
+
+<!-- ═════════════════════ A ═════════════════════ -->
+<section class="opt">
+  <div class="opt-head"><span class="letter">A</span><h2>回执流</h2><span class="tag">抽中的方案</span></div>
+  <p class="why">顶上一条固定状态带：大号时钟、录音红点和时长、电平、电量。下面是一叠纸条：待确认的卡在最上，带确认/取消；执行完的回执一条条推进来，左右划掉。没有通知时，纸条区显示今天录了多久、同步到哪了。</p>
+  <ul class="pc"><li>好处：和网页的进程单是同一个动作——设备上划掉一条，就像从卡槽里抽走一张纸条。</li><li>风险：纸条多时只能看到 2–3 条，更早的要去网页看。</li></ul>
+  <div class="row">
+    <!-- A1 待机 -->
+    <figure><div class="scale"><div class="scr">
+      <div class="abs" style="left:0;right:0;top:0;height:74px;background:var(--paper)"></div>
+      <div class="abs f44" style="left:12px;top:10px">14:32</div>
+      <div class="abs" style="right:12px;top:14px;display:flex;align-items:center;gap:6px"><span class="bat"><span class="shell"><i style="width:80%"></i></span><span class="nub"></span></span><span class="f16">87%</span></div>
+      <div class="abs" style="right:12px;top:36px;font-size:16px" class="muted"><span class="muted">周四 9月19日</span></div>
+      <div class="hair" style="top:74px"></div>
+      <div class="abs" style="left:12px;top:84px;display:flex;align-items:center;gap:8px"><span class="dot"></span><span class="b">录音中</span><span class="muted">02:13:05</span></div>
+      <div class="abs lvl" style="right:12px;top:84px"><i style="height:4px"></i><i style="height:9px"></i><i style="height:14px"></i><i style="height:18px"></i><i style="height:11px"></i><i style="height:6px"></i><i style="height:13px"></i><i style="height:8px"></i><i style="height:4px"></i></div>
+      <div class="hair" style="top:112px"></div>
+      <div class="strip" style="top:124px;height:94px"><div class="slot" style="background:var(--rule-strong)"></div><div class="body">
+        <div class="meta"><span class="muted">今天</span><span class="muted">已同步</span></div>
+        <div class="f24" style="margin-top:4px">录了 6 小时 12 分</div>
+        <div class="muted" style="margin-top:2px">说了 214 句 · 办了 3 件事</div></div></div>
+      <div class="ghost" style="left:0;right:0;top:250px;text-align:center">有要确认的事会出现在这里</div>
+    </div></div><figcaption>待机</figcaption></figure>
+
+    <!-- A2 待确认 -->
+    <figure><div class="scale"><div class="scr">
+      <div class="abs" style="left:0;right:0;top:0;height:46px;background:var(--paper)"></div>
+      <div class="abs f24" style="left:12px;top:9px">14:32</div>
+      <div class="abs" style="left:84px;top:14px;display:flex;align-items:center;gap:6px"><span class="dot"></span><span class="muted">02:13:05</span></div>
+      <div class="abs" style="right:12px;top:14px">87%</div>
+      <div class="hair" style="top:46px"></div>
+      <div class="strip" style="top:56px;height:196px;border-color:var(--ext)"><div class="slot" style="background:var(--ext)"></div><div class="body">
+        <div class="meta"><span class="chip" style="background:var(--ext-tint);color:var(--ext-ink)">对外 · 飞书消息</span><span class="faint">1 / 2</span></div>
+        <div class="f24" style="margin-top:8px;line-height:1.3">给王总发：合同周五签</div>
+        <div class="muted" style="margin-top:8px;border-left:2px solid var(--ext);padding-left:8px;line-height:1.4">“跟王总说一下合同周五能签”</div>
+        <div style="margin-top:8px;color:var(--warn)">14:52 前不确认就作废</div></div></div>
+      <div class="btn no" style="left:8px;top:264px;width:88px">取消</div>
+      <div class="btn go" style="left:104px;top:264px;width:128px">确认</div>
+    </div></div><figcaption>待确认（对外，限时）</figcaption></figure>
+
+    <!-- A3 回执划走 -->
+    <figure><div class="scale"><div class="scr">
+      <div class="abs" style="left:0;right:0;top:0;height:46px;background:var(--paper)"></div>
+      <div class="abs f24" style="left:12px;top:9px">14:32</div>
+      <div class="abs" style="left:84px;top:14px;display:flex;align-items:center;gap:6px"><span class="dot"></span><span class="muted">02:13:05</span></div>
+      <div class="abs" style="right:12px;top:14px">87%</div>
+      <div class="hair" style="top:46px"></div>
+      <div class="strip swipe" style="top:56px;height:78px;left:70px;right:-54px"><div class="slot" style="background:var(--own)"></div><div class="body">
+        <div class="meta"><span style="color:var(--own-ink)">已执行 · 飞书日程</span></div>
+        <div class="title">周三 15:00 评审会</div>
+        <div class="muted">刚刚</div></div></div>
+      <div class="strip" style="top:142px;height:78px"><div class="slot" style="background:var(--own)"></div><div class="body">
+        <div class="meta"><span style="color:var(--own-ink)">已执行 · 飞书任务</span><span class="faint">14:12</span></div>
+        <div class="title">周五前交周报</div>
+        <div class="muted">已加到你的任务列表</div></div></div>
+      <div class="strip" style="top:228px;height:58px"><div class="slot" style="background:var(--recd)"></div><div class="body">
+        <div class="meta"><span style="color:var(--recd)">已记下 · 笔记</span><span class="faint">13:58</span></div>
+        <div class="title">客户预算上限八十万</div></div></div>
+      <div class="ghost" style="left:0;right:0;top:294px;text-align:center">← 划走 →</div>
+    </div></div><figcaption>执行回执：左右划掉</figcaption></figure>
+
+    <!-- A4 充电 / 低电 -->
+    <figure><div class="scale"><div class="scr">
+      <div class="abs" style="left:0;right:0;top:0;height:74px;background:var(--paper)"></div>
+      <div class="abs f44" style="left:12px;top:10px">23:05</div>
+      <div class="abs" style="right:12px;top:14px;display:flex;align-items:center;gap:5px;color:var(--recd)">
+        <svg class="bolt" viewBox="0 0 9 14"><path d="M5.5 0 0 8h3.5L2.5 14 9 5.5H5.5L6.5 0z" fill="currentColor"/></svg>
+        <span class="bat chg"><span class="shell"><i style="width:42%"></i></span><span class="nub"></span></span><span class="b">42%</span></div>
+      <div class="abs b" style="right:12px;top:36px;color:var(--recd)">充电中</div>
+      <div class="hair" style="top:74px"></div>
+      <div class="abs" style="left:12px;top:84px;display:flex;align-items:center;gap:8px"><span class="dot"></span><span class="b">录音中</span><span class="muted">09:41:20</span></div>
+      <div class="abs lvl" style="right:12px;top:84px"><i style="height:3px"></i><i style="height:3px"></i><i style="height:5px"></i><i style="height:3px"></i><i style="height:3px"></i><i style="height:4px"></i><i style="height:3px"></i><i style="height:3px"></i><i style="height:3px"></i></div>
+      <div class="hair" style="top:112px"></div>
+      <div class="strip" style="top:122px;height:80px;border-color:var(--bad)"><div class="slot" style="background:var(--bad)"></div><div class="body">
+        <div class="meta"><span style="color:var(--bad)">另一种情况：电量低</span></div>
+        <div class="title">还剩 8%</div>
+        <div class="muted">到 3% 会先存好录音再关机</div></div></div>
+      <div class="strip" style="top:210px;height:80px"><div class="slot" style="background:var(--warn)"></div><div class="body">
+        <div class="meta"><span style="color:var(--warn)">离线 · 本地缓存中</span></div>
+        <div class="title">37 段待上传</div>
+        <div class="muted">联网后自动补传</div></div></div>
+    </div></div><figcaption>充电中 · 低电与离线提示</figcaption></figure>
+  </div>
+</section>
+
+<!-- ═════════════════════ B ═════════════════════ -->
+<section class="opt">
+  <div class="opt-head"><span class="letter">B</span><h2>时刻表</h2><span class="tag">翻牌屏融合</span></div>
+  <p class="why">时钟占最大的位置，下面是按时间倒排的一行行：每行一件事，时间在左、类型在中、状态在右。新来的事像翻牌一样一行行翻进来。点一行打开详情（待确认的在详情里签）。</p>
+  <ul class="pc"><li>好处：一眼看到今天办了哪些事、密度高、仪式感强，时间是主角。</li><li>风险：确认要多点一下；字小了，走路时不如 A 好看清。</li></ul>
+  <div class="row">
+    <figure><div class="scale"><div class="scr">
+      <div class="abs f44" style="left:0;right:0;top:18px;text-align:center">14:32</div>
+      <div class="abs muted" style="left:0;right:0;top:68px;text-align:center">周四 9月19日</div>
+      <div class="abs" style="left:12px;right:12px;top:98px;height:30px;background:var(--paper);border-radius:6px;display:flex;align-items:center;justify-content:space-between;padding:0 10px">
+        <span style="display:flex;align-items:center;gap:6px"><span class="dot"></span><span class="b">录音</span><span class="muted">02:13:05</span></span>
+        <span class="bat"><span class="shell"><i style="width:80%"></i></span><span class="nub"></span></span></div>
+      <div class="hair" style="top:140px;left:12px;right:12px"></div>
+      <div class="abs" style="left:12px;right:12px;top:148px;display:grid;grid-template-columns:48px 44px 1fr;row-gap:10px;column-gap:6px">
+        <span class="muted">14:30</span><span style="color:var(--own)">日程</span><span class="b" style="white-space:nowrap;overflow:hidden">周三 15:00 评审</span>
+        <span class="muted">14:12</span><span style="color:var(--own)">任务</span><span class="b">周五前交周报</span>
+        <span class="muted">13:58</span><span style="color:var(--recd)">笔记</span><span class="b" style="white-space:nowrap;overflow:hidden">预算上限八十万</span>
+        <span class="muted">11:20</span><span style="color:var(--recd)">笔记</span><span class="b">换个供应商</span>
+      </div>
+    </div></div><figcaption>待机</figcaption></figure>
+    <figure><div class="scale"><div class="scr">
+      <div class="abs f44" style="left:0;right:0;top:18px;text-align:center">14:32</div>
+      <div class="abs" style="left:12px;right:12px;top:72px;height:30px;background:var(--paper);border-radius:6px;display:flex;align-items:center;justify-content:space-between;padding:0 10px">
+        <span style="display:flex;align-items:center;gap:6px"><span class="dot"></span><span class="b">录音</span><span class="muted">02:13:05</span></span><span>87%</span></div>
+      <div class="abs" style="left:8px;right:8px;top:112px;height:48px;background:var(--ext-tint);border:2px solid var(--ext);border-radius:6px;display:grid;grid-template-columns:48px 44px 1fr;align-items:center;padding:0 6px;column-gap:6px">
+        <span style="color:var(--ext-ink)">14:31</span><span style="color:var(--ext-ink)" class="b">消息</span><span class="b" style="white-space:nowrap;overflow:hidden">给王总 ▶</span></div>
+      <div class="abs" style="left:12px;right:12px;top:172px;display:grid;grid-template-columns:48px 44px 1fr;row-gap:10px;column-gap:6px">
+        <span class="muted">14:30</span><span style="color:var(--own)">日程</span><span class="b">评审会</span>
+        <span class="muted">14:12</span><span style="color:var(--own)">任务</span><span class="b">交周报</span>
+        <span class="muted">13:58</span><span style="color:var(--recd)">笔记</span><span class="b">预算八十万</span></div>
+      <div class="ghost" style="left:0;right:0;top:290px;text-align:center">点黄色那行去确认</div>
+    </div></div><figcaption>有待确认：黄色行置顶</figcaption></figure>
+    <figure><div class="scale"><div class="scr" style="background:var(--paper)">
+      <div class="abs" style="left:12px;top:12px;display:flex;align-items:center;gap:6px"><span class="dot"></span><span class="muted">14:32 · 录音中</span></div>
+      <div class="abs" style="left:0;right:0;top:40px;height:6px;background:var(--ext)"></div>
+      <div class="abs chip" style="left:12px;top:58px;background:var(--ext-tint);color:var(--ext-ink)">对外 · 飞书消息</div>
+      <div class="abs f24" style="left:12px;right:12px;top:90px;line-height:1.3">给王总发：合同周五签</div>
+      <div class="abs muted" style="left:12px;right:12px;top:156px;border-left:2px solid var(--ext);padding-left:8px;line-height:1.4">“跟王总说一下合同周五能签”</div>
+      <div class="abs" style="left:12px;top:218px;color:var(--warn)">14:52 后自动作废</div>
+      <div class="btn no" style="left:8px;top:264px;width:88px">取消</div>
+      <div class="btn go" style="left:104px;top:264px;width:128px">确认</div>
+    </div></div><figcaption>详情页里签</figcaption></figure>
+    <figure><div class="scale"><div class="scr">
+      <div class="abs f44" style="left:0;right:0;top:18px;text-align:center">23:05</div>
+      <div class="abs" style="left:12px;right:12px;top:72px;height:30px;background:var(--recd-tint);border-radius:6px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;color:var(--recd)">
+        <span style="display:flex;align-items:center;gap:6px"><span class="dot"></span><span class="b" style="color:var(--ink)">录音</span></span>
+        <span style="display:flex;align-items:center;gap:5px"><svg class="bolt" viewBox="0 0 9 14"><path d="M5.5 0 0 8h3.5L2.5 14 9 5.5H5.5L6.5 0z" fill="currentColor"/></svg><span class="b">42% 充电中</span></span></div>
+      <div class="hair" style="top:114px;left:12px;right:12px"></div>
+      <div class="abs" style="left:12px;right:12px;top:124px;display:grid;grid-template-columns:48px 44px 1fr;row-gap:10px;column-gap:6px">
+        <span class="muted">22:40</span><span style="color:var(--recd)">笔记</span><span class="b">明早先打电话</span>
+        <span class="muted">21:15</span><span style="color:var(--own)">任务</span><span class="b">订周六机票</span></div>
+    </div></div><figcaption>充电中</figcaption></figure>
+  </div>
+</section>
+
+<!-- ═════════════════════ C ═════════════════════ -->
+<section class="opt">
+  <div class="opt-head"><span class="letter">C</span><h2>上仪表、下卡槽</h2><span class="tag">录音机面板</span></div>
+  <p class="why">屏幕上半是录音机的仪表：时钟、录音灯、走时、一条宽电平。下半是一个卡槽，一次只插一张纸条；有多张时底部有页点，左右划换下一张，已执行的划掉就没了。</p>
+  <ul class="pc"><li>好处：录音状态最显眼、最像一台仪器；一次只看一件事，不乱。</li><li>风险：同时来好几条回执时要一张张划。</li></ul>
+  <div class="row">
+    <figure><div class="scale"><div class="scr">
+      <div class="abs" style="left:0;right:0;top:0;height:150px;background:#12202A"></div>
+      <div class="abs f44" style="left:14px;top:14px;color:#fff">14:32</div>
+      <div class="abs" style="right:14px;top:18px;display:flex;align-items:center;gap:6px;color:#fff">87%<span class="bat"><span class="shell" style="border-color:#fff"><i style="width:80%;background:#fff"></i></span><span class="nub" style="background:#fff"></span></span></div>
+      <div class="abs" style="left:14px;top:74px;display:flex;align-items:center;gap:8px;color:#fff"><span class="dot" style="width:12px;height:12px"></span><span class="b">REC</span><span style="color:#B3BFBC">02:13:05</span></div>
+      <div class="abs lvl" style="left:14px;right:14px;top:108px;height:26px;gap:4px"><i style="height:4px;background:#3DD6C3"></i><i style="height:8px;background:#3DD6C3"></i><i style="height:14px;background:#3DD6C3"></i><i style="height:22px;background:#3DD6C3"></i><i style="height:18px;background:#3DD6C3"></i><i style="height:10px;background:#3DD6C3"></i><i style="height:6px;background:#3DD6C3"></i><i style="height:12px;background:#3DD6C3"></i><i style="height:20px;background:#3DD6C3"></i><i style="height:16px;background:#3DD6C3"></i><i style="height:8px;background:#3DD6C3"></i><i style="height:5px;background:#3DD6C3"></i><i style="height:9px;background:#3DD6C3"></i><i style="height:14px;background:#3DD6C3"></i><i style="height:7px;background:#3DD6C3"></i><i style="height:4px;background:#3DD6C3"></i><i style="height:3px;background:#3DD6C3"></i><i style="height:6px;background:#3DD6C3"></i><i style="height:11px;background:#3DD6C3"></i><i style="height:5px;background:#3DD6C3"></i><i style="height:3px;background:#3DD6C3"></i><i style="height:3px;background:#3DD6C3"></i><i style="height:4px;background:#3DD6C3"></i><i style="height:3px;background:#3DD6C3"></i><i style="height:3px;background:#3DD6C3"></i><i style="height:3px;background:#3DD6C3"></i></div>
+      <div class="strip" style="top:166px;height:100px"><div class="slot" style="background:var(--rule-strong)"></div><div class="body">
+        <div class="meta"><span class="muted">今天</span><span style="color:var(--act)">已同步</span></div>
+        <div class="f24" style="margin-top:6px">6 小时 12 分</div>
+        <div class="muted" style="margin-top:4px">214 句 · 办了 3 件事</div></div></div>
+      <div class="ghost" style="left:0;right:0;top:286px;text-align:center">周四 9月19日</div>
+    </div></div><figcaption>待机</figcaption></figure>
+    <figure><div class="scale"><div class="scr">
+      <div class="abs" style="left:0;right:0;top:0;height:64px;background:#12202A"></div>
+      <div class="abs f24" style="left:14px;top:14px;color:#fff">14:32</div>
+      <div class="abs" style="left:96px;top:20px;display:flex;align-items:center;gap:6px;color:#fff"><span class="dot"></span><span style="color:#B3BFBC">02:13:05</span></div>
+      <div class="abs" style="right:14px;top:20px;color:#fff">87%</div>
+      <div class="abs lvl" style="left:14px;right:14px;top:46px;height:10px;gap:3px"><i style="height:3px;background:#3DD6C3"></i><i style="height:6px;background:#3DD6C3"></i><i style="height:9px;background:#3DD6C3"></i><i style="height:5px;background:#3DD6C3"></i><i style="height:3px;background:#3DD6C3"></i><i style="height:7px;background:#3DD6C3"></i><i style="height:4px;background:#3DD6C3"></i></div>
+      <div class="strip" style="top:74px;height:180px;border-color:var(--ext)"><div class="slot" style="background:var(--ext)"></div><div class="body">
+        <div class="meta"><span class="chip" style="background:var(--ext-tint);color:var(--ext-ink)">对外 · 飞书消息</span><span style="color:var(--warn)">14:52</span></div>
+        <div class="f24" style="margin-top:8px;line-height:1.3">给王总发：合同周五签</div>
+        <div class="muted" style="margin-top:8px;border-left:2px solid var(--ext);padding-left:8px;line-height:1.4">“跟王总说一下合同周五能签”</div></div></div>
+      <div class="btn no" style="left:8px;top:264px;width:88px">取消</div>
+      <div class="btn go" style="left:104px;top:264px;width:128px">确认</div>
+    </div></div><figcaption>待确认</figcaption></figure>
+    <figure><div class="scale"><div class="scr">
+      <div class="abs" style="left:0;right:0;top:0;height:150px;background:#12202A"></div>
+      <div class="abs f44" style="left:14px;top:14px;color:#fff">14:32</div>
+      <div class="abs" style="left:14px;top:74px;display:flex;align-items:center;gap:8px;color:#fff"><span class="dot" style="width:12px;height:12px"></span><span class="b">REC</span><span style="color:#B3BFBC">02:13:05</span></div>
+      <div class="strip swipe" style="top:166px;height:100px;left:-60px;right:76px"><div class="slot" style="background:var(--own)"></div><div class="body">
+        <div class="meta"><span style="color:var(--own-ink)">已执行 · 日程</span></div>
+        <div class="title">周三 15:00 评审会</div></div></div>
+      <div class="strip" style="top:166px;height:100px;left:176px;right:-150px"><div class="slot" style="background:var(--own)"></div><div class="body">
+        <div class="meta"><span style="color:var(--own-ink)">已执行 · 任务</span></div>
+        <div class="title">周五前交周报</div></div></div>
+      <div class="abs" style="left:0;right:0;top:282px;display:flex;justify-content:center;gap:6px"><i style="width:18px;height:6px;border-radius:3px;background:var(--ink)"></i><i style="width:6px;height:6px;border-radius:3px;background:var(--rule-strong)"></i><i style="width:6px;height:6px;border-radius:3px;background:var(--rule-strong)"></i></div>
+    </div></div><figcaption>回执：划掉换下一张</figcaption></figure>
+    <figure><div class="scale"><div class="scr">
+      <div class="abs" style="left:0;right:0;top:0;height:150px;background:#12202A"></div>
+      <div class="abs f44" style="left:14px;top:14px;color:#fff">23:05</div>
+      <div class="abs" style="right:14px;top:18px;display:flex;align-items:center;gap:5px;color:#5FD39A">
+        <svg class="bolt" viewBox="0 0 9 14"><path d="M5.5 0 0 8h3.5L2.5 14 9 5.5H5.5L6.5 0z" fill="currentColor"/></svg><span class="b">42%</span></div>
+      <div class="abs" style="left:14px;top:74px;display:flex;align-items:center;gap:8px;color:#fff"><span class="dot" style="width:12px;height:12px"></span><span class="b">REC</span><span style="color:#B3BFBC">09:41:20</span></div>
+      <div class="abs b" style="left:14px;top:112px;color:#5FD39A">充电中</div>
+      <div class="strip" style="top:166px;height:100px;border-color:var(--bad)"><div class="slot" style="background:var(--bad)"></div><div class="body">
+        <div class="meta"><span style="color:var(--bad)">另一种情况：电量低</span></div>
+        <div class="f24" style="margin-top:4px">还剩 8%</div>
+        <div class="muted" style="margin-top:4px">到 3% 先存好录音再关机</div></div></div>
+    </div></div><figcaption>充电中 · 低电</figcaption></figure>
+  </div>
+</section>
+
+<!-- ═════════════════════ D ═════════════════════ -->
+<section class="opt">
+  <div class="opt-head"><span class="letter">D</span><h2>表盘</h2><span class="tag">手表式</span></div>
+  <p class="why">整屏就是一个表盘：正中大号时间，外面一圈是今天的录音环（一圈 24 小时，录过的时段是实心的，红点是现在）。有事的时候，一张纸条从下面升上来盖住下半屏，划走就落回去。</p>
+  <ul class="pc"><li>好处：最"好看"、最像随身设备；一天录了哪些时段一眼可见。</li><li>风险：录音环需要设备记住今天每个时段录没录；纸条盖住表盘时看不到时间以外的状态。</li></ul>
+  <div class="row">
+    <figure><div class="scale"><div class="scr">
+      <svg class="abs" style="left:20px;top:20px" width="200" height="200" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="92" fill="none" stroke="#D5DCDA" stroke-width="8"/>
+        <circle cx="100" cy="100" r="92" fill="none" stroke="#0A6E64" stroke-width="8" stroke-dasharray="120 18 60 12 150 218" transform="rotate(-10 100 100)"/>
+        <circle cx="100" cy="8" r="7" fill="#D92D3A" transform="rotate(218 100 100)"/>
+      </svg>
+      <div class="abs f44" style="left:0;right:0;top:92px;text-align:center">14:32</div>
+      <div class="abs muted" style="left:0;right:0;top:142px;text-align:center">周四 9月19日</div>
+      <div class="abs" style="left:0;right:0;top:252px;display:flex;justify-content:center;align-items:center;gap:8px"><span class="dot"></span><span class="b">录音中</span><span class="muted">02:13:05</span></div>
+      <div class="abs" style="left:0;right:0;top:282px;text-align:center" class="muted"><span class="muted">87% · 已同步</span></div>
+    </div></div><figcaption>待机：外圈是今天录过的时段</figcaption></figure>
+    <figure><div class="scale"><div class="scr">
+      <div class="abs f24" style="left:0;right:0;top:22px;text-align:center">14:32</div>
+      <div class="abs" style="left:0;right:0;top:56px;display:flex;justify-content:center;align-items:center;gap:6px"><span class="dot"></span><span class="muted">录音中 02:13:05</span></div>
+      <div class="strip" style="top:88px;height:168px;border-color:var(--ext)"><div class="slot" style="background:var(--ext)"></div><div class="body">
+        <div class="meta"><span class="chip" style="background:var(--ext-tint);color:var(--ext-ink)">对外 · 飞书消息</span><span style="color:var(--warn)">14:52</span></div>
+        <div class="f24" style="margin-top:8px;line-height:1.3">给王总发：合同周五签</div>
+        <div class="muted" style="margin-top:8px;border-left:2px solid var(--ext);padding-left:8px;line-height:1.4">“跟王总说一下合同周五能签”</div></div></div>
+      <div class="btn no" style="left:8px;top:266px;width:88px">取消</div>
+      <div class="btn go" style="left:104px;top:266px;width:128px">确认</div>
+    </div></div><figcaption>纸条升上来要确认</figcaption></figure>
+    <figure><div class="scale"><div class="scr">
+      <svg class="abs" style="left:20px;top:20px" width="200" height="200" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="92" fill="none" stroke="#D5DCDA" stroke-width="8"/>
+        <circle cx="100" cy="100" r="92" fill="none" stroke="#0A6E64" stroke-width="8" stroke-dasharray="120 18 60 12 150 218" transform="rotate(-10 100 100)"/>
+      </svg>
+      <div class="abs f44" style="left:0;right:0;top:92px;text-align:center">14:32</div>
+      <div class="strip swipe" style="top:216px;height:78px;left:84px;right:-68px"><div class="slot" style="background:var(--own)"></div><div class="body">
+        <div class="meta"><span style="color:var(--own-ink)">已执行 · 日程</span></div>
+        <div class="title">周三 15:00 评审会</div></div></div>
+    </div></div><figcaption>回执：划走落回表盘</figcaption></figure>
+    <figure><div class="scale"><div class="scr">
+      <svg class="abs" style="left:20px;top:20px" width="200" height="200" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="92" fill="none" stroke="#D5DCDA" stroke-width="8"/>
+        <circle cx="100" cy="100" r="92" fill="none" stroke="#1E7A4B" stroke-width="8" stroke-dasharray="243 335" transform="rotate(-90 100 100)"/>
+      </svg>
+      <div class="abs" style="left:0;right:0;top:66px;display:flex;justify-content:center;color:var(--recd)"><svg width="14" height="22" viewBox="0 0 9 14"><path d="M5.5 0 0 8h3.5L2.5 14 9 5.5H5.5L6.5 0z" fill="currentColor"/></svg></div>
+      <div class="abs f44" style="left:0;right:0;top:96px;text-align:center">42%</div>
+      <div class="abs" style="left:0;right:0;top:146px;text-align:center;color:var(--recd)">充电中</div>
+      <div class="abs" style="left:0;right:0;top:252px;display:flex;justify-content:center;align-items:center;gap:8px"><span class="dot"></span><span class="b">录音中</span><span class="muted">23:05</span></div>
+    </div></div><figcaption>充电时外圈变成电量环</figcaption></figure>
+  </div>
+</section>
+
+<!-- ═════════════════════ 开关机 ═════════════════════ -->
+<section class="opt">
+  <div class="opt-head"><span class="letter">＋</span><h2>开机、关机、软关机</h2><span class="tag">四个方案通用</span></div>
+  <p class="why">现在的开关机画面是深蓝底一个空圆圈。新的：开机时标志居中，下面一条真实的自检进度（存储 → 麦克风 → 4G），每一步是真的做完了才走；关机时说清楚录音已经存好；软关机时屏幕说明怎么叫醒它，然后熄屏。</p>
+  <div class="row">
+    <figure><div class="scale"><div class="scr" style="background:var(--paper)">
+      <div class="abs" style="left:103px;top:88px"><div class="mark"><i></i><i></i></div></div>
+      <div class="abs f24" style="left:0;right:0;top:136px;text-align:center">VoxMind</div>
+      <div class="progress" style="left:40px;right:40px;top:196px"><i style="width:66%"></i></div>
+      <div class="abs" style="left:0;right:0;top:212px;text-align:center" ><span class="muted">存储 ✓　麦克风 ✓　</span><span class="b">4G…</span></div>
+      <div class="abs faint" style="left:0;right:0;top:292px;text-align:center">0.8.1</div>
+    </div></div><figcaption>开机自检（每步真做完才走）</figcaption></figure>
+    <figure><div class="scale"><div class="scr" style="background:var(--paper)">
+      <div class="abs" style="left:103px;top:88px"><div class="mark"><i></i><i></i></div></div>
+      <div class="abs f24" style="left:0;right:0;top:136px;text-align:center">正在关机</div>
+      <div class="abs muted" style="left:16px;right:16px;top:176px;text-align:center;line-height:1.5">录音已存好<br>还有 3 段没上传，下次开机补传</div>
+    </div></div><figcaption>关机</figcaption></figure>
+    <figure><div class="scale"><div class="scr" style="background:#12202A;color:#fff">
+      <div class="abs" style="left:103px;top:76px"><div class="mark" style="border-color:#fff"><i style="background:#fff"></i><i style="background:#fff"></i></div></div>
+      <div class="abs f24" style="left:0;right:0;top:124px;text-align:center">休息中，不录音</div>
+      <div class="abs" style="left:16px;right:16px;top:168px;text-align:center;line-height:1.6;color:#B3BFBC">说「小沃，开机」<br>或长按录音键</div>
+      <div class="abs" style="left:0;right:0;top:250px;text-align:center;color:#E9A21B">软关机仍在听唤醒词，比真关机耗电</div>
+      <div class="abs" style="left:0;right:0;top:286px;text-align:center;color:#61717C">10 秒后熄屏</div>
+    </div></div><figcaption>软关机（之后熄屏）</figcaption></figure>
+  </div>
+</section>
+</div>
+</body>
+</html>

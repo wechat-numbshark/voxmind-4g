@@ -1,0 +1,4 @@
+ui_logic: layout bounds, pause/resume accounting and UTF-8 boundaries passed
+runtime_protocol: split response, UTF-8 byte overflow, reset, effective recording time passed
+cellular: CN regression, UK defaults, MVNO/PAYG overrides, roaming, malformed records/input and LTE registration passed
+cellular_settings: persisted selection, JSON validation, failed commit, corrupt records, and credential redaction passed

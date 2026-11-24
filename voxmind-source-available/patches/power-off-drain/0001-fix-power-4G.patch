@@ -1,0 +1,1114 @@
+From 4ecf2da25ed69c5c18921a7e0159c5805e731539 Mon Sep 17 00:00:00 2001
+From: Neo <noreply@example.invalid>
+Date: Fri, 6 Nov 2026 14:46:25 +0800
+Subject: [PATCH 1/2] =?UTF-8?q?fix(power):=20=E5=85=B3=E6=9C=BA=E6=96=AD?=
+ =?UTF-8?q?=E5=BC=80=204G=20=E7=94=B5=E6=BA=90=E3=80=81=E5=AE=9E=E6=B5=8B?=
+ =?UTF-8?q?=E5=85=B3=E6=9C=BA=E6=8E=89=E7=94=B5=E3=80=81=E7=94=B5=E9=87=8F?=
+ =?UTF-8?q?=E8=AE=A1=E9=87=8D=E7=BD=AE=E5=90=8E=E9=87=8D=E4=BC=B0?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+v9 板上 4G 模组经 R28 直接挂在电池上，3.3V 也常开，关机后电池被一路放空，
+电量计跟着断电重置，再上电凭电压猜电量，所以"关机就没电、电量不准"。
+调查见 docs/31，固件与改线说明见 docs/32。
+
+固件（新旧板通用）：
+- 关机前触摸芯片深睡；深睡前钉住灯、复位、片选、麦克风时钟、马达、4G TX/DTR
+- 改线 A 后用 GPIO46 断开模组电源；联网卡死时先给模组断电再重启
+- 关机前把电量/电压/时间记进 RTC，开机算出关机电流随心跳上报（offDrain）
+- 电量计 STATUS.RI 检测重置，确认没插电后 quick-start 重估
+- 显示电量单向平滑；带载低于 3.40V 持续 1 分钟自动关机（DIAG_STOP_BATTERY）
+- 改线 B 后经 GPIO44 直读 /PGOOD 判断 USB 插拔
+
+云端：心跳接受 power 字段，写进开机/健康诊断审计。
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ cloud/src/identity/types.ts                   |  22 ++
+ cloud/src/services/identity.ts                |   3 +-
+ cloud/test/device-diagnostics.test.ts         |  12 ++
+ ..._VoxMind电量不准与关机掉电调查_20261106.md | 159 +++++++++++++++
+ .../32_VoxMind电源修复_固件与改线_20261106.md | 142 +++++++++++++
+ firmware/components/app_cloud/CMakeLists.txt  |   2 +-
+ firmware/components/app_cloud/app_cloud.c     | 188 +++++++++++++++++-
+ firmware/components/app_cloud/battery_logic.c |  22 ++
+ .../app_cloud/include/battery_logic.h         |  16 ++
+ .../app_cloud/include/runtime_diagnostics.h   |   2 +-
+ .../app_cloud/tests/battery_logic_test.c      |  28 +++
+ firmware/components/drv_modem/drv_modem.c     |  59 +++++-
+ .../components/drv_modem/include/drv_modem.h  |   8 +-
+ firmware/components/drv_power/CMakeLists.txt  |   2 +-
+ firmware/components/drv_power/drv_power.c     |  52 +++++
+ .../components/drv_power/include/drv_power.h  |  19 +-
+ firmware/tools/test-host.sh                   |   6 +-
+ firmware/version.txt                          |   2 +-
+ 18 files changed, 726 insertions(+), 18 deletions(-)
+ create mode 100644 docs/31_VoxMind电量不准与关机掉电调查_20261106.md
+ create mode 100644 docs/32_VoxMind电源修复_固件与改线_20261106.md
+ create mode 100644 firmware/components/app_cloud/battery_logic.c
+ create mode 100644 firmware/components/app_cloud/include/battery_logic.h
+ create mode 100644 firmware/components/app_cloud/tests/battery_logic_test.c
+
+diff --git a/cloud/src/identity/types.ts b/cloud/src/identity/types.ts
+index d0692ac4..022220f9 100644
+--- a/cloud/src/identity/types.ts
++++ b/cloud/src/identity/types.ts
+@@ -85,6 +85,27 @@ export const DeviceDiagnostics = z.object({
+   previous: DiagnosticSnapshot.extend({ valid: z.boolean(), bootId: z.string().regex(/^[a-f0-9]{8}$/) }),
+   current: DiagnosticSnapshot,
+ });
++/** 设备上报的电池详情（固件 1.0.27 起）。offDrain 只在关机后第一次开机的那段时间里有：
++ *  电量计关机期间一直通电，开机时一比就知道关机那段时间掉了多少电（docs/31、docs/32）。 */
++const DeviceOffDrain = z.object({
++  diedWhileOff: z.boolean().optional(),
++  hours: z.number().min(0).max(24 * 120).optional(),
++  socFrom: z.number().min(-5).max(150).optional(),
++  socTo: z.number().min(-5).max(150).optional(),
++  mvFrom: z.number().int().min(0).max(6000).optional(),
++  mvTo: z.number().int().min(0).max(6000).optional(),
++  estMa: z.number().min(-1).max(5000).optional(),
++  modemCut: z.boolean().optional(),
++  gaugeReset: z.boolean().optional(),
++});
++export const DevicePower = z.object({
++  mv: z.number().int().min(0).max(6000),
++  crate: z.number().min(-1000).max(1000),
++  usb: z.boolean().nullable(),
++  gaugeReset: z.boolean(),
++  modemSwitch: z.boolean(),
++  offDrain: DeviceOffDrain.optional(),
++});
+ export const DeviceHeartbeat = z.object({
+   firmware: z.string().max(60).optional(),
+   batteryPct: z.number().int().min(0).max(100).optional(),
+@@ -92,6 +113,7 @@ export const DeviceHeartbeat = z.object({
+   pendingUploads: z.number().int().nonnegative().optional(),
+   charging: z.boolean().optional(),
+   diagnostics: DeviceDiagnostics.optional(),
++  power: DevicePower.optional(),
+ });
+ export type DeviceHeartbeat = z.infer<typeof DeviceHeartbeat>;
+ 
+diff --git a/cloud/src/services/identity.ts b/cloud/src/services/identity.ts
+index 7f1f8e96..f6f24a3d 100644
+--- a/cloud/src/services/identity.ts
++++ b/cloud/src/services/identity.ts
+@@ -137,7 +137,8 @@ export class IdentityService {
+         await this.repository.appendAudit({ at: new Date(now).toISOString(), actorType: "device", actorId: deviceId,
+           action: !seen || seen.bootId !== diag.bootId ? "device.boot_diagnostics" : "device.health_diagnostics",
+           targetType: "device", targetId: deviceId, ip: "",
+-          detail: { diagnostics: diag, pendingUploads: beat.pendingUploads ?? null, firmware: beat.firmware ?? null } });
++          detail: { diagnostics: diag, pendingUploads: beat.pendingUploads ?? null, firmware: beat.firmware ?? null,
++                    batteryPct: beat.batteryPct ?? null, charging: beat.charging ?? null, power: beat.power ?? null } });
+         if (this.diagnosticSeen.size >= 1000) this.diagnosticSeen.delete(this.diagnosticSeen.keys().next().value!);
+         this.diagnosticSeen.set(deviceId, { bootId: diag.bootId, fault, at: now });
+       }
+diff --git a/cloud/test/device-diagnostics.test.ts b/cloud/test/device-diagnostics.test.ts
+index 9114dd7f..bb528948 100644
+--- a/cloud/test/device-diagnostics.test.ts
++++ b/cloud/test/device-diagnostics.test.ts
+@@ -15,6 +15,18 @@ describe("bounded authenticated device diagnostics", () => {
+     expect(DeviceHeartbeat.safeParse({ diagnostics: { ...diagnostics, bootId: "unbounded" } }).success).toBe(false);
+     expect(DeviceHeartbeat.safeParse({ diagnostics: { ...diagnostics, current: { ...snapshot, healthAgeMs: [1,2,3,4] } } }).success).toBe(false);
+   });
++  it("accepts the battery report and keeps off-drain evidence in the boot audit", async () => {
++    const power = { mv: 3912, crate: -8.1, usb: null, gaugeReset: false, modemSwitch: true,
++      offDrain: { hours: 14.2, socFrom: 80.1, socTo: 78.3, mvFrom: 4010, mvTo: 3990, estMa: 1.33, modemCut: true, gaugeReset: false } };
++    expect(DeviceHeartbeat.parse({ power: { ...power, extra: 1 } }).power).not.toHaveProperty("extra");
++    expect(DeviceHeartbeat.safeParse({ power: { ...power, mv: 99999 } }).success).toBe(false);
++    const repository = new MemoryRepository();
++    const identity = new IdentityService(repository, loadConfig({ NODE_ENV: "test" }));
++    await identity.issueDevice("owner", "test-device", "test");
++    await identity.heartbeat("test-device", DeviceHeartbeat.parse({ batteryPct: 78, diagnostics, power }));
++    const [boot] = await repository.listAudit(5, { action: "device.boot_diagnostics" });
++    expect((boot.detail as { power: typeof power }).power.offDrain?.estMa).toBe(1.33);
++  });
+   it("stores boot evidence, deduplicates healthy heartbeats, records stale UI and new boot", async () => {
+     const repository = new MemoryRepository();
+     const identity = new IdentityService(repository, loadConfig({ NODE_ENV: "test" }));
+diff --git a/docs/31_VoxMind电量不准与关机掉电调查_20261106.md b/docs/31_VoxMind电量不准与关机掉电调查_20261106.md
+new file mode 100644
+index 00000000..61bd810c
+--- /dev/null
++++ b/docs/31_VoxMind电量不准与关机掉电调查_20261106.md
+@@ -0,0 +1,159 @@
++# VoxMind 电量不准与关机掉电调查
++
++日期：2026-11-06。对象：EVT v9 实板（`demo-voxmind-not-a-real-device`，固件 1.0.26），1050 mAh 电池。
++
++> 修复已做：固件 `1.0.27-power.1` 和改线步骤见 [32 号文档](32_VoxMind电源修复_固件与改线_20261106.md)。
++
++依据三类材料，每条结论都标了出处：
++
++- 板子网表：`.easyeda/voxmind_v9_mechanical.json`（v9 器件逐脚网络）、`制造文件_v9_20260830/VoxMind_EVT_V1_v9_BOM.xlsx`
++- 固件代码：`firmware/components/app_cloud/app_cloud.c`、`drv_power`、`drv_display`、`drv_modem`
++- 线上记录：生产库 `vm_audit_log` 里的 `device.boot_diagnostics`（每次开机上报的复位原因）
++
++本次**没有接电流表实测**。设备从 11-03 起离线，下面的电流数字是按器件规格和以前的实测推算的，第 5 节给出了怎么实测。
++
++---
++
++## 1. 结论
++
++| # | 现象 | 根因 | 把握 |
++|---|---|---|---|
++| A | 关机后过一阵就完全没电 | **4G 模组直接接在电池上，关机断不了它的电**。3.3V 电源也一直开着。所谓“关机”只是 ESP32 深睡眠 + 4G 关射频，整机仍有毫安级耗电 | 高（网表确认） |
++| B | 电量不准 | **电池被反复放空 → 电量计跟着断电重置**，重新开机时只能凭当下电压猜电量，经常是插着充电器猜的，偏高 | 高（网表 + 开机记录） |
++| C | 电量不准（跳变） | 电量计 QSTRT 脚悬空（数据手册要求接地），CTG 脚也只经电容接地 | 中（网表确认，影响程度要实测） |
++| D | 开机时掉电快 | 4G 模组休眠在 1.0.11 起被关掉、ESP32 不开 light sleep，录音时整机约 100 mA 以上 | 高（以前实测） |
++| E | 掉电越来越快 | 每次放到电池保护板切断，属于深度过放，会持续损伤电池容量 | 中（推断） |
++
++**电池第三根线（NTC 温度）不是这次的原因。** MAX17048 电量计本身不读温度，第三根线只给充电芯片 BQ24074 做温度保护。现在板上 R4（10kΩ）把 TS 脚固定成“25°C”，充电时没有温度保护，这是安全问题，见第 4 节。
++
++---
++
++## 2. 关机为什么会把电耗光（A、E）
++
++### 2.1 电路：有两路电，关机都断不了
++
++从 v9 网表逐脚读出（BQ24074、MAX17048 按 TI / ADI 数据手册脚位对照，ISET、ILIM、IN、OUT、BAT 脚全部对得上）：
++
++```
++电池 J1.1 ─ VBAT ─┬─ R28 (0Ω) ─ VBAT_MODEM ─ ML307C 4G 模组（U3.42/43）+ 470µF 电解 C32
++                  ├─ MAX17048 电量计（U5.2 CELL / U5.3 VDD）
++                  └─ BQ24074 BAT（U1.2/3）── OUT ─ VSYS_RAW ─ TPS63802 → +3V3 → ESP32 / SD / 屏 / 触摸 / 灯 / TLV755 → +1V8 → 麦克风
++```
++
++- **4G 模组的供电绕开了充电芯片**，经一个 0Ω 电阻直接焊在电池上，中间没有任何开关。以前已经实测确认电源键（PWRKEY）关不掉它（见 memory `modem-pwrkey-cannot-power-off`），复位脚也没接 GPIO。所以电池只要有电，模组就一直在线。
++- **TPS63802 的使能脚 EN（U4.1）直接接在 VSYS_RAW 上**，3.3V 电源永远开着。ESP32 模组、SD NAND、屏幕、触摸芯片、WS2812 灯、两颗电平转换芯片在“关机”时都还通着电。
++- **BQ24074 的 SYSOFF（U1.15）悬空**。这个脚本来可以把电池和系统断开（运输模式），板上没用上。
++- BQ24074 的 /CHG（U1.9）悬空，/PGOOD（U1.7）只接了上拉，没接到 ESP32。固件因此读不到充电状态，只能靠电压跳变去猜（`app_cloud.c` 约 360–400 行）。
++
++### 2.2 固件：“真关机”实际做了什么
++
++`power_off()` → `modem_radio_off()` → `enter_deep_sleep()`（`app_cloud.c` 1289–1540 行）：
++
++1. 屏幕发睡眠指令，背光脚钉低（`display_power_down`）。
++2. 4G 退出拨号，发 `AT+CFUN=0` 关射频。**模组本体不关**，而且模组休眠从 1.0.11 起默认关闭（休眠后曾叫不醒），所以它在关机期间处于醒着、串口开着、只是不发射的状态。
++3. ESP32 进深睡眠，长按录音键唤醒。
++
++还有三处会在关机期间额外耗电：
++
++- **触摸芯片 CST816D 没有睡**。`display_power_down()` 没有调用现成的 `display_touch_sleep(true)`（头文件注释写深睡约 5 µA），触摸芯片整晚都在扫描。
++- **串口 TX（GPIO16）、DTR（GPIO48）在深睡里没有钉住**（只钉了背光和 PWRKEY）。它们经电平转换 U10 接到模组，深睡后变成高阻悬空。CMOS 输入悬空会多耗电，模组的 DTR 也变成不确定状态。
++- WS2812 灯不亮时也有静态电流，接在常开的 3.3V 上。
++
++### 2.3 估算：关机电流在毫安级
++
++| 部件 | 关机时状态 | 估计电流 |
++|---|---|---|
++| ML307C 4G | CFUN=0，没休眠 | 约 几 mA ~ 十几 mA（**最大头，要实测**） |
++| 触摸 CST816D | 没进深睡 | 约 0.1 ~ 2 mA（看它的自动省电档） |
++| WS2812C 灯 | 静态 | 约 0.3 ~ 1 mA |
++| 悬空的电平转换输入 | 不确定 | 0 ~ 1 mA |
++| SD NAND、TPS63802、TLV755、MAX17048、ESP32 深睡、麦克风、电容漏电 | 待机 | 合计约 0.3 ~ 0.6 mA |
++
++按合计 5 ~ 20 mA 算，1050 mAh 满电关机能撑约 2 ~ 9 天。用户说的“关机放一段时间就没电”和这个量级吻合。以前 10-03 的实测也对得上：暂停录音 + 关射频时整机 13 ~ 25 mA，其中还包括 ESP32 自己在 80 MHz 下的运行电流。
++
++### 2.4 线上证据：电池确实被反复放空
++
++ESP32 从深睡眠醒来，复位原因是 8（`ESP_RST_DEEPSLEEP`），RTC 里存的上次运行记录还在。电池放空后再插电，复位原因是 1（`ESP_RST_POWERON`），上次运行记录全部丢失（`previous.valid=false`）。
++
++10-11 到 11-03 一共开机上报 14 次，**有 7 次是复位原因 1、上次运行记录丢失**：10-12、10-15、10-18、10-21、10-24、10-30、11-03。从深睡眠正常醒来的只有 4 次。
++
++需要说明：按 EN 复位键（SW5）或 USB 下载复位也会报 1。所以这 7 次里可能有个别不是放空。但每隔两三天就出现一次，和“关机两三天就没电”的节奏一致。
++
++**放空本身也有害**：模组直接挂在电池上，没有任何欠压切断，会一直把电池放到电池保护板动作（通常 2.5 ~ 3.0 V）。每次都是深度过放，锂电池容量会一点点下降。这会让开机时也显得“越来越不耐用”。
++
++---
++
++## 3. 电量为什么不准（B、C）
++
++### 3.1 电池一放空，电量计就被清零（主因）
++
++MAX17048 的电源也取自 VBAT（U5.3）。电池保护板一切断，电量计就断电，它算到一半的电量随之丢失。下次通电时，它只能用通电那一刻的电压估一个初始电量。而这一刻通常是：
++
++- **刚插上充电器**：电池电压被充电电流抬高，估出来的电量偏高，一个几乎没电的电池可能显示 20% ~ 40%。用一会儿就“掉得飞快”，其实是在回落到真实值。
++- **刚开机、4G 正在注册**：电压被大电流拉低，估出来偏低。
++
++固件拿到电量计的数直接显示（`s_battery_pct = soc_pct + 0.5`），没有任何平滑处理，也不知道刚才发生过重置。固件里的 `power_quick_start()` 从来没被调用过，这一点没问题。
++
++### 3.2 电量计的两只脚没按数据手册接（C）
++
++- **QSTRT（U5.6）悬空**。这个脚的上升沿会触发“快速重启”，让电量计按当时的电压重新估电量。数据手册要求不用时接地。旁边 4G 发射时电流可达 2 A，悬空的脚容易被干扰，造成偶发跳变。
++- **CTG（U5.1）只经 100nF 的 C21 接地**，直流上仍是悬空。数据手册要求直接接地。
++
++两条网表确认无误，但实际影响有多大要实测。
++
++### 3.3 测的是带载电压，模型也没调过（次要）
++
++- 电量计的采样点和 4G 模组的大电流在同一个 VBAT 节点上，大电流还要流过 J1 插座和电池线。录音、上传时它看到的电压偏低，电量就算得偏低；关机静置后又回升，看上去像“关机还在掉/又涨回来”。
++- 固件没写 RCOMP，没有按这颗电池调电量模型，也没有温度补偿（板上没有温度来源）。出厂默认模型在常见锂电上通常误差几个百分点，单这一项不足以解释“很不准”。
++
++---
++
++## 4. 电池第三根线
++
++- J1 的 3 脚是 TS（接 BQ24074 TS 脚），电池的第三根线一般是 10kΩ NTC。现在 3 脚空着，R4 10kΩ 把 TS 固定在“25°C”，充电芯片永远以为温度正常。**高温或低温下照样满电流充电，没有温度保护。** 和耗电、电量不准无关。
++- **想接上第三根线，必须先拆掉 R4**。否则 NTC 和 R4 并联约 5kΩ，充电芯片会以为电池过热而停充。另外还要先确认电池的 NTC 是 10kΩ（B 值 3435 或 3950），再接。
++
++---
++
++## 5. 下一步：先实测，再改
++
++### 5.1 实测（半小时，必做）
++
++1. **关机电流**：万用表 mA 档串在电池正极（J1.1 线上）。正常开机后长按录音键关机，等 2 分钟读稳态值。
++2. 在关机状态下逐项排除，看电流降多少：
++   - 拔掉屏幕排线：屏 + 触摸那部分。
++   - 临时拆 R28（4G 供电 0Ω）：4G 模组那部分。**这一项最关键**，预计占大头。
++3. 记下开机录音、暂停时的电流，和 memory `voxmind-power-budget` 里 10-03 的数据对比，看过放之后电池有没有变差。
++
++不方便串表时，可以让固件代劳（见 5.2 第 1 条）：电量计在关机期间一直通电、一直在算，开机时读一下就知道关机期间掉了多少。
++
++### 5.2 固件能做的（不改板）
++
++| 优先级 | 改动 | 作用 |
++|---|---|---|
++| 1 | 关机前把电量、电压、时间记进 RTC 内存。开机时读电量计，算出“关机 X 小时掉了 Y%”，随开机诊断一起上报 | 不接电流表也能拿到真实关机电流；以后每次关机都自动有数据 |
++| 1 | 关机前调用 `display_touch_sleep(true)`，并对 GPIO16（TX）、GPIO48（DTR）用 `gpio_hold_en` 钉成确定电平 | 去掉触摸扫描和悬空输入的耗电，改动小、风险低 |
++| 2 | 开机读电量计 STATUS 寄存器（0x1A）的 RI 位，判断它是不是刚被重置过。是的话界面标“电量校准中”；等拔掉充电器、静置一会儿，再用 0x06 MODE 的 Quick-Start 重新估一次 | 解决放空后电量偏高、之后“掉得飞快”的问题 |
++| 2 | 显示的电量做单调平滑：放电时不涨，充电时不降，每分钟最多变 1% | 去掉跳变 |
++| 3 | 关机时允许模组进休眠（`AT+MLPMCFG="sleepmode",2,0` + DTR 拉高并钉住） | 可能把模组那部分从毫安级降到 1 mA 左右。**风险**：1.0.9 出现过休眠后叫不醒，没有复位线就只能拔电池。必须先用 USB 反复试开关机，验证每次都能叫醒才能上 |
++| 3 | 电压低于约 3.3 V 时自动真关机，并提示“电量耗尽” | 少一点深度过放，但模组仍在耗电，治标不治本 |
++
++**能做到什么程度要说清楚**：第 1、2 档能把关机电流压低一些，并让电量显示可信。但只要 4G 模组还直接接在电池上，关机放几天就没电这件事，固件改不彻底。
++
++### 5.3 下一版电路要改的（根治）
++
++1. **4G 模组改从 VSYS（BQ24074 OUT）取电**，并加一颗 ESP32 能控制的负载开关（例如 TPS22918 或 P-MOS）。关机时直接断掉模组，异常时也能断电复位。注意 4G 发射的 2 A 峰值，开关的导通电阻和 470µF 储能要一起算。
++2. **SYSOFF 接上运输模式**：做成一个开关或由按键触发的锁存，关机时让 BQ24074 断开电池与系统。关机电流可以到微安级。
++3. TPS63802 的 EN 改由可控信号驱动，或靠第 2 条整体断电。
++4. MAX17048：**QSTRT 接地，CTG 接地**；CELL 用单独的检测线直连电池焊盘，不和 4G 大电流共用一段走线。
++5. /CHG、/PGOOD 接到 GPIO，固件就不用再靠电压去猜充电状态。
++6. 电池第三根线（NTC）接到 TS，去掉 R4 固定偏置。
++7. MODEM_RESET_N 接到 GPIO（`docs/13` 早已列为 DVT 待办）。
++
++---
++
++## 6. 数据出处
++
++- 网表关键脚：`R28: VBAT ↔ VBAT_MODEM`；`U4.1 EN = VSYS_RAW`；`U1.15 SYSOFF`、`U1.9 /CHG` 无网络；`U1.7 /PGOOD` 只接 R3；`U5.6 QSTRT`、`U5.5 ALRT` 无网络；`U5.1 CTG ↔ C21 ↔ GND`；`U1.1 TS = J1.3 = R4 → GND`。
++- 开机记录查询：`select at, detail from vm_audit_log where action='device.boot_diagnostics' order by at desc`，看 `diagnostics.resetReason` 和 `previous.valid`。
++- 服务器不保存电量历史（只有 `vm_devices.last_battery_pct`），所以算不出“关机前 / 开机后”的电量差，这正是 5.2 第 1 条要补的数据。
+diff --git a/docs/32_VoxMind电源修复_固件与改线_20261106.md b/docs/32_VoxMind电源修复_固件与改线_20261106.md
+new file mode 100644
+index 00000000..a05a5180
+--- /dev/null
++++ b/docs/32_VoxMind电源修复_固件与改线_20261106.md
+@@ -0,0 +1,142 @@
++# VoxMind 电源修复：固件改动与少量改线
++
++日期：2026-11-06。接 [31 号调查报告](31_VoxMind电量不准与关机掉电调查_20261106.md)。适用 EVT v9 实板，固件 `1.0.27-power.1` 起。
++
++一句话：固件能做的都做了，而且新旧板子通用。要让关机后电池真正存得住，还需要做**改线 A**：在板上加两个小 MOS 管，给 4G 模组加一个电源开关。
++
++---
++
++## 1. 推荐顺序
++
++1. **先刷新固件**（USB 或 OTA 都行）。这一步必须在改线之前做：旧固件不认识新加的电源开关，改线后模组会一直断电，设备就联不上网了。
++2. 做改线 A（必做）。改线 B 顺手做，十分钟。
++3. 按第 5 节验证。
++4. 改线 C 是安全项，确认电池型号后再做。
++
++---
++
++## 2. 固件改了什么（`1.0.27-power.1`）
++
++| 改动 | 没改线的板子 | 做了改线 A/B 的板子 |
++|---|---|---|
++| 关机前让触摸芯片进深睡（约 5 µA），不再整晚扫描 | 生效 | 生效 |
++| 深睡前钉住悬空的脚：灯的数据线、触摸/屏幕复位、屏幕片选、SD 片选、麦克风时钟、马达，以及 4G 的 TX、DTR | 生效 | 生效 |
++| 关机时断开 4G 模组电源（GPIO46） | 无效果，日志会写明“没做改线 A”，仍按旧办法只关射频 | **模组彻底断电** |
++| 联网卡死、5 分钟连不上服务器时，先给模组断一次电再重启 | 无效果 | 模组卡死也能恢复，不再需要按 12 秒电源键 |
++| **关机掉电实测**：关机前把电量、电压、时间记进 RTC，开机时算出关机期间掉了多少电、折合多少 mA，随心跳上报 | 生效 | 生效 |
++| **电量计重置处理**：开机发现电量计刚上过电（电池被放空过），等确认没插电后按当前电压重估一次 | 生效 | 生效，而且直接读 USB 插拔，判断更准 |
++| **显示平滑**：放电时只降不升、充电时只升不降，每 2 秒最多变 1%；反方向的变化持续 3 分钟才采信 | 生效 | 生效 |
++| **低电量保护**：带载电压低于 3.40 V 持续 1 分钟，屏幕提示“电量耗尽”后自动关机 | 生效，但关机后模组还在耗电 | 生效，关机后电池能一直停在这个电量 |
++| 充电状态直读：BQ24074 的 /PGOOD 低电平 = USB 插着 | 读不到，继续用电压推断 | **直读，不再靠猜** |
++
++心跳里新增 `power` 字段：电压 `mv`、电量计速率 `crate`、`usb`（没做改线 B 时为 null）、`gaugeReset`、`modemSwitch`（本次开机断电是否成功过），以及关机后第一次开机才有的 `offDrain`。云端把它写进 `device.boot_diagnostics` 和每 5 分钟一条的 `device.health_diagnostics` 审计记录里，这样也就有了电量曲线。
++
++---
++
++## 3. 改线 A：给 4G 模组加电源开关（必做）
++
++**为什么要做**：现在模组经 R28（0Ω）直接焊在电池上，什么都关不掉它。关机后电池会一直被放到保护板切断，电量计也跟着清零。
++
++### 3.1 材料
++
++| 位号 | 器件 | 说明 |
++|---|---|---|
++| QA | **AO3401A** P-MOS，SOT-23（LCSC C15127） | 开关本体。导通电阻约 50 mΩ，4G 发射 2 A 峰值时压降约 0.1 V |
++| QB | **AO3400A** N-MOS，SOT-23（LCSC C20917，和板上 Q1 同型号） | 由 GPIO46 驱动，去拉低 QA 的栅极 |
++| RA | 100 kΩ 0402/0603 | QA 栅极到源极，平时让开关保持断开 |
++| CA | 100 nF 0402/0603 | 和 RA 并联，开通时软启动约 1 ms，避免 470 µF 储能电容瞬间拉垮电池电压 |
++| RB | 10 kΩ | QB 漏极到 QA 栅极 |
++| RC | 100 kΩ | QB 栅极到 GND。ESP32 没电、深睡、刚上电时开关都保持断开。**GPIO46 是启动选择脚，只能下拉，不能上拉** |
++| 线 | 主电流两段（电池→QA→模组）用 AWG26 或更粗的短线；控制线用细漆包线即可 | |
++
++SOT-23 脚位（两颗相同）：1 = G 栅极，2 = S 源极，3 = D 漏极。
++
++### 3.2 接法
++
++```
++电池侧 R28 焊盘(VBAT) ──┬───────────── QA.S(2)
++                        │                 │
++                       RA 100k ∥ CA 100nF │
++                        │                 │
++                        └──── QA.G(1) ────┘      QA.D(3) ── 模组侧 R28 焊盘(VBAT_MODEM)
++                                 │
++                               RB 10k
++                                 │
++                              QB.D(3)
++GPIO46（ESP32 模组 16 脚）── QB.G(1) ── RC 100k ── GND
++                              QB.S(2) ── GND（C32 负极或任一 GND 焊盘）
++```
++
++步骤：
++
++1. 拔掉电池。**拆下 R28**（0Ω，0402）。
++2. 分清 R28 的两个焊盘：先接回电池，量到电池电压的那一端是 **VBAT**；另一端接着 C32（470 µF 电解）正极，是 **VBAT_MODEM**。量完再拔掉电池。
++3. 把 QA、QB 和三颗电阻、一颗电容做成一个小板，或者用胶带垫底，飞线固定在 C32 旁边。
++4. QA 的 S 接 VBAT 焊盘，D 接 VBAT_MODEM 焊盘，这两段线要短、要粗。
++5. QB 的 G 飞一根细线到 ESP32-S3-WROOM-1 模组的 **16 脚（IO46）**。网表里这个网络叫 `TP_GPIO46`，板上如果有对应测试点，焊在测试点上更方便。
++6. QB 的 S 和 RC 的另一端接 GND。
++
++### 3.3 通电前检查（万用表）
++
++- QA 的 S 和 D 之间不能短路（不接电池时，二极管档只能看到一个体二极管的压降）。
++- GPIO46 对地约 100 kΩ（就是 RC）。
++- 接上电池、**刷新固件之前**：VBAT_MODEM 应为 0 V。也就是开关默认断开，正确。
++
++---
++
++## 4. 改线 B：充电检测（推荐，一根线）
++
++把 **R3 的 CHG_PGOOD 端**飞线到 **J8 的 4 脚**（GPIO44，原 UART0 RX；控制台走 USB，没人用它）。R3 另一端是 +3V3，接之前用万用表确认：没插 USB 时 CHG_PGOOD 端也是约 3.3 V，插上 USB 后会变成 0 V，变化的那一端才是对的。
++
++做完后插一次 USB，日志会出现“读到 /PGOOD 低：改线 B 已接”，之后心跳里 `power.usb` 显示 true/false。这个状态存在 NVS 里，只需要识别一次。
++
++---
++
++## 5. 改线 C：电池第三根线（温度保护，可选）
++
++1. 先确认电池第三根线是 **10 kΩ NTC**：常温下量第三根线和黑线（GND）之间，应在 8～12 kΩ。量出来不是这个范围的，不要接。
++2. **拆掉 R4**（10 kΩ，TS 脚的固定偏置）。不拆的话 NTC 和 R4 并联约 5 kΩ，充电芯片会以为电池过热，直接停充。
++3. 换用 3 针插头接 J1：1 = VBAT，2 = GND，3 = TS。插之前用万用表核对极性，不要凭线色判断。
++
++做完后，电池过冷或过热时充电芯片会自动停充。
++
++（可选，需要显微镜）MAX17048 的 QSTRT（U5 第 6 脚）按数据手册应接地。它的两边分别是 5 脚 ALRT（没用）和 7 脚 SCL，非常容易连锡，没把握就别动。固件这边已经能处理电量计重置。
++
++---
++
++## 6. 验证（做完改线 A 后按顺序走一遍）
++
++用 USB 接电脑，在串口看日志：
++
++1. **开机**：应先看到 `init 完成`，然后 4G 正常联网，和改线前一样。
++2. **关机**：长按录音键，日志应出现 `断开模组电源：STATUS 已掉，模组彻底断电`。
++3. **关机电流**：拔掉 USB，万用表 mA 档串在电池正极，关机 2 分钟后读数。预期 **≤ 1.5 mA**（主要是 WS2812 灯和存储芯片的静态电流）。改线前估计在 5～20 mA。
++4. **反复开关机 5 次**，每次都要能联上网。如果断电后模组起不来（日志里 `开机超时`），说明模组上电后还需要电源键，而电源键这条线本来就有问题。这时先把 R28 临时焊回去恢复使用，然后告诉我，我再按实际情况调整开机时序。
++5. **关机掉电数据**：关机放一夜再开机，日志会出现 `上次关机 X 小时：电量 A% → B%，折合关机电流约 N mA（模组已断电）`。云端也能查到：
++
++```sql
++select at, detail->'power'->'offDrain' from vm_audit_log
++where action = 'device.boot_diagnostics' order by at desc limit 10;
++```
++
++6. **电量曲线**：`device.health_diagnostics` 每 5 分钟一条，`detail->'batteryPct'`、`detail->'power'->'mv'` 就是放电曲线，可以和第 4 步的实测对照。
++
++---
++
++## 7. 预期效果
++
++| 指标 | 修复前 | 只刷固件 | 刷固件 + 改线 A |
++|---|---|---|---|
++| 关机电流 | 估计 5～20 mA（模组醒着、触摸在扫描、脚悬空） | 少掉触摸和悬空脚那部分，模组那部分还在 | 约 0.5～1.5 mA |
++| 满电关机能放多久 | 约 2～9 天，然后被放空 | 略长 | 约 1～3 个月 |
++| 电量显示 | 放空后重置，偏高再“掉得飞快”；平时会跳 | 会重估，不再跳；但还会被放空 | 基本不会再被放空，电量计不再重置 |
++| 电池寿命 | 反复深度过放 | 有低电量保护，但关机后仍会被放空 | 低电量保护 + 关机不耗电，不再深度过放 |
++| 模组卡死 | 只能重启 ESP32，模组照样卡着 | 同左 | 断电 3 秒彻底复位 |
++
++开机录音时的耗电（约 100 mA，满电大约 8～10 小时）这次没有动。最大的一块是 4G 模组一直醒着：1.0.11 起关掉了模组休眠，因为休眠后叫不醒，又没有办法复位。**有了改线 A，叫不醒就可以直接断电复位**，重新打开模组休眠就有了兜底，预计录音时能省 25～40 mA。这一项要在改线 A 验证通过后单独做、单独测，没有放进这一版。
++
++---
++
++## 8. 版本号说明
++
++这一版用 `1.0.27-power.1`。工作区里另有一份没提交的英国蜂窝网络改动，用的是 `1.0.27-uk.1`。两边合并时要统一成一个正式版本号再发布。OTA 只升不降，正式号一旦发布，就不能再推比它小的版本。
+diff --git a/firmware/components/app_cloud/CMakeLists.txt b/firmware/components/app_cloud/CMakeLists.txt
+index 129b6d49..80d8f4d5 100644
+--- a/firmware/components/app_cloud/CMakeLists.txt
++++ b/firmware/components/app_cloud/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-idf_component_register(SRCS "app_cloud.c" "ota.c" "runtime_diagnostics.c"
++idf_component_register(SRCS "app_cloud.c" "ota.c" "runtime_diagnostics.c" "battery_logic.c"
+                        INCLUDE_DIRS "include"
+                        REQUIRES board drv_audio drv_storage drv_feedback drv_display drv_power drv_modem drv_input
+                                 codec_opus ui esp_event esp_netif esp_http_client fatfs
+diff --git a/firmware/components/app_cloud/app_cloud.c b/firmware/components/app_cloud/app_cloud.c
+index ee8c3812..d01c5f59 100644
+--- a/firmware/components/app_cloud/app_cloud.c
++++ b/firmware/components/app_cloud/app_cloud.c
+@@ -59,6 +59,7 @@
+ #include "runtime_protocol.h"
+ #include "command_runtime.h"
+ #include "runtime_diagnostics.h"
++#include "battery_logic.h"
+ 
+ #define NET_READY_BIT BIT0
+ #define MODEM_FAST_BAUD 460800
+@@ -128,6 +129,28 @@ static volatile uint32_t s_recorded_seconds; /* 本次开机实际编码过的
+ static uint32_t s_recorded_remainder;       /* 仅录音任务写，不跨任务读取 64 位采样数 */
+ static volatile int s_battery_pct = -1;     /* 诊断任务每 30 秒刷新一次，界面只读缓存不做 I2C */
+ static volatile bool s_charging;
++
++/* ── 电池：关机掉电实测、电量计重置、平滑显示、低电量保护（docs/31、docs/32）──
++ *
++ * 关机前把电量、电压、时间记进 RTC 内存（深睡眠不丢，断电才丢）。电量计 MAX17048 关机期间
++ * 一直通着电、一直在算，开机时读它一下就知道"关了 X 小时掉了 Y%"，换算成关机电流随心跳上报。
++ * 不用串电流表，每次关机都自动有数据。电池在关机期间被放空的话，RTC 和电量计都会断电重置，
++ * 这时上报 diedWhileOff。*/
++#define BATTERY_MAH 1050
++#define OFF_REC_MAGIC 0x0FFD7A1Au
++typedef struct { uint32_t magic; int64_t at_s; int32_t mv; int32_t soc_x100; uint32_t modem_cut; uint32_t check; } off_record_t;
++static RTC_NOINIT_ATTR off_record_t s_off_rec;
++static char s_power_boot_json[200];          /* 本次开机算出来的关机掉电，整次开机都随心跳带上 */
++static volatile bool s_gauge_needs_qs;       /* 电量计刚被重置过，等拔了电再按电压重估一次 */
++static volatile bool s_gauge_reset_boot;
++static volatile int s_battery_mv = -1;
++static volatile float s_battery_crate;
++static volatile int s_usb_present = -1;      /* 改线 B 后可直接读；-1 不知道 */
++static uint32_t off_rec_check(const off_record_t *r)
++{
++    return r->magic ^ (uint32_t)r->at_s ^ (uint32_t)(r->at_s >> 32) ^ (uint32_t)r->mv * 2654435761u ^
++           (uint32_t)r->soc_x100 * 40503u ^ r->modem_cut;
++}
+ static volatile bool s_charge_full;
+ 
+ /* ── 软关机与定时开关机 ──────────────────────────────────────────
+@@ -393,6 +416,120 @@ static void infer_charging(const power_status_t *b, bool net)
+     s_battery_pct = (int)(b->soc_pct + 0.5f);
+ }
+ 
++static void power_off(const char *reason, bool soft);
++
++/* 反方向的变化持续 3 分钟（90 次 × 2 秒）才采信，见 battery_logic.h */
++static int smooth_battery_pct(int raw, bool charging, bool reset)
++{
++    static battery_smooth_t st = BATTERY_SMOOTH_INIT;
++    return battery_smooth(&st, raw, charging, reset, 90);
++}
++
++/* 每 2 秒一次，跟在 infer_charging 后面 */
++static void battery_after_read(const power_status_t *b)
++{
++    static unsigned discharging_n, low_n;
++    int usb = power_usb_present();
++    s_usb_present = usb;
++    if (usb >= 0 && (bool)usb != s_charging) {
++        ESP_LOGI(TAG, "充电状态 → %s（/PGOOD 直读）", usb ? "充电中" : "未充电");
++        s_charging = usb;
++    }
++    int mv = (int)(b->voltage_v * 1000.0f + 0.5f);
++    s_battery_mv = mv;
++    s_battery_crate = b->crate_pct_h;
++
++    /* 电量计刚上过电：它的数是上电那一刻凭电压猜的。那一刻通常插着充电器（电池被放空后，
++     * 一般要插电才能把电池保护板唤醒），电压被抬高，估出来偏高，之后就"掉得飞快"。
++     * 等确定没插电、而且电量计自己也显示在放电满 1 分钟，再按此刻的电压重估一次。*/
++    discharging_n = !s_charging && b->crate_pct_h < 0.0f ? discharging_n + 1 : 0;
++    if (s_gauge_needs_qs && !s_charging &&
++        (usb == 0 || (usb < 0 && discharging_n >= 30 && esp_timer_get_time() > 180LL * 1000000))) {
++        float before = b->soc_pct;
++        if (power_quick_start() == ESP_OK) {
++            s_gauge_needs_qs = false;
++            vTaskDelay(pdMS_TO_TICKS(1200));        /* 重估要大约 1 秒才出新数 */
++            power_status_t again;
++            if (power_read(&again) == ESP_OK) {
++                ESP_LOGW(TAG, "电量计重估：%.1f%% → %.1f%%（%dmV）", before, again.soc_pct, mv);
++                s_battery_pct = smooth_battery_pct((int)(again.soc_pct + 0.5f), s_charging, true);
++            }
++        }
++    } else {
++        s_battery_pct = smooth_battery_pct((int)(b->soc_pct + 0.5f), s_charging, false);
++    }
++
++    /* 低电量保护：带载电压低于 3.40V 持续 1 分钟就自己关机。不关的话会一路放到电池保护板
++     * 切断，每次都是深度过放，电池会越来越不耐用；电量计也会跟着断电重置，电量又不准了。
++     * 做了改线 A 的板子关机后模组也断电，电池能一直留在这个电量。*/
++    low_n = !s_charging && usb != 1 && mv > 2500 && mv < 3400 ? low_n + 1 : 0;
++    if (low_n == 30) {
++        ESP_LOGW(TAG, "电压 %dmV 持续 1 分钟低于 3.40V，自动关机保护电池", mv);
++        if (s_display_ready) ui_show_message("电量耗尽", "已自动关机，请充电");
++        vTaskDelay(pdMS_TO_TICKS(2500));
++        power_off("电量耗尽", false);
++    }
++}
++
++/* 开机时：看电量计有没有被重置过，以及上次关机之后掉了多少电 */
++static void power_boot_check(void)
++{
++    bool reset = false;
++    if (power_gauge_was_reset(&reset) == ESP_OK && reset) {
++        s_gauge_reset_boot = true;
++        s_gauge_needs_qs = true;
++        power_clear_reset_flag();
++        ESP_LOGW(TAG, "电量计刚上过电（电池被放空或拔过），电量先按电压估，等拔电后重估");
++    }
++    off_record_t r = s_off_rec;
++    s_off_rec.magic = 0;
++    bool from_sleep = esp_reset_reason() == ESP_RST_DEEPSLEEP;
++    if (r.magic != OFF_REC_MAGIC || r.check != off_rec_check(&r)) {
++        /* 记录没了：RTC 断过电。不是从深睡醒来（POWERON）且电量计也重置了，基本就是关机期间被放空了 */
++        if (!from_sleep && reset)
++            snprintf(s_power_boot_json, sizeof(s_power_boot_json), "\"offDrain\":{\"diedWhileOff\":true},");
++        return;
++    }
++    power_status_t b;
++    struct timeval tv;
++    gettimeofday(&tv, NULL);
++    double hours = (double)(tv.tv_sec - r.at_s) / 3600.0;
++    if (power_read(&b) != ESP_OK || hours <= 0.0 || hours > 24.0 * 120) return;
++    float soc_from = r.soc_x100 / 100.0f;
++    /* 关不到 1 小时的，电量计的分辨率不够算电流，只报原始数（estMa=-1）*/
++    double est_ma = battery_off_drain_ma(soc_from, b.soc_pct, hours, BATTERY_MAH);
++    int mv_now = (int)(b.voltage_v * 1000.0f + 0.5f);
++    snprintf(s_power_boot_json, sizeof(s_power_boot_json),
++             "\"offDrain\":{\"hours\":%.2f,\"socFrom\":%.1f,\"socTo\":%.1f,\"mvFrom\":%ld,\"mvTo\":%d,"
++             "\"estMa\":%.2f,\"modemCut\":%s,\"gaugeReset\":%s},",
++             hours, soc_from, b.soc_pct, (long)r.mv, mv_now, est_ma, r.modem_cut ? "true" : "false", reset ? "true" : "false");
++    ESP_LOGW(TAG, "上次关机 %.1f 小时：电量 %.1f%% → %.1f%%，电压 %ldmV → %dmV，折合关机电流约 %.2f mA（模组%s断电）",
++             hours, soc_from, b.soc_pct, (long)r.mv, mv_now, est_ma, r.modem_cut ? "已" : "未");
++}
++
++/* 真关机前：把此刻的电量记进 RTC，开机时算关机掉电用 */
++static void power_record_before_off(bool modem_cut)
++{
++    power_status_t b;
++    if (power_read(&b) != ESP_OK) return;
++    struct timeval tv;
++    gettimeofday(&tv, NULL);
++    off_record_t r = { .magic = OFF_REC_MAGIC, .at_s = tv.tv_sec, .mv = (int32_t)(b.voltage_v * 1000.0f + 0.5f),
++                       .soc_x100 = (int32_t)(b.soc_pct * 100.0f), .modem_cut = modem_cut };
++    r.check = off_rec_check(&r);
++    s_off_rec = r;
++}
++
++/* 心跳里的电池详情。没有改线时 usb 字段是 null */
++static int power_json(char *out, size_t cap)
++{
++    if (s_battery_mv < 0) { if (cap) out[0] = 0; return 0; }
++    const char *usb = s_usb_present < 0 ? "null" : s_usb_present ? "true" : "false";
++    return snprintf(out, cap, ",\"power\":{%s\"mv\":%d,\"crate\":%.1f,\"usb\":%s,\"gaugeReset\":%s,\"modemSwitch\":%s}",
++                    s_power_boot_json, s_battery_mv, s_battery_crate, usb, s_gauge_reset_boot ? "true" : "false",
++                    modem_supply_switch_works() ? "true" : "false");
++}
++
+ /* 指示灯显示什么，由这里根据实际状态统一算：按优先级，要人处理的最先。*/
+ static led_pattern_t led_for_state(bool recording)
+ {
+@@ -417,7 +554,10 @@ static void power_led_task(void *arg)
+         if (tick % 4 == 0) {
+             power_status_t battery;
+             bool net = s_network_events && (xEventGroupGetBits(s_network_events) & NET_READY_BIT);
+-            if (power_read(&battery) == ESP_OK) infer_charging(&battery, net);
++            if (power_read(&battery) == ESP_OK) {
++                infer_charging(&battery, net);
++                battery_after_read(&battery);
++            }
+         }
+         led_set(led_for_state(recording));
+         vTaskDelay(pdMS_TO_TICKS(500));
+@@ -1000,6 +1140,8 @@ static void diag_task(void *arg)
+         if (net_up && !s_ota_running && s_net_ok_us && esp_timer_get_time() - s_net_ok_us > 5LL * 60 * 1000000) {
+             ESP_LOGE(TAG, "已联网却 5 分钟连不上服务器，重启恢复网络");
+             runtime_diag_stop(DIAG_STOP_NETWORK);
++            /* ESP32 重启不会让模组断电：卡死的模组重启后还是卡死。改线 A 的板子先给它断一次电 */
++            if (modem_supply_cut()) vTaskDelay(pdMS_TO_TICKS(1000));
+             vTaskDelay(pdMS_TO_TICKS(200));
+             esp_restart();
+         }
+@@ -1291,15 +1433,37 @@ static bool post_device_action(const char *action_id, const char *verb, const ch
+     return ok;
+ }
+ 
++/* 深睡时 3.3V 还开着（TPS63802 的使能脚直接接在电源上，关不掉），外设都还通着电。
++ * 没人驱动的脚会悬空：WS2812 的数据线乱跳可能把灯点亮，触摸/屏幕的复位脚一飘低就把
++ * 刚睡下的芯片复位叫醒，麦克风时钟、SD 片选悬空时电平转换和存储芯片会多耗电。
++ * 全部钉成确定的"不工作"电平。开机时各驱动初始化前会先 gpio_hold_dis。*/
++static void sleep_hold_pins(void)
++{
++    static const struct { int pin; int level; } pins[] = {
++        { PIN_LED_DATA, 0 }, { PIN_TP_RST, 1 }, { PIN_LCD_RST, 1 }, { PIN_LCD_CS, 1 },
++        { PIN_SD_CS, 1 }, { PIN_MIC_CLK, 0 }, { PIN_MOTOR_PWM, 0 },
++    };
++    for (size_t i = 0; i < sizeof(pins) / sizeof(pins[0]); ++i) {
++        gpio_reset_pin(pins[i].pin);
++        gpio_set_direction(pins[i].pin, GPIO_MODE_OUTPUT);
++        gpio_set_level(pins[i].pin, pins[i].level);
++        gpio_hold_en(pins[i].pin);
++    }
++}
++
+ /* 真关机：深睡眠，整机只剩 RTC 域，长按录音键(GPIO3)开机——docs/20 §10 要求的
+  * "物理停止方式"。开了定时开关机的，同时设一个计时器到点自己醒。
+  * 板子上没有 32.768kHz 计时晶振（那两个脚给了 4G 串口），睡眠计时靠芯片内部振荡器，
+  * 睡十个小时可能差几分钟：所以按 1% 提前量（至少 1 分钟）早醒，宁早勿晚。*/
++static bool s_modem_cut_at_off;   /* 软关机里再进深睡时不知道，按 false 记 */
+ static void enter_deep_sleep(void)
+ {
++    power_record_before_off(s_modem_cut_at_off);
+     s_soft_off_flag = 0;                 /* 深睡眠醒来一律正常开机 */
+     /* 不能只把背光调到 0：深睡眠时 LEDC 停了，背光脚被模组上拉点亮，屏上停着最后一帧还一直耗电 */
+     if (s_display_ready) ui_prepare_sleep(); else display_power_down();
++    display_touch_sleep(true);           /* 触摸芯片深睡约 5µA；不睡它整晚都在扫描 */
++    sleep_hold_pins();
+     input_arm_wakeup();
+     if (s_cfg.schedule_enabled && time(NULL) > 1700000000) {
+         int64_t sleep_s = seconds_until(s_cfg.on_min);
+@@ -1313,6 +1477,7 @@ static void enter_deep_sleep(void)
+     for (int i = 0; i < 100 && gpio_get_level(PIN_BTN_REC) == 0; ++i) vTaskDelay(pdMS_TO_TICKS(50));
+     ESP_LOGW(TAG, "进入深睡眠");
+     vTaskDelay(pdMS_TO_TICKS(100));
++    gpio_deep_sleep_hold_en();           /* 非 RTC 脚（GPIO46/47/48 等）的保持在深睡里也生效 */
+     esp_deep_sleep_start();
+ }
+ 
+@@ -1524,7 +1689,8 @@ static void power_off(const char *reason, bool soft)
+     if (s_shutdown_requested) return;
+     runtime_diag_stop(strcmp(reason, "长按录音键") == 0 ? DIAG_STOP_KEY :
+         strcmp(reason, "定时关机") == 0 ? DIAG_STOP_SCHEDULE :
+-        strcmp(reason, "语音「关机」") == 0 ? DIAG_STOP_VOICE : DIAG_STOP_REMOTE);
++        strcmp(reason, "语音「关机」") == 0 ? DIAG_STOP_VOICE :
++        strcmp(reason, "电量耗尽") == 0 ? DIAG_STOP_BATTERY : DIAG_STOP_REMOTE);
+     int64_t t0 = esp_timer_get_time();
+     ESP_LOGW(TAG, "收到%s请求(%s)", soft ? "软关机" : "关机", reason);
+     s_shutdown_requested = true;            /* 录音循环看到它，当前这块就地收尾 */
+@@ -1537,9 +1703,12 @@ static void power_off(const char *reason, bool soft)
+     }
+     if (s_recorder_stopped) xSemaphoreTake(s_recorder_stopped, pdMS_TO_TICKS(5000));
+     int64_t t1 = esp_timer_get_time();
++    led_set(LED_OFF);
+     modem_radio_off();
++    /* 改线 A 的板子：射频关完再整个断电，关机期间 4G 一点电都不耗。没改线的板子这一步无效，
++     * 模组仍以关射频的状态挂在电池上 */
++    s_modem_cut_at_off = modem_supply_cut();
+     modem_prepare_sleep();
+-    led_set(LED_OFF);
+     ESP_LOGW(TAG, "关机收尾：录音存好用 %lld ms，关 4G 用 %lld ms，还有 %lu 段下次开机补传",
+              (t1 - t0) / 1000, (esp_timer_get_time() - t1) / 1000, (unsigned long)s_pending_chunks);
+     if (soft) {
+@@ -1980,11 +2149,13 @@ static void send_heartbeat(void)
+      * off its 8 KB stack: the HTTP/TLS call below needs that stack on first boot,
+      * exactly when an OTA image must deliver a heartbeat to avoid rollback. */
+     static char health[RUNTIME_DIAG_JSON_BYTES];
+-    static char body[RUNTIME_DIAG_JSON_BYTES + 260];
++    static char body[RUNTIME_DIAG_JSON_BYTES + 620];
++    static char power[340];
+     size_t health_size = runtime_diag_json(health, sizeof(health));
+-    int body_len = snprintf(body, sizeof(body), "{\"firmware\":\"%.40s\",%s\"network\":\"4G\",\"pendingUploads\":%lu,\"charging\":%s%s%s}",
++    power_json(power, sizeof(power));
++    int body_len = snprintf(body, sizeof(body), "{\"firmware\":\"%.40s\",%s\"network\":\"4G\",\"pendingUploads\":%lu,\"charging\":%s%s%s%s}",
+              esp_app_get_description()->version, battery, (unsigned long)s_pending_chunks, s_charging ? "true" : "false",
+-             health_size ? ",\"diagnostics\":" : "", health_size ? health : "");
++             health_size ? ",\"diagnostics\":" : "", health_size ? health : "", power);
+     if (body_len < 0 || body_len >= sizeof(body)) { ESP_LOGE(TAG, "心跳正文过长，未发送"); return; }
+     int status = api_request(&s_action_conn, HTTP_METHOD_POST, "/v1/device-heartbeat", "application/json",
+                              body, (size_t)body_len, NULL, NULL, NULL);
+@@ -2871,6 +3042,10 @@ static void soft_off_main(void)
+ 
+ void cloud_app_run(void)
+ {
++    /* 深睡前钉住的脚（sleep_hold_pins），醒来先松开，不然各驱动接管不了 */
++    gpio_deep_sleep_hold_dis();
++    static const int held[] = { PIN_LED_DATA, PIN_TP_RST, PIN_LCD_RST, PIN_LCD_CS, PIN_SD_CS, PIN_MIC_CLK, PIN_MOTOR_PWM };
++    for (size_t i = 0; i < sizeof(held) / sizeof(held[0]); ++i) gpio_hold_dis(held[i]);
+     runtime_diag_init((uint32_t)esp_reset_reason(), esp_random());
+     char boot_health[RUNTIME_DIAG_JSON_BYTES];
+     if (runtime_diag_json(boot_health, sizeof(boot_health))) ESP_LOGI(TAG, "启动留痕 %s", boot_health);
+@@ -2901,6 +3076,7 @@ void cloud_app_run(void)
+         ui_init(ui_status, ui_action_requested) == ESP_OK) {
+         s_display_ready = true;
+         ui_set_screen_listener(on_screen_change);
++        power_boot_check();
+         power_status_t battery;
+         if (power_read(&battery) == ESP_OK) { s_battery_pct = (int)battery.soc_pct; s_charging = battery.charging; }
+     } else {
+diff --git a/firmware/components/app_cloud/battery_logic.c b/firmware/components/app_cloud/battery_logic.c
+new file mode 100644
+index 00000000..befdd238
+--- /dev/null
++++ b/firmware/components/app_cloud/battery_logic.c
+@@ -0,0 +1,22 @@
++#include "battery_logic.h"
++#include <stdlib.h>
++
++int battery_smooth(battery_smooth_t *st, int raw, bool charging, bool reset, int against_limit)
++{
++    if (raw < 0) raw = 0;
++    if (raw > 100) raw = 100;
++    if (st->shown < 0 || reset) { st->shown = raw; st->against_n = 0; return st->shown; }
++    if (raw == st->shown) { st->against_n = 0; return st->shown; }
++    bool against = charging ? raw < st->shown : raw > st->shown;
++    if (!against) { st->shown += raw > st->shown ? 1 : -1; st->against_n = 0; return st->shown; }
++    if (abs(raw - st->shown) < 2) { st->against_n = 0; return st->shown; }
++    if (++st->against_n >= against_limit) { st->shown = raw; st->against_n = 0; }
++    return st->shown;
++}
++
++double battery_off_drain_ma(double soc_from, double soc_to, double hours, int capacity_mah)
++{
++    double drop = soc_from - soc_to;
++    if (hours < 1.0 || drop <= 0.0) return -1.0;
++    return drop / 100.0 * capacity_mah / hours;
++}
+diff --git a/firmware/components/app_cloud/include/battery_logic.h b/firmware/components/app_cloud/include/battery_logic.h
+new file mode 100644
+index 00000000..8188c669
+--- /dev/null
++++ b/firmware/components/app_cloud/include/battery_logic.h
+@@ -0,0 +1,16 @@
++#pragma once
++#include <stdbool.h>
++
++/* 电池显示与关机掉电换算。纯逻辑、不碰硬件，电脑上就能测（tests/battery_logic_test.c）。*/
++
++/* 显示用的电量：放电时只降不升，充电时只升不降，每次最多走 1%。
++ * 电量计在大负载（4G 发射）下会来回抖几个百分点，原样显示就是 54→51→55 这种跳。
++ * 反方向的变化连续 against_limit 次、差 2% 以上才采信（比如充电状态判断错了）。
++ * reset=true 时直接采用 raw（刚重估过电量）。*/
++typedef struct { int shown; int against_n; } battery_smooth_t;
++#define BATTERY_SMOOTH_INIT { -1, 0 }
++int battery_smooth(battery_smooth_t *st, int raw, bool charging, bool reset, int against_limit);
++
++/* 关机期间的平均电流（mA）：电量从 soc_from 掉到 soc_to，经过 hours 小时。
++ * 不到 1 小时、或者电量没掉（电量计分辨率不够）时返回 -1。*/
++double battery_off_drain_ma(double soc_from, double soc_to, double hours, int capacity_mah);
+diff --git a/firmware/components/app_cloud/include/runtime_diagnostics.h b/firmware/components/app_cloud/include/runtime_diagnostics.h
+index febb3223..aad88cc7 100644
+--- a/firmware/components/app_cloud/include/runtime_diagnostics.h
++++ b/firmware/components/app_cloud/include/runtime_diagnostics.h
+@@ -5,7 +5,7 @@
+ typedef enum { DIAG_UI, DIAG_ACTION, DIAG_UPLOAD, DIAG_TASK_COUNT } diag_task_t;
+ typedef enum { DIAG_STOP_NONE, DIAG_STOP_KEY, DIAG_STOP_REMOTE, DIAG_STOP_VOICE,
+     DIAG_STOP_SCHEDULE, DIAG_STOP_NETWORK, DIAG_STOP_UART, DIAG_STOP_ROLLBACK,
+-    DIAG_STOP_OTA, DIAG_STOP_WAKE, DIAG_STOP_CONFIG } diag_stop_t;
++    DIAG_STOP_OTA, DIAG_STOP_WAKE, DIAG_STOP_CONFIG, DIAG_STOP_BATTERY } diag_stop_t;
+ typedef enum { DIAG_BOOT, DIAG_TALK, DIAG_HTTP_BEGIN, DIAG_HTTP_END,
+     DIAG_RECORD_ERROR, DIAG_UI_STALE, DIAG_OTA_FREEZE } diag_event_t;
+ void runtime_diag_init(uint32_t reset_reason, uint32_t boot_id);
+diff --git a/firmware/components/app_cloud/tests/battery_logic_test.c b/firmware/components/app_cloud/tests/battery_logic_test.c
+new file mode 100644
+index 00000000..3e8cb6c9
+--- /dev/null
++++ b/firmware/components/app_cloud/tests/battery_logic_test.c
+@@ -0,0 +1,28 @@
++#include "battery_logic.h"
++#include <assert.h>
++#include <math.h>
++#include <stdio.h>
++
++int main(void)
++{
++    battery_smooth_t st = BATTERY_SMOOTH_INIT;
++    assert(battery_smooth(&st, 54, false, false, 3) == 54);        /* 第一次直接采用 */
++    assert(battery_smooth(&st, 51, false, false, 3) == 53);        /* 放电：每次最多降 1% */
++    assert(battery_smooth(&st, 51, false, false, 3) == 52);
++    assert(battery_smooth(&st, 55, false, false, 3) == 52);        /* 放电时往上跳：先不信 */
++    assert(battery_smooth(&st, 53, false, false, 3) == 52);        /* 只差 1%：当抖动，计数清零 */
++    assert(battery_smooth(&st, 55, false, false, 3) == 52);
++    assert(battery_smooth(&st, 55, false, false, 3) == 52);
++    assert(battery_smooth(&st, 55, false, false, 3) == 55);        /* 连续 3 次差 ≥2%：采信 */
++    assert(battery_smooth(&st, 57, true, false, 3) == 56);         /* 充电：每次最多升 1% */
++    assert(battery_smooth(&st, 50, true, false, 3) == 56);         /* 充电时往下跳：先不信 */
++    assert(battery_smooth(&st, 30, false, true, 3) == 30);         /* 重估：直接采用 */
++    assert(battery_smooth(&st, 130, false, true, 3) == 100);       /* 夹在 0~100 */
++    assert(battery_smooth(&st, -4, false, true, 3) == 0);
++
++    assert(fabs(battery_off_drain_ma(80.0, 70.0, 10.0, 1050) - 10.5) < 1e-9);   /* 10% × 1050mAh / 10h */
++    assert(battery_off_drain_ma(80.0, 80.0, 10.0, 1050) < 0);                   /* 没掉 */
++    assert(battery_off_drain_ma(80.0, 79.0, 0.5, 1050) < 0);                    /* 不到 1 小时 */
++    puts("battery_logic: smoothing direction, jitter, reset, clamp and off-drain current passed");
++    return 0;
++}
+diff --git a/firmware/components/drv_modem/drv_modem.c b/firmware/components/drv_modem/drv_modem.c
+index 755a647e..35eadc25 100644
+--- a/firmware/components/drv_modem/drv_modem.c
++++ b/firmware/components/drv_modem/drv_modem.c
+@@ -23,6 +23,14 @@ static modem_state_t s_state = MODEM_OFF;
+ #define MODEM_BAUD_FAST    460800
+ static int s_baud = MODEM_BAUD_DEFAULT;
+ 
++/* 改线 A（docs/32）：拆掉 R28（0Ω，原来模组直接挂在电池上），换成 P-MOS 高边开关，
++ * 由 GPIO46 经 N-MOS 控制：高＝模组通电，低＝断电。外加 100kΩ 下拉，ESP32 没电、深睡、
++ * 刚上电时它都是低，模组默认断电，由固件按需打开。
++ * GPIO46 是 strapping 脚（下载模式要它为低），下拉正好符合要求，千万别改成上拉。
++ * 没做改线的板子上这根脚是空的，驱动它什么也不会发生：后面一律用 STATUS 回读判断断电是否真的生效。*/
++#define PIN_MODEM_SUPPLY 46
++static bool s_supply_works;     /* 本次开机实测过：拉低 GPIO46 后 STATUS 真的掉了 */
++
+ static void use_baud(int baud)
+ {
+     uart_set_baudrate(MODEM_UART, baud);
+@@ -37,8 +45,11 @@ esp_err_t modem_init(void)
+     /* 关机前把电源键这根脚钉在"不按"并打开了保持（见 modem_power_off），保持会跨过深睡眠复位
+      * 一直留着，不先解开就驱动不了它，模组永远开不了机 */
+     gpio_hold_dis(PIN_MODEM_PWRKEY);
++    gpio_hold_dis(PIN_MODEM_SUPPLY);
++    gpio_hold_dis(PIN_MODEM_TX);
++    gpio_hold_dis(PIN_MODEM_DTR);
+     gpio_config_t out = {
+-        .pin_bit_mask = (1ULL << PIN_MODEM_PWRKEY) | (1ULL << PIN_MODEM_DTR),
++        .pin_bit_mask = (1ULL << PIN_MODEM_PWRKEY) | (1ULL << PIN_MODEM_DTR) | (1ULL << PIN_MODEM_SUPPLY),
+         .mode = GPIO_MODE_OUTPUT,
+     };
+     ESP_ERROR_CHECK(gpio_config(&out));
+@@ -47,6 +58,9 @@ esp_err_t modem_init(void)
+     /* DTR 低 = 叫醒/不许睡。开机先让它醒着：上次开了休眠的话（MLPMCFG 可能掉电不丢），
+      * DTR 高着开机时模组可能睡着，开机这串 AT 就全石沉大海了。联网后由 app_cloud 接管 */
+     gpio_set_level(PIN_MODEM_DTR, 0);
++    /* 改线后：关机时模组被断了电，这里接通。470µF 储能电容要充一下，等 300ms 再往下走 */
++    gpio_set_level(PIN_MODEM_SUPPLY, 1);
++    vTaskDelay(pdMS_TO_TICKS(300));
+ 
+     gpio_config_t in = {
+         .pin_bit_mask = (1ULL << PIN_MODEM_STATUS),
+@@ -174,7 +188,20 @@ static void pwrkey_hold_released(void)
+     gpio_hold_en(PIN_MODEM_PWRKEY);
+ }
+ 
+-void modem_prepare_sleep(void) { pwrkey_hold_released(); }
++/* 深睡前把通向模组的几根线都钉住：TX、DTR 悬空时电平转换芯片的输入会乱跳、白耗电，
++ * DTR 乱跳还可能把模组叫醒。电源开关脚钉低（板上还有下拉，双保险）。*/
++void modem_prepare_sleep(void)
++{
++    pwrkey_hold_released();
++    gpio_reset_pin(PIN_MODEM_TX);
++    gpio_set_direction(PIN_MODEM_TX, GPIO_MODE_OUTPUT);
++    gpio_set_level(PIN_MODEM_TX, 1);          /* 串口空闲电平 */
++    gpio_set_level(PIN_MODEM_DTR, 1);
++    gpio_set_level(PIN_MODEM_SUPPLY, s_supply_works ? 0 : gpio_get_level(PIN_MODEM_SUPPLY));
++    gpio_hold_en(PIN_MODEM_TX);
++    gpio_hold_en(PIN_MODEM_DTR);
++    gpio_hold_en(PIN_MODEM_SUPPLY);
++}
+ 
+ /* 关机：按住电源键不放，盯着 STATUS，一变低立刻松手。
+  *
+@@ -201,8 +228,36 @@ esp_err_t modem_power_off(uint32_t timeout_ms)
+     return ESP_ERR_TIMEOUT;
+ }
+ 
++bool modem_supply_cut(void)
++{
++    gpio_set_level(PIN_MODEM_PWRKEY, !MODEM_PWRKEY_ACTIVE);
++    gpio_set_level(PIN_MODEM_SUPPLY, 0);
++    /* 模组没电后 VDD_EXT 掉到 0，电平转换芯片关断输出，STATUS 由 ESP32 内部下拉读成低 */
++    for (int i = 0; i < 30 && gpio_get_level(PIN_MODEM_STATUS); ++i) vTaskDelay(pdMS_TO_TICKS(100));
++    s_supply_works = !gpio_get_level(PIN_MODEM_STATUS);
++    if (s_supply_works) s_state = MODEM_OFF;
++    ESP_LOGW(TAG, "断开模组电源：%s", s_supply_works ? "STATUS 已掉，模组彻底断电" : "STATUS 还是高（没做改线 A，模组仍接在电池上）");
++    return s_supply_works;
++}
++
++void modem_supply_restore(void)
++{
++    gpio_set_level(PIN_MODEM_SUPPLY, 1);
++    vTaskDelay(pdMS_TO_TICKS(300));
++}
++
++bool modem_supply_switch_works(void) { return s_supply_works; }
++
+ esp_err_t modem_force_reset(void)
+ {
++    /* 改线后断电 3 秒就是最干净的复位，比按 12 秒电源键快，也不怕模组卡死不认电源键 */
++    if (modem_supply_cut()) {
++        vTaskDelay(pdMS_TO_TICKS(3000));
++        modem_supply_restore();
++        ESP_LOGW(TAG, "强制复位：模组断电 3 秒后重新上电");
++        return ESP_OK;
++    }
++    modem_supply_restore();
+     /* RESET 脚没接 GPIO（见真值表坑 3），只能长按 PWRKEY */
+     ESP_LOGW(TAG, "强制关机：PWRKEY 拉住 12 秒");
+     pwrkey_pulse(12000);
+diff --git a/firmware/components/drv_modem/include/drv_modem.h b/firmware/components/drv_modem/include/drv_modem.h
+index 7d785b96..2711b187 100644
+--- a/firmware/components/drv_modem/include/drv_modem.h
++++ b/firmware/components/drv_modem/include/drv_modem.h
+@@ -26,7 +26,13 @@ esp_err_t modem_power_on(uint32_t timeout_ms);
+ 
+ /* 关机：同样是 PWRKEY 脉冲。仅在长期不用/固件升级时调用。*/
+ esp_err_t modem_power_off(uint32_t timeout_ms);
+-void modem_prepare_sleep(void);   /* 深睡前钉住电源键脚（不然悬空会误按开模组） */
++void modem_prepare_sleep(void);   /* 深睡前钉住电源键、TX、DTR、电源开关几根脚（悬空会误按、白耗电） */
++
++/* 改线 A 的模组电源开关（GPIO46）。cut 返回模组是否真的断了电（STATUS 掉没掉）：
++ * 没做改线的板子返回 false，调用方要退回到关射频那一套。*/
++bool modem_supply_cut(void);
++void modem_supply_restore(void);
++bool modem_supply_switch_works(void);   /* 本次开机里 cut 成功过 */
+ 
+ /* 强制关机：PWRKEY 拉住 12 秒。RESET 没接线，这是唯一的死机恢复手段。*/
+ esp_err_t modem_force_reset(void);
+diff --git a/firmware/components/drv_power/CMakeLists.txt b/firmware/components/drv_power/CMakeLists.txt
+index b36ea7bf..0a005ee2 100644
+--- a/firmware/components/drv_power/CMakeLists.txt
++++ b/firmware/components/drv_power/CMakeLists.txt
+@@ -1 +1 @@
+-idf_component_register(SRCS "drv_power.c" INCLUDE_DIRS "include" REQUIRES board esp_driver_i2c)
++idf_component_register(SRCS "drv_power.c" INCLUDE_DIRS "include" REQUIRES board esp_driver_i2c esp_driver_gpio nvs_flash)
+diff --git a/firmware/components/drv_power/drv_power.c b/firmware/components/drv_power/drv_power.c
+index 0ccc133b..2b9b937f 100644
+--- a/firmware/components/drv_power/drv_power.c
++++ b/firmware/components/drv_power/drv_power.c
+@@ -3,6 +3,8 @@
+ #include "board.h"
+ #include "driver/i2c_master.h"
+ #include "esp_log.h"
++#include "driver/gpio.h"
++#include "nvs.h"
+ 
+ static const char *TAG = "power";
+ static i2c_master_bus_handle_t s_bus = NULL;
+@@ -12,6 +14,13 @@ static i2c_master_dev_handle_t s_gauge = NULL;
+ #define REG_SOC     0x04
+ #define REG_MODE    0x06
+ #define REG_CRATE   0x16
++#define REG_STATUS  0x1A
++#define STATUS_RI   0x0100   /* 寄存器高字节 bit0：上电复位过 */
++
++/* 改线 B：/PGOOD 飞线到 GPIO44（J8 脚 4，原 UART0 RX，控制台走 USB，没人用它）。
++ * R3 100kΩ 上拉到 3V3，USB 插着时 BQ24074 把它拉低。*/
++#define PIN_CHG_PGOOD 44
++static int8_t s_pgood_wired = -1;     /* -1 还没读 NVS，0 没见过低电平，1 已确认接了线 */
+ 
+ /* 充电判据：MAX17048 的 CRATE 是有符号量，正=在充。
+  * 阈值取 +0.5%/h，避开静置时的噪声。*/
+@@ -43,6 +52,9 @@ esp_err_t power_init(void)
+         .scl_speed_hz    = 400000,
+     };
+     ESP_ERROR_CHECK(i2c_master_bus_add_device(s_bus, &dev, &s_gauge));
++    gpio_config_t pg = { .pin_bit_mask = 1ULL << PIN_CHG_PGOOD, .mode = GPIO_MODE_INPUT,
++                         .pull_up_en = GPIO_PULLUP_ENABLE };   /* 没接线时也别悬空乱跳 */
++    gpio_config(&pg);
+     ESP_LOGI(TAG, "MAX17048 就绪 @0x%02X (SDA=GPIO%d SCL=GPIO%d)",
+              I2C_ADDR_FUEL_GAUGE, PIN_I2C_SDA, PIN_I2C_SCL);
+     return ESP_OK;
+@@ -71,3 +83,43 @@ esp_err_t power_quick_start(void)
+     uint8_t tx[3] = { REG_MODE, 0x40, 0x00 };
+     return i2c_master_transmit(s_gauge, tx, 3, 200);
+ }
++
++static esp_err_t wr16(uint8_t reg, uint16_t val)
++{
++    uint8_t tx[3] = { reg, (uint8_t)(val >> 8), (uint8_t)val };
++    return i2c_master_transmit(s_gauge, tx, 3, 200);
++}
++
++esp_err_t power_gauge_was_reset(bool *reset)
++{
++    uint16_t st;
++    esp_err_t e = rd16(REG_STATUS, &st);
++    if (e == ESP_OK) *reset = (st & STATUS_RI) != 0;
++    return e;
++}
++
++esp_err_t power_clear_reset_flag(void)
++{
++    uint16_t st;
++    esp_err_t e = rd16(REG_STATUS, &st);
++    return e == ESP_OK ? wr16(REG_STATUS, st & (uint16_t)~STATUS_RI) : e;
++}
++
++int power_usb_present(void)
++{
++    if (s_pgood_wired < 0) {
++        uint8_t v = 0;
++        nvs_handle_t h;
++        if (nvs_open("voxmind", NVS_READONLY, &h) == ESP_OK) { nvs_get_u8(h, "pgood_wired", &v); nvs_close(h); }
++        s_pgood_wired = v ? 1 : 0;
++    }
++    bool low = gpio_get_level(PIN_CHG_PGOOD) == 0;
++    if (low && !s_pgood_wired) {
++        s_pgood_wired = 1;
++        nvs_handle_t h;
++        if (nvs_open("voxmind", NVS_READWRITE, &h) == ESP_OK) { nvs_set_u8(h, "pgood_wired", 1); nvs_commit(h); nvs_close(h); }
++        ESP_LOGI(TAG, "读到 /PGOOD 低：改线 B 已接，之后用它判断 USB 插拔");
++    }
++    if (low) return 1;
++    return s_pgood_wired ? 0 : -1;
++}
+diff --git a/firmware/components/drv_power/include/drv_power.h b/firmware/components/drv_power/include/drv_power.h
+index c3b398bd..3e6a7438 100644
+--- a/firmware/components/drv_power/include/drv_power.h
++++ b/firmware/components/drv_power/include/drv_power.h
+@@ -7,8 +7,10 @@
+ /* 电量计 MAX17048（I2C 0x36），与触摸屏共用一条 I2C。
+  *
+  * ⚠ EVT 已知硬件限制（真值表 §2.3）：
+- *   CHG_PGOOD 和 USB VBUS 都【没有接到 GPIO】，软件读不到"是否在充电"。
+- *   对策：用 SOC/电压的上升趋势推断。DVT 改板建议补一根线。
++ *   CHG_PGOOD 和 USB VBUS 原板都【没有接到 GPIO】，软件读不到"是否在充电"。
++ *   对策：用 SOC/电压的上升趋势推断。
++ *   改线后（docs/32 改线 B：R3 的 CHG_PGOOD 端飞线到 J8 脚 4 = GPIO44）可以直接读
++ *   "USB 有没有插着"，见 power_usb_present()。
+  */
+ 
+ typedef struct {
+@@ -21,8 +23,19 @@ typedef struct {
+ esp_err_t power_init(void);
+ esp_err_t power_read(power_status_t *out);
+ 
+-/* 电池首次接入或深度放电后，SOC 会不准。调一次快速校准。*/
++/* 电池首次接入或深度放电后，SOC 会不准。调一次快速校准。
++ * 它按"此刻"的电压重估电量：插着充电器时调会估高，大负载时调会估低，只在没插电时调。*/
+ esp_err_t power_quick_start(void);
+ 
++/* 电量计刚上过电（STATUS.RI=1）：电池被放空过或拔过，之前算的电量全丢了，
++ * 现在的数是上电那一刻凭电压猜的。读到后用 power_clear_reset_flag() 清掉，下次就不再报。*/
++esp_err_t power_gauge_was_reset(bool *reset);
++esp_err_t power_clear_reset_flag(void);
++
++/* USB 有没有插着（BQ24074 /PGOOD，低=有输入电源）。
++ * 1=插着，0=没插，-1=不知道（没做改线 B：这根脚悬空，读不出区别）。
++ * 第一次读到"插着"就知道改线做了（存 NVS），之后"高"才算可信的"没插"。*/
++int power_usb_present(void);
++
+ /* 屏幕触摸控制器与电量计共用 I2C0；其它驱动必须复用该句柄。 */
+ i2c_master_bus_handle_t power_get_i2c_bus(void);
+diff --git a/firmware/tools/test-host.sh b/firmware/tools/test-host.sh
+index 8ca95490..a92e5aff 100644
+--- a/firmware/tools/test-host.sh
++++ b/firmware/tools/test-host.sh
+@@ -2,10 +2,14 @@
+ set -eu
+ firmware_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+ test_dir=$(mktemp -d "${TMPDIR:-/tmp}/voxmind-host-tests.XXXXXX")
+-trap 'rm -f "$test_dir/ui-test" "$test_dir/protocol-test"; rmdir "$test_dir"' EXIT HUP INT TERM
++trap 'rm -f "$test_dir/ui-test" "$test_dir/protocol-test" "$test_dir/battery-test"; rmdir "$test_dir"' EXIT HUP INT TERM
+ cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined \
+   "$firmware_dir/components/ui/ui_logic.c" "$firmware_dir/components/ui/tests/ui_logic_test.c" -o "$test_dir/ui-test"
+ "$test_dir/ui-test"
+ cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined \
+   "$firmware_dir/components/app_cloud/tests/runtime_protocol_test.c" -o "$test_dir/protocol-test"
+ "$test_dir/protocol-test"
++cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined \
++  -I "$firmware_dir/components/app_cloud/include" \
++  "$firmware_dir/components/app_cloud/battery_logic.c" "$firmware_dir/components/app_cloud/tests/battery_logic_test.c" -o "$test_dir/battery-test"
++"$test_dir/battery-test"
+diff --git a/firmware/version.txt b/firmware/version.txt
+index 8955a017..4ac0c7e0 100644
+--- a/firmware/version.txt
++++ b/firmware/version.txt
+@@ -1 +1 @@
+-1.0.26
++1.0.27-power.1
+-- 
+2.54.0 (Apple Git-157)
+

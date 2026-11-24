@@ -1,0 +1,85 @@
+VoxMind NOTICE
+
+Original VoxMind software, firmware, hardware designs, manufacturing files,
+enclosure files, website, documentation, and media are under LICENSE.md
+(personal, non-commercial, source-available; not an OSI open-source license).
+
+Third-party material keeps its own license. The personal non-commercial
+terms do not relicense it.
+
+Included in this tree
+---------------------
+
+- Noto Sans SC bitmap fonts generated as LVGL C arrays:
+  `font_cn_16.c`, `font_cn_24.c`, and `font_num_44.c` under
+  voxmind-source-available/snapshot/firmware/components/ui/fonts/.
+  They were produced by `gen_fonts.sh` with lv_font_conv 1.5.3 from
+  `NotoSansSC-Medium.otf` and `NotoSansSC-Bold.otf` at notofonts/noto-cjk
+  commit `f8d157532fbfaeda587e826d4cd5b21a49186f7c`, path
+  `Sans/SubsetOTF/SC/`. The name-table copyright on those files is
+  © 2014-2021 Adobe (http://www.adobe.com/). The version string is
+  Version 2.004;hotconv 1.0.118;makeotfexe 2.5.65603. Hashes are in
+  fonts/README.md. Each `.c` file starts with that notice.
+  `LICENSE-OFL.txt` is the SIL Open Font License 1.1 text and matches
+  upstream `Sans/LICENSE` at that commit. It does not itself name a
+  copyright holder. The firmware symbols are not the name Noto.
+  Noto is a trademark of Google Inc.
+
+- Silero VAD ONNX model:
+  voxmind-source-available/snapshot/cloud/models/silero_vad.onnx
+  MIT. See models/LICENSE-silero-vad.txt. Copyright (c) 2020-present Silero Team.
+
+Fetched when building, not vendored here
+----------------------------------------
+
+This source release does not distribute `esp_audio_codec` or frogfs, and
+it does not distribute a firmware binary. Dependency pins are not a
+firmware-binary release. Obligations below apply when someone later builds
+and distributes an image that contains those object codes. Nothing in this
+NOTICE clears that later distribution.
+
+ESP-IDF component pins are in
+voxmind-source-available/snapshot/firmware/dependencies.lock.
+managed_components/ is not included. Notable obligations:
+
+- espressif/esp_audio_codec (lock pin 2.6.2), declared by
+  firmware/components/codec_opus/idf_component.yml.
+  The component comment in this tree states that Espressif ships a
+  prebuilt Opus encoder whose license allows use only with Espressif chips.
+  ESP32-S3 is an Espressif chip. Do not treat that comment as permission to
+  ship the codec with a non-Espressif product. The codec binary is not in
+  this repository. The comment was not re-checked against a downloaded
+  license file. A firmware image that links that prebuilt library is a
+  distribution of the library. This source tree does not perform or
+  approve that distribution.
+
+- lvgl/lvgl (locked with espressif/esp_lvgl_port). LVGL is generally under
+  its own MIT-style terms, and current LVGL 9 sources include frogfs under
+  the Mozilla Public License 2.0. This repository does not vendor frogfs.
+  Distributing a firmware binary that contains frogfs object code can
+  trigger MPL-2.0 source obligations for those MPL files. That does not
+  relicense the original VoxMind firmware. This tree does not include the
+  MPL source bundle, because no firmware image was built. Shipping a
+  binary later is not already satisfied by this source release.
+
+- espressif/esp-sr, esp_modem, esp-dl and their dependencies are downloaded
+  from the Espressif component registry. Their notices travel with those
+  downloads. This import did not copy them and did not re-check every
+  nested license beyond the pins and the component manifests in tree.
+
+- Node dependencies listed in
+  voxmind-source-available/snapshot/cloud/package.json
+  (Fastify, React, the Lark/Feishu Node SDK, and others) stay under their
+  own licenses. node_modules/ is not part of this release.
+
+Unresolved combinations
+-----------------------
+
+See docs/COMPLIANCE.md. These remain open:
+
+- A firmware binary is not part of this release. Distributing one would
+  be a new distribution of `esp_audio_codec` and, if linked, of frogfs.
+  That distribution is not cleared here.
+- The Chinese UI font bitmaps in this tree are the regenerated Noto Sans
+  SC 2.004 outputs. See fonts/README.md. A firmware image that embeds
+  them is still the separate binary distribution described above.

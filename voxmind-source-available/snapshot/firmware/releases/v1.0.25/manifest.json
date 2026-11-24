@@ -1,0 +1,39 @@
+{
+  "version": "1.0.25",
+  "project": "voxmind",
+  "target": "ESP32-S3 / EVT PCB1 cloud",
+  "idfVersion": "v5.5.1",
+  "firmwareSourceCommit": "e85ffae9f6c0a620432142669e621a830100a444",
+  "cloudSourceCommit": "a4041ef6f532da52c61ea728af86a03dbde14f32",
+  "binaryPath": "firmware/releases/build/1.0.25/voxmind.bin",
+  "byteLength": 4039504,
+  "sha256": "3fbd25a372b5ed6b7c599cd843290921267ca6bbd5e68d9e8d3fa9e89c9afcb3",
+  "releaseId": null,
+  "uploadedAt": "2026-10-11T04:30:29.055Z",
+  "rollout": "devices",
+  "deviceIds": ["demo-voxmind-not-a-real-device"],
+  "verification": {
+    "cloudTypecheck": "passed",
+    "cloudProductionBuild": "passed locally and in Linux production image",
+    "cloudTestsPassed": 287,
+    "cloudTestsSkipped": 1,
+    "isolatedPostgresCheck": "passed: marked priority, incomplete atomic rollback, silence within command, 12-way audio claim, 24-way execution claim and previous safety checks",
+    "firmwareSanitizers": "passed: ASan/UBSan runtime, time ranges and retained-record corruption checks",
+    "realLvglHostCheck": "passed",
+    "esptoolImageValidation": "passed",
+    "productionReady": true,
+    "productionContainerHealthy": true,
+    "deployedSourceHashesMatch": true,
+    "productionImage": "sha256:3ff0133dc45b8c6795c08f061a800b1005dc437d4fe9b655118b6d56a607f469",
+    "physicalControlTest": "not triggered; requires user speech and confirmation",
+    "longDurationStability": "not yet verified"
+  },
+  "deviceEvidence": {
+    "status": "rollout requested; awaiting post-upgrade heartbeat"
+  },
+  "rollback": {
+    "bootloaderRollbackEnabled": true,
+    "serverBackupDirectory": "/opt/voxmind/backups/release-1.0.25",
+    "previousApiImage": "voxmind-api:pre-1.0.25"
+  }
+}

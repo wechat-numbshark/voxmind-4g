@@ -1,0 +1,9 @@
+## IDF Component Manager Manifest File
+##
+## ML307C-GC 不在 esp_modem 命名支持的模组列表里（官方只列了 SIM800/BG96/SIM7600），
+## 但它遵循标准 3GPP AT 指令集，走 esp_modem 的"通用模组"路径（esp_modem_new()，
+## 不是 esp_modem_new_dev()）完全够用——见 app_cloud.c 里的用法。
+dependencies:
+  idf: '>=5.0.0'
+  espressif/esp_modem:
+    version: "^2"

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="420" viewBox="0 0 980 420" role="img" aria-labelledby="title desc">
+  <title id="title">VoxMind data flow</title>
+  <desc id="desc">Chunked audio upload from a 4G device into a self-hosted cloud, then optional ASR, human-confirmed actions, and polled device and web clients.</desc>
+  <style>
+    text { font-family: ui-sans-serif, system-ui, sans-serif; fill: #1c1917; }
+    .box { fill: #faf7f2; stroke: #44403c; stroke-width: 1.5; }
+    .muted { fill: #57534e; }
+    .arrow { stroke: #44403c; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#44403c"/>
+    </marker>
+  </defs>
+  <rect class="box" x="24" y="36" width="200" height="88" rx="8"/>
+  <text x="40" y="68" font-size="15" font-weight="700">Device</text>
+  <text class="muted" x="40" y="90" font-size="12">ESP32-S3 + ML307C</text>
+  <text class="muted" x="40" y="108" font-size="12">4G cellular, not 4 GB</text>
+
+  <rect class="box" x="268" y="36" width="220" height="88" rx="8"/>
+  <text x="284" y="68" font-size="15" font-weight="700">Chunk upload</text>
+  <text class="muted" x="284" y="90" font-size="12">Default 5 s Opus chunks</text>
+  <text class="muted" x="284" y="108" font-size="12">PUT /v1/device-sessions</text>
+
+  <rect class="box" x="532" y="36" width="200" height="88" rx="8"/>
+  <text x="548" y="68" font-size="15" font-weight="700">Cloud API</text>
+  <text class="muted" x="548" y="90" font-size="12">Node, self-hosted</text>
+  <text class="muted" x="548" y="108" font-size="12">keys stay in your env</text>
+
+  <rect class="box" x="772" y="36" width="184" height="88" rx="8"/>
+  <text x="788" y="68" font-size="15" font-weight="700">ASR</text>
+  <text class="muted" x="788" y="90" font-size="12">provider is config</text>
+  <text class="muted" x="788" y="108" font-size="12">WS path is optional</text>
+
+  <path class="arrow" d="M224 80 H268"/>
+  <path class="arrow" d="M488 80 H532"/>
+  <path class="arrow" d="M732 80 H772"/>
+
+  <rect class="box" x="532" y="176" width="200" height="88" rx="8"/>
+  <text x="548" y="208" font-size="15" font-weight="700">Action draft</text>
+  <text class="muted" x="548" y="230" font-size="12">person confirms</text>
+  <text class="muted" x="548" y="248" font-size="12">Feishu task is one tool</text>
+  <path class="arrow" d="M632 124 V176"/>
+
+  <rect class="box" x="24" y="300" width="250" height="88" rx="8"/>
+  <text x="40" y="332" font-size="15" font-weight="700">Device poll</text>
+  <text class="muted" x="40" y="354" font-size="12">750 / 1500 / 15000 ms</text>
+  <text class="muted" x="40" y="372" font-size="12">/v1/device-actions + feed</text>
+
+  <rect class="box" x="310" y="300" width="250" height="88" rx="8"/>
+  <text x="326" y="332" font-size="15" font-weight="700">Web poll</text>
+  <text class="muted" x="326" y="354" font-size="12">Today 5 s, tasks 30 s</text>
+  <text class="muted" x="326" y="372" font-size="12">not a live push socket</text>
+
+  <rect class="box" x="596" y="300" width="250" height="88" rx="8"/>
+  <text x="612" y="332" font-size="15" font-weight="700">Feishu / Lark</text>
+  <text class="muted" x="612" y="354" font-size="12">connector when configured</text>
+  <text class="muted" x="612" y="372" font-size="12">empty example env ships</text>
+
+  <path class="arrow" d="M560 264 C400 280 180 280 149 300"/>
+  <path class="arrow" d="M632 264 V300"/>
+  <path class="arrow" d="M704 264 C760 280 720 280 721 300"/>
+</svg>

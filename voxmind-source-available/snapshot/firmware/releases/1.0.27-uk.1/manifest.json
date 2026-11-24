@@ -1,0 +1,28 @@
+{
+  "version": "1.0.27-uk.1",
+  "date": "2026-11-03",
+  "status": "compiled_candidate_not_flashed_not_uk_field_tested",
+  "chip": "esp32s3",
+  "bytes": 4055872,
+  "sha256": "26b5403e990f089509dce81e101413a91a4d764b2c0c3704ba059b5014e9358b",
+  "sources": {
+    "firmware/version.txt": "e91ed8ba848b8546ee0cb8e8330da3d3ed5f5910a33b22d1d99de61656ad57a1",
+    "firmware/components/app_cloud/app_cloud.c": "bc161ed2543d6e4b92e31aa39f1703d94dbd6907a821e312765bb210aba4a936",
+    "firmware/components/app_cloud/cellular_profile.c": "69d8541e334099dc2fafe4a22afdb582a8a8ed716cbaf40e1a4caafa6fec64da",
+    "firmware/components/app_cloud/cellular_settings.c": "3621ba2a9dfcd3950020029338289322fb58365ddbfc8d731b7d181e6630481a",
+    "firmware/components/app_cloud/include/cellular_profile.h": "921a6a64f2e56c9f5c7dc41ec3ba37973fe7bf3b2abf86ac7eab386b59514d0c",
+    "firmware/components/app_cloud/include/cellular_settings.h": "5a543ffa15246ac9936e03e46bfb45dc96429231dee35278c9df66e7762bfafc",
+    "firmware/components/app_cloud/Kconfig.projbuild": "75f43432720aca8a01caff84bcf5b911810b96bd03a10cbdce5612347c5378c0",
+    "firmware/components/app_cloud/CMakeLists.txt": "073f30a539ab94b4c84087b4a37d4b3b7a66fb8c8b23695203ae7b78ce649cff"
+  },
+  "checks": {
+    "host_tests": "passed (ASan/UBSan; NVS adapter uses test double)",
+    "esp_idf_build": "passed",
+    "image_info": "passed",
+    "PAP": true,
+    "CHAP": true,
+    "static_device_key": false,
+    "destructive_audio_purge": false
+  },
+  "hardware_frequency_compatibility": "ML307C-GC exact regional variant still requires verification"
+}

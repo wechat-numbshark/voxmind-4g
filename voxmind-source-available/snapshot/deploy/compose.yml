@@ -1,0 +1,134 @@
+name: voxmind
+
+services:
+  postgres:
+    # pgvector 官方镜像＝PostgreSQL 16 + vector 扩展，数据目录和 postgres:16 完全兼容，
+    # 直接换镜像重启即可（语义检索靠它走索引，不再全表算余弦）
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: voxmind
+      POSTGRES_USER: voxmind
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U voxmind -d voxmind"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [voxmind]
+
+  api:
+    container_name: voxmind-api
+    build:
+      context: ../cloud
+    image: voxmind-api:local
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8080
+      DATABASE_URL: postgres://voxmind:${POSTGRES_PASSWORD}@postgres:5432/voxmind
+      AUDIO_STORAGE_DIR: /data/audio
+      DEVICE_API_KEY: ${DEVICE_API_KEY:?set DEVICE_API_KEY}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:?set ADMIN_API_KEY}
+      TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY:?set TOKEN_ENCRYPTION_KEY}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8088}
+      # 首次启动、库里还没有账号时自动建的管理员。密码留空会随机生成并只在日志里打印一次
+      BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-owner@voxmind.local}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-}
+      PROCESSING_ENABLED: ${PROCESSING_ENABLED:-true}
+      EXECUTION_MODE: ${EXECUTION_MODE:-mock}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-5}
+      LLM_PROVIDER: ${LLM_PROVIDER:-disabled}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://openrouter.ai/api/v1}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+      ASR_PROVIDER: ${ASR_PROVIDER:-disabled}
+      ASR_ACCESS_KEY_ID: ${ASR_ACCESS_KEY_ID:-}
+      ASR_ACCESS_KEY_SECRET: ${ASR_ACCESS_KEY_SECRET:-}
+      ASR_APP_KEY: ${ASR_APP_KEY:-}
+      ASR_GATEWAY: ${ASR_GATEWAY:-wss://nls-gateway-cn-shanghai.aliyuncs.com/ws/v1}
+      ASR_MODEL: ${ASR_MODEL:-qwen3-asr-flash}
+      # 两档：用户没选时的默认档；经济档识别在迁移到 4 核 8G 以上服务器前用云端（same），
+      # 迁移后改成 sensevoice 并用 `docker compose --profile local-asr up -d` 起本地识别
+      DEFAULT_TIER: ${DEFAULT_TIER:-high}
+      ECONOMY_ASR: ${ECONOMY_ASR:-same}
+      SENSEVOICE_URL: ${SENSEVOICE_URL:-http://local-asr:8000}
+      ECONOMY_LLM_MODEL: ${ECONOMY_LLM_MODEL:-qwen-flash}
+      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:-}
+      DASHSCOPE_BASE_URL: ${DASHSCOPE_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
+      LARK_APP_ID: ${LARK_APP_ID:-}
+      LARK_APP_SECRET: ${LARK_APP_SECRET:-}
+      LARK_ENCRYPT_KEY: ${LARK_ENCRYPT_KEY:-}
+      LARK_VERIFICATION_TOKEN: ${LARK_VERIFICATION_TOKEN:-}
+      LARK_OWNER_OPEN_ID: ${LARK_OWNER_OPEN_ID:-}
+      WEBHOOK_ALLOWED_ORIGINS: ${WEBHOOK_ALLOWED_ORIGINS:-}
+      HOME_ASSISTANT_URL: ${HOME_ASSISTANT_URL:-}
+      HOME_ASSISTANT_TOKEN: ${HOME_ASSISTANT_TOKEN:-}
+      EVA_BASE_URL: ${EVA_BASE_URL:-http://eva-core:8080}
+      # MVP 与现有管理密钥共用；迁到农场主机时轮换为独立 EVA_API_KEY。
+      EVA_API_KEY: ${EVA_API_KEY:-${ADMIN_API_KEY}}
+      EVA_SITE_ID: ${EVA_SITE_ID:-farm-main}
+      # 只放开 EVA 设备链路；全局 EXECUTION_MODE 仍可保持 mock。
+      EVA_EXECUTION_MODE: ${EVA_EXECUTION_MODE:-live}
+      EVA_DEVICE_HINTS: ${EVA_DEVICE_HINTS:-家里空调或空调使用 iot.ir.send，deviceId=home-ac-ir，appliance=air_conditioner；打开或开启空调、设为25度制冷都使用 command=cool_25；关闭空调使用 command=power_off}
+      MQTT_URL: ${MQTT_URL:-}
+      MQTT_USERNAME: ${MQTT_USERNAME:-}
+      MQTT_PASSWORD: ${MQTT_PASSWORD:-}
+    volumes:
+      - audio-data:/data/audio
+    ports:
+      - "127.0.0.1:${VOXMIND_PORT:-8088}:8080"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks: [voxmind]
+
+  home-assistant:
+    container_name: voxmind-home-assistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    restart: unless-stopped
+    stop_grace_period: 60s
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - home-assistant-config:/config
+    ports:
+      # 仅供 SSH 隧道进行初始化和维护，不把 HA 管理界面直接暴露到公网。
+      - "127.0.0.1:${HOME_ASSISTANT_PORT:-8123}:8123"
+    networks: [voxmind]
+
+  # 经济档本地语音识别（SenseVoice-Small int8，CPU）。默认不启动：
+  # 现在这台 2 核 2G 的服务器跑不动，迁移后用 --profile local-asr 打开。
+  local-asr:
+    profiles: ["local-asr"]
+    build:
+      context: ./local-asr
+    image: voxmind-local-asr:local
+    restart: unless-stopped
+    environment:
+      ASR_THREADS: ${ASR_THREADS:-4}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    networks: [voxmind]
+
+volumes:
+  postgres-data:
+  audio-data:
+  home-assistant-config:
+
+networks:
+  voxmind:
+    name: voxmind-net

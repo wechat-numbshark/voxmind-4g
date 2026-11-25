@@ -4,7 +4,7 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { initialState, reduce } from "../voxmind/demo/flow.js";
-import { seed } from "../voxmind/demo/seed.js";
+import { seed, scenarios } from "../voxmind/demo/seed.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const allowedHosts = new Set([
@@ -12,6 +12,8 @@ const allowedHosts = new Set([
   "m.tb.cn",
   "buildwithneo.cn",
   "feishubanlv.com",
+  "wa.me",
+  "www.douyin.com",
   "127.0.0.1:8765",
   "www.w3.org",
 ]);
@@ -30,17 +32,20 @@ function sentences(text) {
   return text.split(/(?<=[。！？.!?])|\n+/);
 }
 
-test("demo flow is deterministic and stays local", () => {
-  const first = ["show-speech", "propose", "confirm", "reset"].reduce(
-    (state, action) => reduce(state, action, seed),
-    initialState(),
-  );
-  const second = ["show-speech", "propose", "confirm", "reset"].reduce(
-    (state, action) => reduce(state, action, seed),
-    initialState(),
-  );
-  assert.deepEqual(first, second);
-  assert.deepEqual(first, initialState());
+test("demo flow is deterministic and stays local across all scenarios", () => {
+  for (const key of Object.keys(scenarios)) {
+    const item = scenarios[key];
+    const first = ["show-speech", "propose", "confirm", "reset"].reduce(
+      (state, action) => reduce(state, action, item),
+      initialState(),
+    );
+    const second = ["show-speech", "propose", "confirm", "reset"].reduce(
+      (state, action) => reduce(state, action, item),
+      initialState(),
+    );
+    assert.deepEqual(first, second);
+    assert.deepEqual(first, initialState());
+  }
 
   let state = initialState();
   state = reduce(state, "confirm", seed);
@@ -71,23 +76,22 @@ test("published pages stay free of secrets, media capture, and self-deprecation"
     /new WebSocket|EventSource|XMLHttpRequest|\bfetch\s*\(/,
     /<audio\b|<video\b/i,
     /\.(?:mp3|wav|ogg|mp4|pcm|webm)\b/i,
-    /笨重|bulky|待优化|优化空间|needs improvement|欠陥/,
+    /笨重|bulky|待优化|优化空间|needs improvement|欠陥|voluminoso|sperrig/,
   ];
   for (const file of files) {
     if (file.endsWith("check.mjs")) continue;
     const info = await stat(file);
     assert.ok(info.size < 8_000_000, path.relative(root, file));
-    const text = await readFile(file);
-    const asText = text.toString("utf8");
-    if (file.endsWith(".png")) continue;
+    if (/\.(png|jpg|jpeg|webp)$/i.test(file)) continue;
+    const text = await readFile(file, "utf8");
     for (const pattern of banned) {
-      assert.equal(pattern.test(asText), false, `${path.relative(root, file)} matched ${pattern}`);
+      assert.equal(pattern.test(text), false, `${path.relative(root, file)} matched ${pattern}`);
     }
-    for (const match of asText.matchAll(/https?:\/\/([^/\s"'#)]+)/g)) {
+    for (const match of text.matchAll(/https?:\/\/([^/\s"'#)]+)/g)) {
       const host = match[1].replace(/[^a-z0-9.:-].*$/i, "");
       assert.ok(allowedHosts.has(host), `${path.relative(root, file)} host ${host}`);
     }
-    for (const sentence of sentences(asText)) {
+    for (const sentence of sentences(text)) {
       if (sentence.includes("开源")) {
         assert.match(sentence, /不是/);
       }
@@ -108,8 +112,10 @@ test("routes and assets are relative", async () => {
   const intro = await readFile(path.join(root, "voxmind/index.html"), "utf8");
   const demo = await readFile(path.join(root, "voxmind/demo/index.html"), "utf8");
   assert.match(intro, /href="demo\/"/);
-  assert.match(intro, /src="assets\/enclosure-closed\.png"/);
-  assert.match(intro, /src="assets\/dataflow\.svg"/);
+  assert.match(intro, /src="assets\/voxmind-hero\.jpg"/);
+  assert.match(intro, /src="assets\/voxmind-overview\.jpg"/);
+  assert.match(intro, /src="assets\/voxmind-vs-plaud\.jpg"/);
+  assert.match(intro, /src="assets\/wechat-qr\.jpg"/);
   assert.match(demo, /href="\.\.\/"/);
   assert.match(demo, /href="\.\.\/site\.css"/);
   assert.match(demo, /src="demo\.js"/);

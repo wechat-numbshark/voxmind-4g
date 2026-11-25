@@ -1,6 +1,6 @@
 import { STRINGS } from "./i18n.js";
 
-const LANGS = ["zh", "en", "ja"];
+const LANGS = ["zh", "en", "ja", "es", "de"];
 
 export function currentLang() {
   const hash = location.hash.replace(/^#/, "");
@@ -8,8 +8,9 @@ export function currentLang() {
 }
 
 export function applyLanguage(lang) {
-  const pack = STRINGS[lang];
+  const pack = STRINGS[lang] || STRINGS.zh;
   document.documentElement.lang = lang === "zh" ? "zh-Hans" : lang;
+  document.body.setAttribute("data-lang", lang);
   document.title = pack["meta.title"];
   for (const el of document.querySelectorAll("[data-i18n]")) {
     const value = pack[el.getAttribute("data-i18n")];

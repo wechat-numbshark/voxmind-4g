@@ -1,0 +1,238 @@
+.demo-wrap {
+  padding: 20px 0 48px;
+}
+
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 12px 16px;
+  margin: 0 0 14px;
+  background: var(--slate);
+  color: #f6f2ea;
+  border-radius: 14px;
+  font-size: 14px;
+}
+
+.banner strong {
+  background: var(--copper);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.device-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+
+.device-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pine);
+  box-shadow: 0 0 0 4px rgba(27, 101, 70, 0.16);
+}
+
+.device-telemetry {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.device-telemetry span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: #f5f2eb;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.scenarios {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 6px 0 4px;
+}
+
+.sc-label {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.sc-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sc-tab {
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sc-tab[aria-selected="true"] {
+  background: var(--pine);
+  border-color: var(--pine);
+  color: #fff;
+}
+
+.demo-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.console-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 18px;
+  align-items: start;
+  margin-top: 8px;
+}
+
+.device-screen {
+  background: linear-gradient(160deg, #273242, #151c26);
+  border-radius: 26px;
+  padding: 16px;
+  color: #f6f2ea;
+  box-shadow: var(--shadow);
+  border: 2px solid #354357;
+}
+
+.screen-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--copper);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 10px 10px 0 0;
+}
+
+.screen-body {
+  background: #f9f7f2;
+  color: var(--ink);
+  min-height: 170px;
+  padding: 12px;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.screen-status {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--pine);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.screen-card-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.screen-card-sub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.screen-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.screen-keys span {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #d7dee8;
+}
+
+.stage {
+  display: grid;
+  gap: 14px;
+}
+
+.card h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+
+.card p {
+  margin: 6px 0;
+}
+
+.quote-text {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--copper);
+  background: rgba(184, 86, 45, 0.1);
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+.badge.ok {
+  color: var(--pine);
+  background: rgba(27, 101, 70, 0.12);
+}
+
+.executed {
+  border-color: var(--pine);
+  background: #f6fbf8;
+}
+
+@media (max-width: 760px) {
+  .console-grid { grid-template-columns: 1fr; }
+  .device-screen { max-width: 280px; margin: 0 auto; }
+}

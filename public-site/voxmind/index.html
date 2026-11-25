@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>VoxMind · 4G 随身语音 AI 行动终端</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <a class="skip" href="#content">Content</a>
+  <header class="wrap top">
+    <a class="mark" href="#zh">VoxMind <span class="mark-tag">4G</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#compare" data-i18n="nav.compare">对比</a>
+      <a href="#hardware" data-i18n="nav.hardware">硬件</a>
+      <a href="#videos" data-i18n="nav.videos">视频</a>
+      <a data-demo-link href="demo/" data-i18n="nav.demo">交互演示</a>
+      <a href="https://github.com/wechat-numbshark/voxmind-4g" data-i18n="nav.source">源码</a>
+      <a href="https://m.tb.cn/h.jMFxNbJ?tk=qkTU6TNvVOc" data-i18n="nav.buy">闲鱼现货</a>
+      <a href="#contact" data-i18n="nav.contact">定制联系</a>
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="zh" aria-pressed="true">中文</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        <button type="button" data-lang="ja" aria-pressed="false">日本語</button>
+        <button type="button" data-lang="es" aria-pressed="false">ES</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="content" class="wrap">
+    <section class="hero">
+      <div>
+        <p class="kicker" data-i18n="hero.kicker">独立 4G 蜂窝联网 · 小批量已量产发货</p>
+        <h1 data-i18n="hero.title">按下说话，直接替你办事。</h1>
+        <p class="lede" data-i18n="hero.lede">VoxMind 是一台内置 4G 蜂窝网络的成熟 AI 语音行动终端。无需掏手机、不依赖蓝牙或 Wi-Fi，实时上传语音并弹出屏上确认卡片——一键创建飞书任务、云文档、自动记账、控制智能家居或触发企业 API。已有定制 3D 外壳实物、小批量出货且稳定运行。</p>
+        <div class="actions">
+          <a class="primary" href="https://m.tb.cn/h.jMFxNbJ?tk=qkTU6TNvVOc" target="_blank" rel="noopener noreferrer" data-i18n="hero.buy">去闲鱼购买成品</a>
+          <a class="secondary" data-demo-link href="demo/" data-i18n="hero.demo">在线体验交互后台</a>
+          <a href="https://github.com/wechat-numbshark/voxmind-4g" target="_blank" rel="noopener noreferrer" data-i18n="hero.source">GitHub 全栈源码</a>
+        </div>
+        <div class="pills">
+          <span data-i18n="hero.pill1">内置 ML307C 4G LTE</span>
+          <span data-i18n="hero.pill2">小批量真实出货</span>
+          <span data-i18n="hero.pill3">PCB + 3D外壳 + 固件全公开</span>
+          <span data-i18n="hero.pill4">自带 AI/API · 零强制月费</span>
+        </div>
+      </div>
+      <figure class="hero-figure">
+        <img src="assets/voxmind-hero.jpg" alt="VoxMind physical 4G voice terminal in 3D-printed enclosure" data-i18n-alt="hero.caption">
+        <figcaption data-i18n="hero.caption">VoxMind 实机外观：定制 3D 打印外壳、2 英寸彩屏与实体三键。</figcaption>
+      </figure>
+    </section>
+
+    <section class="showcase">
+      <h2 data-i18n="overview.title">从一句话到实时执行</h2>
+      <p class="section-lead" data-i18n="overview.lead">全链路围绕「脱离手机、实时行动、人工确认、完全可控」打造。</p>
+      <figure class="infographic">
+        <img src="assets/voxmind-overview.jpg" alt="VoxMind 4-step 4G standalone voice-to-action architecture" data-i18n-alt="overview.alt">
+      </figure>
+      <div class="cards">
+        <article>
+          <h3 data-i18n="feat.cellular.title">独立 4G 蜂窝直连</h3>
+          <p data-i18n="feat.cellular.body">内置 ML307C 4G LTE 模组与 Nano-SIM 卡槽，手机不在身边、蓝牙关闭也能持续录音并实时分段上传，断网自动暂存续传。</p>
+        </article>
+        <article>
+          <h3 data-i18n="feat.action.title">说完即办 · 确认后执行</h3>
+          <p data-i18n="feat.action.body">不只是录音摘要：AI 识别意图后在机身屏幕或 Web 后台弹出待确认卡片，一键写入飞书任务、消息、云文档、自动记账或联动智能家居。</p>
+        </article>
+        <article>
+          <h3 data-i18n="feat.byoai.title">自带 AI / API · 零订阅绑定</h3>
+          <p data-i18n="feat.byoai.body">支持接入你自己的大模型与语音识别 API，也支持 Docker 私有化自部署；所有生产密钥与个人设备凭证已彻底剥离，安全可控。</p>
+        </article>
+        <article>
+          <h3 data-i18n="feat.mature.title">成熟实物 · 全栈源码公开</h3>
+          <p data-i18n="feat.mature.body">已完成四层 PCB 打板、3D 外壳 v1/v2 迭代、小批量量产与真实用户交付；硬件制造文件、3D 模型、固件与 Web 控制台同步公开。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="compare" class="compare">
+      <h2 data-i18n="compare.title">对比 Plaud（Note / Note Pro / One）</h2>
+      <p class="section-lead" data-i18n="compare.lead">基于公开规格与真实产品形态的清晰对照：VoxMind 面向「独立 4G 实时行动 + 飞书/企业集成 + 软硬件可定制」。</p>
+      <figure class="infographic">
+        <img src="assets/voxmind-vs-plaud.jpg" alt="Comparison between VoxMind, Plaud Note / Note Pro, and Plaud One" data-i18n-alt="compare.alt">
+      </figure>
+      <div class="compare-notes panel">
+        <ul>
+          <li data-i18n="plaud.notepro">Plaud Note / Note Pro 为卡片式录音硬件，通过蓝牙和 Wi-Fi 经手机 App 同步处理；规格不含独立蜂窝 4G。</li>
+          <li data-i18n="plaud.plan">Plaud Pro Plan 为云端分钟数订阅方案，而非独立硬件；VoxMind 支持自备 AI / API，无需强制按月付费。</li>
+          <li data-i18n="plaud.one">Plaud One 在耳机充电盒中内置 eSIM 4G LTE，停录后生成摘要与 App Agent；VoxMind 则开放整套硬件、3D 外壳、固件与自托管后台。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="hardware">
+      <h2 data-i18n="hardware.title">硬件架构与 3D 外壳</h2>
+      <p class="section-lead" data-i18n="hardware.lead">自研 v9 四层 PCB 实拍标注与 3D 外壳结构展示（GitHub 仓库内提供完整 EasyEDA、Gerber/BOM 及 v1/v2 STEP &amp; STL 文件）。</p>
+      <div class="gallery">
+        <figure>
+          <img src="assets/enclosure-exploded.png" alt="3D enclosure exploded view" data-i18n-alt="hardware.exploded.cap">
+          <figcaption data-i18n="hardware.exploded.cap">定制 3D 外壳结构分解图（含 v1 &amp; v2 完整 STEP / STL）。</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/board-front.png" alt="Annotated front of the VoxMind v9 PCB" data-i18n-alt="hardware.front.cap">
+          <figcaption data-i18n="hardware.front.cap">v9 主板正面实拍：ESP32-S3 主控、双麦克风、SD NAND、物理三键与 15P 屏口。</figcaption>
+        </figure>
+        <figure class="wide">
+          <img src="assets/board-back.png" alt="Annotated back of the VoxMind v9 PCB" data-i18n-alt="hardware.back.cap">
+          <figcaption data-i18n="hardware.back.cap">v9 主板反面实拍：ML307C 4G LTE 模组、Nano-SIM 卡座与 USB-C 接口。</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="videos">
+      <h2 data-i18n="videos.title">实机演示视频（抖音实拍）</h2>
+      <p class="section-lead" data-i18n="videos.lead">作者本人发布的真实硬件运行视频，展示独立 4G、飞书任务、自动记账、智能家居与 3D 外壳打印。</p>
+      <div class="video-grid">
+        <a class="video-card" href="https://www.douyin.com/video/7695388211157159203" target="_blank" rel="noopener noreferrer">
+          <span class="vbadge">Douyin · 01</span>
+          <h3 data-i18n="video1.title">语音控制智能家居：一句话开关空调</h3>
+          <p data-i18n="video1.desc">打通 VoxMind 后台、涂鸦智能与红外链路，语音下发指令并在设备端确认执行。</p>
+        </a>
+        <a class="video-card" href="https://www.douyin.com/video/7694328346280234274" target="_blank" rel="noopener noreferrer">
+          <span class="vbadge">Douyin · 02</span>
+          <h3 data-i18n="video2.title">自研 AI 硬件：发飞书、控家居、接企业系统</h3>
+          <p data-i18n="video2.desc">从屏幕驱动、PCB 到 3D 外壳组装，语音直连飞书消息、任务与企业工作流。</p>
+        </a>
+        <a class="video-card" href="https://www.douyin.com/video/7691974175644339502" target="_blank" rel="noopener noreferrer">
+          <span class="vbadge">Douyin · 03</span>
+          <h3 data-i18n="video3.title">VoxMind 4G 实机全流程演示</h3>
+          <p data-i18n="video3.desc">独立 4G 持续录音，识别后创建飞书任务、自动记账，设备端实时显示执行回执。</p>
+        </a>
+        <a class="video-card" href="https://www.douyin.com/video/7690610993400382395" target="_blank" rel="noopener noreferrer">
+          <span class="vbadge">Douyin · 04</span>
+          <h3 data-i18n="video4.title">3D 外壳打印实拍与外接智能体</h3>
+          <p data-i18n="video4.desc">定制 3D 外壳制造实拍，插物联网卡实时处理录音并接入飞书或其他智能体。</p>
+        </a>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section panel">
+      <div class="contact-grid">
+        <div>
+          <p class="kicker" data-i18n="contact.kicker">硬件定制设计 · 企业二开 · 商业授权</p>
+          <h2 data-i18n="contact.title">需要定制 AI 硬件或商业合作？</h2>
+          <p data-i18n="contact.body">我可以为你提供从 PCB 原理图、3D 外壳结构、嵌入式固件到云端后台的一站式 AI 硬件定制设计，也支持 VoxMind 企业私有化二次开发与商业授权。</p>
+          <div class="actions">
+            <a class="primary contact-whatsapp" href="https://wa.me/8617703575241" target="_blank" rel="noopener noreferrer" data-i18n="contact.wa">WhatsApp 联系 (+86 177 0357 5241)</a>
+            <a class="secondary" href="https://m.tb.cn/h.jMFxNbJ?tk=qkTU6TNvVOc" target="_blank" rel="noopener noreferrer" data-i18n="contact.buy">闲鱼购买现货成品</a>
+            <a href="https://buildwithneo.cn/#contact" target="_blank" rel="noopener noreferrer" data-i18n="contact.site">作者官网留言</a>
+          </div>
+          <p class="note" data-i18n="contact.email">Email: neo.gannianlin@gmail.com</p>
+        </div>
+        <figure class="qr-box contact-wechat">
+          <img src="assets/wechat-qr.jpg" alt="WeChat QR code for hardware design consultation">
+          <figcaption data-i18n="contact.qr">微信扫码添加作者（中文专属）<br>硬件定制设计 · 企业二开 · 商业授权</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="license panel">
+      <h2 data-i18n="license.title">许可与说明</h2>
+      <ul>
+        <li data-i18n="license.personal">源码公开（Source-Available）：允许自然人将原创软件、固件、硬件 PCB、3D 外壳与文档用于个人学习、兴趣制作与非商业用途。</li>
+        <li data-i18n="license.commercial">商业使用（销售、量产、企业部署、付费集成等）须另行向作者购买书面授权。</li>
+        <li data-i18n="license.osi">本许可不是 Open Source Initiative 定义下的开源许可；中文正文与译文不一致时以中文为准。</li>
+        <li data-i18n="name.body">本页介绍的是独立的 4G 语音 AI 硬件终端 VoxMind，与同名学术论文项目无关。</li>
+      </ul>
+      <p><a href="https://github.com/wechat-numbshark/voxmind-4g/blob/main/LICENSE.md" target="_blank" rel="noopener noreferrer" data-i18n="license.read">阅读完整 LICENSE.md</a></p>
+    </section>
+  </main>
+
+  <footer class="wrap">VoxMind 4G · <a href="https://github.com/wechat-numbshark/voxmind-4g" target="_blank" rel="noopener noreferrer">github.com/wechat-numbshark/voxmind-4g</a> · <a href="https://buildwithneo.cn/#contact" target="_blank" rel="noopener noreferrer">buildwithneo.cn</a></footer>
+  <script type="module" src="site.js"></script>
+</body>
+</html>

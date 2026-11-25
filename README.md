@@ -23,7 +23,13 @@
 
 ### VoxMind 是什么？
 
-**VoxMind** 是一台**内置独立 4G 蜂窝网络**的随身 AI 语音行动终端——**不需要掏手机、不需要连蓝牙、不依赖 Wi-Fi**，按下说话即可实时通过 4G 上传语音，经 AI 理解意图后在设备屏幕弹出确认卡片，一键执行**飞书任务、飞书消息、飞书云文档、自动记账、智能家居控制（空调/灯光）以及企业自定义 API / Webhook 工作流**。
+**VoxMind** 是一台**内置独立 4G 蜂窝网络**的随身 AI 语音行动终端——**不需要掏手机、不需要连蓝牙、不依赖 Wi-Fi**，按下说话即可实时收音并通过 4G 上传：
+
+- **访谈与会议双模式看字**：访谈过程中可以**实时马上看文字**，也可以**结束后看完整文字与结构化总结**；
+- **销售拜访自动总结**：拜访客户后自动提炼重点、生成跟进待办，经设备屏幕一键确认直连**飞书任务、飞书消息、飞书云文档、自动记账与 CRM**；
+- **自定义 AI & 零绑定**：自由接入你自己的大模型与语音识别 API，支持私有化自部署；
+- **可拓展到控制万物**：不止于智能家居（空调/灯光），凡是具备开放接口、Webhook 或物联网开关的设备——从家电、农场控制器到企业业务系统——都能通过一句话确认触发控制；
+- **对标 Plaud 更进一步**：Plaud 有的录音转写与 AI 总结能力 VoxMind 全都有，Plaud 卡片旗舰（Note / Note Pro）没有的**独立 4G 联网** VoxMind 早已实机落地，并且全栈硬件、3D 外壳、固件与 Web 控制台**源码公开**（个人非商业许可，非 OSI 开源，商用须另购授权）。
 
 > **说明**：这里的 **4G** 指的是**内置 4G 移动蜂窝网络（Nano-SIM）**，不是 4GB 内存。本项目是独立的 4G AI 硬件终端，与同名学术论文项目无关。
 
@@ -70,7 +76,7 @@ VoxMind 不是停留在概念图或原型阶段的项目，而是**已经过小�
 | 对比维度 | **VoxMind（4G 语音行动终端）** | **Plaud Note / Note Pro** | **Plaud One** |
 | :--- | :--- | :--- | :--- |
 | **联网方式** | **内置 4G LTE（插 Nano-SIM）**，完全脱离手机独立联网 | 蓝牙 / Wi-Fi，需通过手机 App 同步 | 充电盒内置 eSIM 4G LTE |
-| **核心能力** | **边说边办事**：直连飞书建任务/发消息/写云文档/自动记账、控智能家居、调企业 API | 录音结束后同步，主打转写与会议纪要 | 4G 边录边传，停录后生成纪要与 App Agent |
+| **核心能力** | **Plaud 有的全都有 + 边说边办事**：实时收音（访谈可马上看文字或结束看完整文字）、销售拜访自动总结、飞书任务/文档/记账，并**可拓展到控制万物**（智能家居/IoT/企业系统） | 录音结束后同步，主打转写与会议纪要 | 4G 边录边传，停录后生成纪要与 App Agent |
 | **实时工作流** | 4G 实时分段上传 + AI 意图识别 + **机身屏幕一键确认执行** | 录完 → 同步手机 → 云端转写摘要 | 录音上传 → 停止后开始转写处理 |
 | **AI 模型与订阅** | **自带 AI / API 密钥，零强制月费订阅**，支持完全自部署 | 封闭云端，超额需付费订阅分钟数套餐 | 封闭云端，按 Credits / 订阅方案计费 |
 | **飞书与企业集成** | **原生深度对接飞书（任务/消息/云文档/记账）** + 开放 Webhook / Home Assistant / CRM | 通用海外效率连接器 | 通用海外效率连接器 |
@@ -160,7 +166,12 @@ idf.py build
 
 **VoxMind** is a **standalone 4G cellular Voice-to-Action AI hardware terminal**—engineered from the ground up with custom 4-layer PCB, ESP32-S3 MCU, ML307C 4G LTE modem (Nano-SIM), 2-inch color touch LCD, dual microphones, and a custom **3D-printed enclosure**.
 
-No phone pairing, no Bluetooth tether, no Wi-Fi dependency. Press and speak: VoxMind streams audio directly over 4G LTE, extracts actionable intent via your choice of AI model, shows a confirmation card right on the device screen, and executes **Feishu/Lark tasks, messages, docs, automated expense logging, smart home controls (AC/lights), and custom enterprise webhooks/APIs** in real time.
+No phone pairing, no Bluetooth tether, no Wi-Fi dependency:
+- **Real-Time Audio & Dual-Mode Transcripts**: View text **live right away during interviews/meetings**, or review complete transcripts and structured summaries afterward.
+- **Automatic Sales Visit Summaries**: Turn client meetings into structured summaries, follow-up tasks, Feishu/Lark docs, messages, and auto-logged expenses—confirmed right on the device screen.
+- **Custom AI & Zero Lock-In**: Bring your own LLM and ASR APIs or self-host on Docker with zero mandatory monthly plans.
+- **Extensible to Control Anything**: Beyond smart home AC & lights, extend via open webhooks, IoT switches, and APIs to control physical devices, farm controllers, and enterprise workflows by voice.
+- **Everything Plaud Offers + Standalone 4G + Source-Available**: Every core recording & summary capability of Plaud—plus standalone 4G cellular that Plaud Note / Note Pro don't have—with the full hardware, 3D enclosure, firmware, and web console source-available (personal non-commercial license, not OSI; commercial licenses available).
 
 > **Note**: **4G** refers to built-in **4G LTE cellular networking** (not 4 GB memory). This hardware product is unrelated to the academic speech paper sharing the same name.
 
@@ -179,7 +190,7 @@ See the side-by-side comparison graphic above ([`docs/images/voxmind-vs-plaud.jp
 | Capability | **VoxMind (4G Terminal)** | **Plaud Note / Note Pro** | **Plaud One** |
 | :--- | :--- | :--- | :--- |
 | **Connectivity** | **Built-in 4G LTE (Nano-SIM)** — zero phone required | BLE / Wi-Fi — syncs via phone app | Built-in eSIM 4G LTE in charging case |
-| **Core Purpose** | **Voice-to-Action**: Feishu/Lark tasks, docs, accounting, smart home & custom APIs | Post-recording transcripts & summaries | Post-recording summary & mobile app agent |
+| **Core Purpose** | **Everything Plaud does + Voice-to-Action**: live or post-interview transcripts, auto sales-visit summaries, Feishu tasks/docs/accounting, and **extensible to control anything** (smart home, IoT & enterprise APIs) | Post-recording transcripts & summaries | Post-recording summary & mobile app agent |
 | **Workflow** | Live 4G chunk upload → AI intent → **On-device screen confirmation** | Record → Sync to phone → Process | 4G upload → Process after recording stops |
 | **AI & Subscription** | **Bring Your Own AI / API** · Self-hosted · **Zero forced monthly plan** | Closed cloud · Paid minute tiers | Closed cloud · Credits & paid plans |
 | **Openness** | **Full PCB + 3D CAD + Firmware + Web Console source-available** | Closed proprietary hardware | Closed proprietary hardware |
@@ -209,7 +220,13 @@ VoxMind is **source-available for personal, non-commercial use** by natural pers
 
 ### VoxMind とは？
 
-**VoxMind** は、**独立 4G セルラー通信（Nano-SIM）を内蔵した携帯型 AI 音声アクション端末**です。スマホとの Bluetooth 接続や Wi-Fi に依存せず、ボタンを押して話すだけで 4G 経由でリアルタイムに音声を送信。AI が意図を解析し、本体のカラー液晶に確認カードを表示——ワンタップで **Feishu（Lark）タスク作成・メッセージ送信・ドキュメント作成・自動家計簿・スマートホーム操作（エアコン/照明）・企業向け独自 API / Webhook** まで即座に実行します。
+**VoxMind** は、**独立 4G セルラー通信（Nano-SIM）を内蔵した携帯型 AI 音声アクション端末**です。スマホとの Bluetooth 接続や Wi-Fi に依存せず、ボタンを押して話すだけで 4G 経由でリアルタイムに収音・処理します：
+
+- **リアルタイム収音＆2通りの文字確認**：インタビューや会議中に**その場ですぐ文字を確認**することも、**終了後に全文文字起こしと要約を見る**こともできます。
+- **営業訪問の自動要約＆即実行**：商談内容の自動整理から、Feishu（Lark）タスク作成・ドキュメント生成・自動記帳までを本体画面の確認付きで完結。
+- **カスタム AI / API 対応**：お好みの LLM・音声認識 API やセルフホスト環境を自由に組み込み可能。
+- **あらゆる機器を制御可能（万物をコントロール）**：エアコンや照明などのスマートホームはもちろん、IoT スイッチ・農業制御機器・企業システムまで、API / Webhook 経由で声ひとつで自在に拡張制御できます。
+- **Plaud の主要機能＋独立 4G＋全ソース公開**：Plaud が備える録音・要約機能はすべて網羅しつつ、カード型 Plaud（Note / Note Pro）にはない**独立 4G 通信**をすでに実機搭載。さらに基板・3D 筐体・FW・Web 管理画面のソースを公開しています（個人非商用ライセンス・OSI 非準拠、商用利用は有償許諾）。
 
 > **注記**：ここでの **4G** は内蔵 **4G LTE モバイル回線**を意味します（4GB メモリではありません）。同名の学術論文プロジェクトとは無関係です。
 

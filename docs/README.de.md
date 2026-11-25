@@ -10,7 +10,7 @@
 
 **VoxMind** ist ein **eigenständiges KI-Sprach-Aktions-Terminal mit integriertem 4G-LTE-Mobilfunk** (Nano-SIM – nicht „4 GB“ Speicher). Kein Smartphone, kein Bluetooth-Tethering, kein WLAN erforderlich.
 
-Drücken und sprechen: VoxMind lädt Sprache direkt über 4G hoch, erkennt deine Absicht mit deinem eigenen KI-Modell, zeigt eine Bestätigungskarte auf dem 2-Zoll-Farb-Touchscreen an und führt **Feishu/Lark-Aufgaben, Nachrichten, Dokumente, automatische Buchhaltung, Smart-Home-Steuerung (Klimaanlage/Licht) sowie benutzerdefinierte Unternehmens-APIs & Webhooks** in Echtzeit aus.
+Drücken und sprechen: VoxMind erfasst Sprache in Echtzeit über 4G – so kannst du **während Interviews sofort den Live-Text sehen oder nach Abschluss das vollständige Transkript samt Zusammenfassung lesen**, **automatische Vertriebsbesuchs-Berichte** erstellen, **deine eigene KI/API** anbinden, Feishu/Lark-Aufgaben ausführen und **beliebige Geräte steuern** (Smart Home, IoT-Schalter, Landwirtschafts- und Unternehmenssysteme). Alles, was Plaud bietet – plus **eigenständiges 4G LTE**, das Plaud Note / Note Pro nicht haben, und mit veröffentlichtem Hardware-, 3D-CAD-, Firmware- und Web-Stack (persönliche, nicht kommerzielle Nutzung).
 
 ## Echte Hardware · Kleinserienfertigung & bewährter Betrieb
 

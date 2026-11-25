@@ -10,7 +10,7 @@
 
 **VoxMind** es un **terminal físico de voz IA con conectividad celular 4G LTE integrada** (Nano-SIM, no "4 GB" de memoria). Funciona de forma totalmente independiente, sin teléfono, sin Bluetooth y sin Wi-Fi.
 
-Presiona y habla: VoxMind transmite el audio en tiempo real por 4G, analiza tu intención con tu propio modelo de IA, muestra una tarjeta de confirmación en su pantalla táctil de 2 pulgadas y ejecuta al instante **tareas en Feishu/Lark, mensajes, documentos, registro automático de gastos, control de hogar inteligente (aire acondicionado/luces) y webhooks o APIs empresariales**.
+Presiona y habla: VoxMind captura audio en tiempo real por 4G para que puedas **ver la transcripción al instante durante entrevistas o revisar el texto completo y el resumen al terminar**, generar **resúmenes automáticos de visitas comerciales**, conectar **tu propia IA/API**, ejecutar tareas y contabilidad en Feishu/Lark y **extenderse para controlar cualquier dispositivo** (domótica, interruptores IoT, equipos agrícolas o sistemas empresariales). Todo lo que ofrecen los grabadores Plaud, más el **4G celular independiente** que Plaud Note / Note Pro no tienen, con hardware, carcasa 3D, firmware y consola web disponibles (uso personal no comercial).
 
 ## Hardware real · Producción en pequeños lotes y envíos reales
 
